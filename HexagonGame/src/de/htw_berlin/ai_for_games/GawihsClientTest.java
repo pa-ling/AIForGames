@@ -12,7 +12,8 @@ import org.junit.Test;
 public class GawihsClientTest {
 	
 	private String[] NAMES = {"Alice", "Bob", "Carol"};
-	private boolean AUTOMATIC_GAME_SERVER_STARTUP = true;
+	private boolean AUTOMATIC_GAME_SERVER_STARTUP = false;
+	private String LOGO_PATH = "res/claptrap.png";
 	
     private class GameClientTask implements Runnable {
     	private String host, name, logoPath;
@@ -44,7 +45,7 @@ public class GawihsClientTest {
         // start Clients        
         ExecutorService executor = Executors.newFixedThreadPool(NAMES.length);
         for (final String name: NAMES) {
-        	GameClientTask gameClientTask = new GameClientTask("127.0.0.1", name, "res/claptrap.png");
+        	GameClientTask gameClientTask = new GameClientTask("127.0.0.1", name, LOGO_PATH);
             executor.execute(gameClientTask);
         }
         executor.shutdown();
