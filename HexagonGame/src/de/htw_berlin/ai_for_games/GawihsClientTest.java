@@ -11,7 +11,6 @@ import org.junit.Test;
  
 public class GawihsClientTest {
 	
-	private int CLIENT_COUNT = 3;
 	private String[] NAMES = {"Alice", "Bob", "Carol"};
 	private boolean AUTOMATIC_GAME_SERVER_STARTUP = true;
 	
@@ -43,9 +42,9 @@ public class GawihsClientTest {
         }
         
         // start Clients        
-        ExecutorService executor = Executors.newFixedThreadPool(CLIENT_COUNT);
-        for (int i = 0; i < 3; i++) {
-        	GameClientTask gameClientTask = new GameClientTask("127.0.0.1", NAMES[i], "res/claptrap.png");
+        ExecutorService executor = Executors.newFixedThreadPool(NAMES.length);
+        for (final String name: NAMES) {
+        	GameClientTask gameClientTask = new GameClientTask("127.0.0.1", name, "res/claptrap.png");
             executor.execute(gameClientTask);
         }
         executor.shutdown();
