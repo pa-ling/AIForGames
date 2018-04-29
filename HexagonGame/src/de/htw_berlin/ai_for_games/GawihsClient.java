@@ -11,43 +11,41 @@ import lenz.htw.gawihs.net.NetworkClient;
 
 public class GawihsClient {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		String 	host = args[0],
-				name = args[1],
-				logoPath = args[2];
-		BufferedImage logo = null;
-		try {
-			logo = ImageIO.read(new File(logoPath));
-		} catch (final IOException e) {
-			System.err.println("There was a problem loading the logo.");
-		}
+        String host = args[0], name = args[1], logoPath = args[2];
+        BufferedImage logo = null;
+        try {
+            logo = ImageIO.read(new File(logoPath));
+        } catch (final IOException e) {
+            System.err.println("There was a problem loading the logo.");
+        }
 
-		GawihsBoard board = new GawihsBoard();
-		NetworkClient client = new NetworkClient(host, name, logo);
-		GawihsPlayer player = new GawihsPlayer(client.getMyPlayerNumber(), board);
+        GawihsBoard board = new GawihsBoard();
+        NetworkClient client = new NetworkClient(host, name, logo);
+        GawihsPlayer player = new GawihsPlayer(client.getMyPlayerNumber(), board);
 
-		// client.getTimeLimitInSeconds();
-		// client.getExpectedNetworkLatencyInMilliseconds();
-		
-		try {
-			while (true) {
-				Move move = client.receiveMove();
-				if (move == null) {
-					move = player.move();
-					client.sendMove(move);
-					System.out.println(name + " (" + client.getMyPlayerNumber() + ") sent Move from (" + move.fromX + ","
-							+ move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
-				} else {
-					System.out.println(name + " (" + client.getMyPlayerNumber() + ") received Move from (" + move.fromX
-							+ "," + move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
-					board.move(move.fromX, move.fromY, move.toX, move.toY);
-				}
+        // client.getTimeLimitInSeconds();
+        // client.getExpectedNetworkLatencyInMilliseconds();
 
-			}
-		} catch (final Exception e) {
-			System.out.println(name + " (" + client.getMyPlayerNumber() + ") got kicked.\n");
-		}
-	}
+        try {
+            while (true) {
+                Move move = client.receiveMove();
+                if (move == null) {
+                    move = player.move();
+                    client.sendMove(move);
+                    System.out.println(name + " (" + client.getMyPlayerNumber() + ") sent Move from (" + move.fromX
+                            + "," + move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
+                } else {
+                    System.out.println(name + " (" + client.getMyPlayerNumber() + ") received Move from (" + move.fromX
+                            + "," + move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
+                    board.move(move.fromX, move.fromY, move.toX, move.toY);
+                }
+
+            }
+        } catch (final Exception e) {
+            System.out.println(name + " (" + client.getMyPlayerNumber() + ") got kicked.\n");
+        }
+    }
 
 }
