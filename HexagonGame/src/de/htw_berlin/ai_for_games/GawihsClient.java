@@ -13,7 +13,9 @@ public class GawihsClient {
 
 	public static void main(String[] args) {
 
-		final String host = args[0], name = args[1], logoPath = args[2];
+		String 	host = args[0],
+				name = args[1],
+				logoPath = args[2];
 		BufferedImage logo = null;
 		try {
 			logo = ImageIO.read(new File(logoPath));
@@ -21,31 +23,30 @@ public class GawihsClient {
 			System.err.println("There was a problem loading the logo.");
 		}
 
-		final GawihsBoard board = new GawihsBoard();
-		final NetworkClient client = new NetworkClient(host, name, logo);
-		final GawihsPlayer player = new GawihsPlayer(client.getMyPlayerNumber(), board);
+		GawihsBoard board = new GawihsBoard();
+		NetworkClient client = new NetworkClient(host, name, logo);
+		GawihsPlayer player = new GawihsPlayer(client.getMyPlayerNumber(), board);
 
 		// client.getTimeLimitInSeconds();
 		// client.getExpectedNetworkLatencyInMilliseconds();
-
+		
 		try {
 			while (true) {
 				Move move = client.receiveMove();
 				if (move == null) {
 					move = player.move();
 					client.sendMove(move);
-					System.out.println("Player " + client.getMyPlayerNumber() + " sent Move from (" + move.fromX + ","
+					System.out.println(name + " (" + client.getMyPlayerNumber() + ") sent Move from (" + move.fromX + ","
 							+ move.fromY + ") to (" + move.toX + "," + move.toY + ")");
 				} else {
-					System.out.println("Player " + client.getMyPlayerNumber() + " received Move from (" + move.fromX
+					System.out.println(name + " (" + client.getMyPlayerNumber() + ") received Move from (" + move.fromX
 							+ "," + move.fromY + ") to (" + move.toX + "," + move.toY + ")");
-
 					board.move(move.fromX, move.fromY, move.toX, move.toY);
 				}
 
 			}
 		} catch (final Exception e) {
-			System.out.println("Player " + client.getMyPlayerNumber() + " got kicked.");
+			System.out.println(name + " (" + client.getMyPlayerNumber() + ") got kicked.");
 		}
 	}
 

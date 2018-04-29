@@ -29,3 +29,6 @@ hs_err_pid*
 
 # native files
 *.so
+
+# libraries
+lib/

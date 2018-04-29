@@ -44,9 +44,9 @@ public class GawihsPlayer {
 	}
 
 	private List<Field> getValidTargetFields() {
-		final List<Field> fields = new ArrayList<>();
+		List<Field> fields = new ArrayList<>();
 
-		for (final Field currentPlayerPositon : this.playerPositions) {
+		for (Field currentPlayerPositon : this.playerPositions) {
 			fields.add(new Field(currentPlayerPositon.x - 1, currentPlayerPositon.y - 1));
 			fields.add(new Field(currentPlayerPositon.x, currentPlayerPositon.y - 1));
 			fields.add(new Field(currentPlayerPositon.x - 1, currentPlayerPositon.y));
@@ -55,15 +55,15 @@ public class GawihsPlayer {
 			fields.add(new Field(currentPlayerPositon.x + 1, currentPlayerPositon.y + 1));
 		}
 
-		final Iterator<Field> itr = fields.iterator();
+		Iterator<Field> itr = fields.iterator();
 		while (itr.hasNext()) {
-			final Field field = itr.next();
+			Field field = itr.next();
 			if (field.x < 0 || field.x > 8 || field.y < 0 || field.y > 8) {
 				itr.remove();
 				continue;
 			}
 
-			final FieldState fieldState = this.board.getField(field.x, field.y).peek();
+			FieldState fieldState = this.board.getField(field.x, field.y).peek();
 			if (fieldState == FieldState.DESTROYED || fieldState == this.playerNumber) {
 				itr.remove();
 			}
@@ -73,15 +73,15 @@ public class GawihsPlayer {
 	}
 
 	public Move move() {
-		final int playerIndex = ThreadLocalRandom.current().nextInt(0, 5); // TODO: remove blocked stones
-		final List<Field> validTargetFields = getValidTargetFields();
-		final int targetIndex = ThreadLocalRandom.current().nextInt(0, validTargetFields.size());
+		int playerIndex = ThreadLocalRandom.current().nextInt(0, 5); // TODO: remove blocked stones
+		List<Field> validTargetFields = getValidTargetFields();
+		int targetIndex = ThreadLocalRandom.current().nextInt(0, validTargetFields.size());
 
 		// create randomMoves
-		final int x1 = this.playerPositions[playerIndex].x;
-		final int y1 = this.playerPositions[playerIndex].y;
-		final int x2 = validTargetFields.get(targetIndex).x;
-		final int y2 = validTargetFields.get(targetIndex).y;
+		int x1 = this.playerPositions[playerIndex].x;
+		int y1 = this.playerPositions[playerIndex].y;
+		int x2 = validTargetFields.get(targetIndex).x;
+		int y2 = validTargetFields.get(targetIndex).y;
 
 		// update playerPositions
 		this.playerPositions[playerIndex].x = x2;

@@ -10,7 +10,7 @@ public class GawihsBoard {
 		PLAYER_0, PLAYER_1, PLAYER_2, UNOCCUPIED, DESTROYED
 	}
 
-	public final static int SIZE = 9;
+	public static final int SIZE = 9;
 
 	private final List<Stack<FieldState>> board;
 
@@ -50,12 +50,12 @@ public class GawihsBoard {
 	}
 
 	public void move(int x1, int y1, int x2, int y2) {
-		final Stack<FieldState> sourceField = getField(x1, y1);
+		Stack<FieldState> sourceField = getField(x1, y1);
 		if (sourceField.peek() == FieldState.UNOCCUPIED || sourceField.peek() == FieldState.DESTROYED) {
 			throw new IllegalStateException("SourceField does not contain a player stone!");
 		}
 
-		final Stack<FieldState> targetField = getField(x2, y2);
+		Stack<FieldState> targetField = getField(x2, y2);
 		if (targetField.peek() == FieldState.DESTROYED) {
 			throw new IllegalStateException("TargetFiled ist detroyed!");
 		}
