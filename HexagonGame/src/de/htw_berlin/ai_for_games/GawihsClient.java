@@ -37,16 +37,16 @@ public class GawihsClient {
 					move = player.move();
 					client.sendMove(move);
 					System.out.println(name + " (" + client.getMyPlayerNumber() + ") sent Move from (" + move.fromX + ","
-							+ move.fromY + ") to (" + move.toX + "," + move.toY + ")");
+							+ move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
 				} else {
 					System.out.println(name + " (" + client.getMyPlayerNumber() + ") received Move from (" + move.fromX
-							+ "," + move.fromY + ") to (" + move.toX + "," + move.toY + ")");
+							+ "," + move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
 					board.move(move.fromX, move.fromY, move.toX, move.toY);
 				}
 
 			}
 		} catch (final Exception e) {
-			System.out.println(name + " (" + client.getMyPlayerNumber() + ") got kicked.");
+			System.out.println(name + " (" + client.getMyPlayerNumber() + ") got kicked.\n");
 		}
 	}
 

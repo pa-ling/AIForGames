@@ -12,6 +12,7 @@ public class GawihsBoard {
 
 	public static final int SIZE = 9;
 
+	//FIXME: Stack ist ein Problem. Wenn ein Spieler gekickt wird, müssen alle seine Steine entfernt werden, auch die blockierten.
 	private final List<Stack<FieldState>> board;
 
 	public GawihsBoard() {
