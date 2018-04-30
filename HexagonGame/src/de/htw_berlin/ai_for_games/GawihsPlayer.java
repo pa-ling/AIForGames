@@ -1,30 +1,54 @@
 package de.htw_berlin.ai_for_games;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 import de.htw_berlin.ai_for_games.GawihsBoard.FieldState;
 import lenz.htw.gawihs.Move;
 
 public class GawihsPlayer {
 
-    private static Field[] getStartingPositions(FieldState playerNumber) {
+    private static List<Field> getFieldsAround(int x, int y) {
+        List<Field> fields = new ArrayList<>();
+        fields.add(new Field(x - 1, y - 1));
+        fields.add(new Field(x, y - 1));
+        fields.add(new Field(x - 1, y));
+        fields.add(new Field(x + 1, y));
+        fields.add(new Field(x, y + 1));
+        fields.add(new Field(x + 1, y + 1));
+        return fields;
+    }
+
+    private static List<Field> getStartingPositions(FieldState playerNumber) {
+        Field[] positionsArray;
+
         switch (playerNumber) {
         case PLAYER_0:
-            return new Field[] { new Field(0, 0), new Field(1, 0), new Field(2, 0), new Field(3, 0), new Field(4, 0) };
+            positionsArray = new Field[] { new Field(0, 0), new Field(1, 0), new Field(2, 0), new Field(3, 0),
+                    new Field(4, 0) };
+            break;
         case PLAYER_1:
-            return new Field[] { new Field(0, 4), new Field(1, 5), new Field(2, 6), new Field(3, 7), new Field(4, 8) };
+            positionsArray = new Field[] { new Field(0, 4), new Field(1, 5), new Field(2, 6), new Field(3, 7),
+                    new Field(4, 8) };
+            break;
         case PLAYER_2:
-            return new Field[] { new Field(8, 4), new Field(8, 5), new Field(8, 6), new Field(8, 7), new Field(8, 8) };
+            positionsArray = new Field[] { new Field(8, 4), new Field(8, 5), new Field(8, 6), new Field(8, 7),
+                    new Field(8, 8) };
+            break;
         default:
-            return new Field[0];
+            positionsArray = new Field[0];
         }
+
+        return Arrays.asList(positionsArray);
     }
 
     private final FieldState playerNumber;
-    private final Field[] playerPositions;
+
+    private final List<Field> playerPositions;
 
     private final GawihsBoard board;
 
@@ -34,16 +58,27 @@ public class GawihsPlayer {
         this.playerPositions = getStartingPositions(this.playerNumber);
     }
 
+    private Set<Move> getValidMoves() {
+        Set<Move> validMoves = new HashSet<>();
+        for (Field playerPosition : this.playerPositions) { // TODO: remove blocked stones
+            for (Field targetField : getValidTargetFields()) {
+                List<Field> fieldsAround = getFieldsAround(targetField.x, targetField.y);
+                for (Field field : fieldsAround) {
+                    // ist an dieser Stelle ein andere Stein, als der aktuelle Stein?
+                    if (!field.equals(playerPosition) && this.playerPositions.contains(field)) {
+                        validMoves.add(new Move(playerPosition.x, playerPosition.y, targetField.x, targetField.y));
+                    }
+                }
+            }
+        }
+        return validMoves;
+    }
+
     private Set<Field> getValidTargetFields() {
         Set<Field> fields = new HashSet<>();
 
-        for (Field currentPlayerPositon : this.playerPositions) {
-            fields.add(new Field(currentPlayerPositon.x - 1, currentPlayerPositon.y - 1));
-            fields.add(new Field(currentPlayerPositon.x, currentPlayerPositon.y - 1));
-            fields.add(new Field(currentPlayerPositon.x - 1, currentPlayerPositon.y));
-            fields.add(new Field(currentPlayerPositon.x + 1, currentPlayerPositon.y));
-            fields.add(new Field(currentPlayerPositon.x, currentPlayerPositon.y + 1));
-            fields.add(new Field(currentPlayerPositon.x + 1, currentPlayerPositon.y + 1));
+        for (Field currentPlayerPosition : this.playerPositions) {
+            fields.addAll(getFieldsAround(currentPlayerPosition.x, currentPlayerPosition.y));
         }
 
         Iterator<Field> itr = fields.iterator();
@@ -60,37 +95,23 @@ public class GawihsPlayer {
             }
         }
 
-        System.out.println("validTargetFields:");
-        for (Field field : fields) {
-            System.out.println(
-                    "(" + field.x + "," + field.y + "):" + this.board.getField(field.x, field.y).peek().toString());
-        }
+        // System.out.println("validTargetFields:");
+        // for (Field field : fields) {
+        // System.out.println(
+        // "(" + field.x + "," + field.y + "):" + this.board.getField(field.x,
+        // field.y).peek().toString());
+        // }
 
         return fields;
     }
 
     public Move move() {
-        int playerIndex = ThreadLocalRandom.current().nextInt(0, 5); // TODO: remove blocked stones
-        Set<Field> validTargetFields = getValidTargetFields();
-        int targetIndex = ThreadLocalRandom.current().nextInt(0, validTargetFields.size());
-
-        // create randomMoves
-        int x1 = this.playerPositions[playerIndex].x;
-        int y1 = this.playerPositions[playerIndex].y;
-        int i = 0, x2 = 0, y2 = 0;
-        for (Field field : validTargetFields) {
-            if (i++ == targetIndex) {
-                x2 = field.x;
-                y2 = field.y;
-                break;
-            }
-        }
+        Move moveToSend = getValidMoves().stream().findFirst().get();
 
         // update playerPositions
-        this.playerPositions[playerIndex].x = x2;
-        this.playerPositions[playerIndex].y = y2;
+        this.playerPositions.remove(new Field(moveToSend.fromX, moveToSend.fromY));
+        this.playerPositions.add(new Field(moveToSend.toX, moveToSend.toY));
 
-        return new Move(x1, y1, x2, y2);
+        return moveToSend;
     }
-
 }
