@@ -2,7 +2,6 @@ package de.htw_berlin.ai_for_games;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -11,45 +10,7 @@ import lenz.htw.gawihs.Move;
 
 public class GawihsPlayer {
 
-    private class Field {
-        public int x;
-        public int y;
-
-        public Field(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public int hashCode() {
-            return this.x * 31 + this.y;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true; // self check
-            if (o == null)
-                return false; // null check
-            if (!(o instanceof Field))
-                return false; // type check
-
-            Field field = (Field) o;
-            return this.x == field.x && this.y == field.y; // member comparison
-        }
-    }
-
-    private final FieldState playerNumber;
-    private final Field[] playerPositions;
-    private final GawihsBoard board;
-
-    public GawihsPlayer(int playerNumber, GawihsBoard board) {
-        this.playerNumber = FieldState.values()[playerNumber];
-        this.board = board;
-        this.playerPositions = getStartingPositions(this.playerNumber);
-    }
-
-    private Field[] getStartingPositions(FieldState playerNumber) {
+    private static Field[] getStartingPositions(FieldState playerNumber) {
         switch (playerNumber) {
         case PLAYER_0:
             return new Field[] { new Field(0, 0), new Field(1, 0), new Field(2, 0), new Field(3, 0), new Field(4, 0) };
@@ -60,6 +21,17 @@ public class GawihsPlayer {
         default:
             return new Field[0];
         }
+    }
+
+    private final FieldState playerNumber;
+    private final Field[] playerPositions;
+
+    private final GawihsBoard board;
+
+    public GawihsPlayer(int playerNumber, GawihsBoard board) {
+        this.playerNumber = FieldState.values()[playerNumber];
+        this.board = board;
+        this.playerPositions = getStartingPositions(this.playerNumber);
     }
 
     private Set<Field> getValidTargetFields() {
@@ -90,8 +62,8 @@ public class GawihsPlayer {
 
         System.out.println("validTargetFields:");
         for (Field field : fields) {
-            System.out
-                    .println("(" + field.x + "," + field.y + "):" + board.getField(field.x, field.y).peek().toString());
+            System.out.println(
+                    "(" + field.x + "," + field.y + "):" + this.board.getField(field.x, field.y).peek().toString());
         }
 
         return fields;
