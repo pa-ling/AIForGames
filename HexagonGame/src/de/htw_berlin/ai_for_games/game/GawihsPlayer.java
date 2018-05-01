@@ -46,6 +46,18 @@ public class GawihsPlayer {
         this.playerStonePositions = getStartingPositions(this.playerNumber);
     }
 
+    public void applyMove(Move move) {
+        if (this.board.getField(move.fromX, move.fromY).peek() != this.playerNumber) {
+            throw new IllegalStateException("We're not moving our stone!");
+        }
+        this.playerStonePositions.remove(new Field(move.fromX, move.fromY));
+        this.playerStonePositions.add(new Field(move.toX, move.toY));
+    }
+
+    public int getPlayerNumberAsOrdinal() {
+        return this.playerNumber.ordinal();
+    }
+
     private List<Move> getPossibleMoves() {
         Set<Field> targetFields = new HashSet<>();
 
@@ -81,12 +93,6 @@ public class GawihsPlayer {
             throw new IllegalStateException(this.playerNumber + ": No moves are possible anymore!");
         }
 
-        Move moveToSend = possibleMoves.get(ThreadLocalRandom.current().nextInt(possibleMoves.size()));
-
-        // update playerPositions
-        this.playerStonePositions.remove(new Field(moveToSend.fromX, moveToSend.fromY));
-        this.playerStonePositions.add(new Field(moveToSend.toX, moveToSend.toY));
-
-        return moveToSend;
+        return possibleMoves.get(ThreadLocalRandom.current().nextInt(possibleMoves.size()));
     }
 }
