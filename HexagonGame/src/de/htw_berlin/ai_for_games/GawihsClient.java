@@ -46,7 +46,8 @@ public class GawihsClient {
 
             }
         } catch (Exception e) {
-            System.out.println(name + " (" + client.getMyPlayerNumber() + ") got kicked.\n");
+            System.out.println(
+                    name + " (" + client.getMyPlayerNumber() + ") got kicked.\n Reason: " + e.getMessage() + "\n");
         }
     }
 
