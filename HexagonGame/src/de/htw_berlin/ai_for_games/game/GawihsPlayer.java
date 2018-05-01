@@ -48,9 +48,9 @@ public class GawihsPlayer {
         Set<Field> targetFields = new HashSet<>();
 
         // get possible target fields
-        for (Field currentPlayerPosition : this.playerStonePositions) {
-            targetFields.addAll(BoardUtil.getAvailableFieldsForPlayerAround(currentPlayerPosition.x,
-                    currentPlayerPosition.y, this.board, this.playerNumber));
+        for (Field playerStone : this.playerStonePositions) {
+            targetFields.addAll(BoardUtil.getAvailableFieldsForPlayerAround(playerStone.x, playerStone.y, this.board,
+                    this.playerNumber));
         }
 
         // compute possible moves
@@ -58,11 +58,13 @@ public class GawihsPlayer {
         // und dieser Stein nicht der Stein ist, den wir gerade bewegen wollen
         List<Move> possibleMoves = new ArrayList<>();
         for (Field stoneToMove : this.playerStonePositions) {
-            // TODO: Don't move blocked stones
-            for (Field targetField : targetFields) {
-                for (Field fieldAroundTarget : BoardUtil.getFieldsAround(targetField.x, targetField.y)) {
-                    if (this.playerStonePositions.contains(fieldAroundTarget) && !stoneToMove.equals(fieldAroundTarget)) {
-                        possibleMoves.add(new Move(stoneToMove.x, stoneToMove.y, targetField.x, targetField.y));
+            if (BoardUtil.canPlayerMove(stoneToMove.x, stoneToMove.y, this.board, this.playerNumber)) {
+                for (Field targetField : targetFields) {
+                    for (Field fieldAroundTarget : BoardUtil.getFieldsAround(targetField.x, targetField.y)) {
+                        if (this.playerStonePositions.contains(fieldAroundTarget)
+                                && !stoneToMove.equals(fieldAroundTarget)) {
+                            possibleMoves.add(new Move(stoneToMove.x, stoneToMove.y, targetField.x, targetField.y));
+                        }
                     }
                 }
             }

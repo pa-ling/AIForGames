@@ -15,6 +15,22 @@ import de.htw_berlin.ai_for_games.game.GawihsBoard.FieldState;
 public final class BoardUtil {
 
     /**
+     * Checks if the given player can move away from the given field. he can move
+     * away if he's on the top of the field.
+     *
+     * @param x
+     *            x coordinate of the player field
+     * @param y
+     *            y coordinate of the player field
+     * @param board
+     *            board to check
+     * @return {@code true} if the player can move otherwise {@code false}
+     */
+    public static boolean canPlayerMove(int x, int y, GawihsBoard board, FieldState player) {
+        return board.getField(x, y).peek() == player;
+    }
+
+    /**
      * Returns {@link Field field objects} for available adjacent fields of a given
      * center field. Available means that the field is either unoccupied or occupied
      * by just one player.
