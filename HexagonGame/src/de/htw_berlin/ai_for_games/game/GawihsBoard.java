@@ -59,7 +59,7 @@ public class GawihsBoard {
 
         Stack<FieldState> targetField = getField(x2, y2);
         if (targetField.peek() == FieldState.DESTROYED) {
-            throw new IllegalStateException("TargetFiled ist detroyed!");
+            throw new IllegalStateException("TargetField ist destroyed!");
         }
 
         targetField.push(sourceField.pop());
