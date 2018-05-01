@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import de.htw_berlin.ai_for_games.game.GawihsBoard;
+import de.htw_berlin.ai_for_games.game.GawihsPlayer;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
 

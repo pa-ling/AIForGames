@@ -1,4 +1,4 @@
-package de.htw_berlin.ai_for_games;
+package de.htw_berlin.ai_for_games.test;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+
+import de.htw_berlin.ai_for_games.GawihsClient;
 
 public class GawihsClientTest {
 

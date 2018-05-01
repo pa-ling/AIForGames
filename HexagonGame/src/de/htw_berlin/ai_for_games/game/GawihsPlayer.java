@@ -1,4 +1,4 @@
-package de.htw_berlin.ai_for_games;
+package de.htw_berlin.ai_for_games.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
