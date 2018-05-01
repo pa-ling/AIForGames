@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,6 +26,7 @@ public class GawihsPlayer {
                 break;
             case PLAYER_2:
                 stream = Stream.of(new Field(8, 4), new Field(8, 5), new Field(8, 6), new Field(8, 7), new Field(8, 8));
+                break;
             default:
                 return new ArrayList<>();
         }
@@ -74,7 +76,12 @@ public class GawihsPlayer {
     }
 
     public Move move() {
-        Move moveToSend = getPossibleMoves().stream().findFirst().get();
+        List<Move> possibleMoves = getPossibleMoves();
+        if (possibleMoves.isEmpty()) {
+            throw new IllegalStateException(this.playerNumber + ": No moves are possible anymore!");
+        }
+
+        Move moveToSend = possibleMoves.get(ThreadLocalRandom.current().nextInt(possibleMoves.size()));
 
         // update playerPositions
         this.playerStonePositions.remove(new Field(moveToSend.fromX, moveToSend.fromY));
