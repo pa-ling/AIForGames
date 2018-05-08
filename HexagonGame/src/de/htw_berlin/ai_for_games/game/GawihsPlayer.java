@@ -18,17 +18,17 @@ public class GawihsPlayer {
         Stream<Field> stream;
 
         switch (player) {
-            case PLAYER_0:
-                stream = Stream.of(new Field(0, 0), new Field(1, 0), new Field(2, 0), new Field(3, 0), new Field(4, 0));
-                break;
-            case PLAYER_1:
-                stream = Stream.of(new Field(0, 4), new Field(1, 5), new Field(2, 6), new Field(3, 7), new Field(4, 8));
-                break;
-            case PLAYER_2:
-                stream = Stream.of(new Field(8, 4), new Field(8, 5), new Field(8, 6), new Field(8, 7), new Field(8, 8));
-                break;
-            default:
-                return new ArrayList<>();
+        case PLAYER_0:
+            stream = Stream.of(new Field(0, 0), new Field(1, 0), new Field(2, 0), new Field(3, 0), new Field(4, 0));
+            break;
+        case PLAYER_1:
+            stream = Stream.of(new Field(0, 4), new Field(1, 5), new Field(2, 6), new Field(3, 7), new Field(4, 8));
+            break;
+        case PLAYER_2:
+            stream = Stream.of(new Field(8, 4), new Field(8, 5), new Field(8, 6), new Field(8, 7), new Field(8, 8));
+            break;
+        default:
+            return new ArrayList<>();
         }
 
         return stream.collect(Collectors.toCollection(ArrayList::new));
@@ -72,13 +72,15 @@ public class GawihsPlayer {
         // und dieser Stein nicht der Stein ist, den wir gerade bewegen wollen
         List<Move> possibleMoves = new ArrayList<>();
         for (Field stoneToMove : this.playerStonePositions) {
-            if (BoardUtil.canPlayerMove(stoneToMove.x, stoneToMove.y, this.board, this.playerNumber)) {
-                for (Field targetField : targetFields) {
-                    for (Field fieldAroundTarget : BoardUtil.getFieldsAround(targetField.x, targetField.y)) {
-                        if (this.playerStonePositions.contains(fieldAroundTarget)
-                                && !stoneToMove.equals(fieldAroundTarget)) {
-                            possibleMoves.add(new Move(stoneToMove.x, stoneToMove.y, targetField.x, targetField.y));
-                        }
+            if (!BoardUtil.canPlayerMove(stoneToMove.x, stoneToMove.y, this.board, this.playerNumber)) {
+                continue;
+            }
+
+            for (Field targetField : targetFields) {
+                for (Field fieldAroundTarget : BoardUtil.getFieldsAround(targetField.x, targetField.y)) {
+                    if (this.playerStonePositions.contains(fieldAroundTarget)
+                            && !stoneToMove.equals(fieldAroundTarget)) {
+                        possibleMoves.add(new Move(stoneToMove.x, stoneToMove.y, targetField.x, targetField.y));
                     }
                 }
             }

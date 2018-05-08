@@ -46,7 +46,6 @@ public class GawihsClient {
         // client.getExpectedNetworkLatencyInMilliseconds();
 
         // TODO: react to player dying - remove stones from player and destroy fields
-        // TODO: remove board references from everywhere
         try {
             while (true) {
                 Move move = client.receiveMove();
