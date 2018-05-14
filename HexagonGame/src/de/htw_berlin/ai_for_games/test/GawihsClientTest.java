@@ -55,11 +55,7 @@ public class GawihsClientTest {
         executor.awaitTermination(1, TimeUnit.HOURS);
 
         process.ifPresent(p -> {
-            try {
-                p.waitFor();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            p.destroy();
         });
     }
 

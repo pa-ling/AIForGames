@@ -16,7 +16,8 @@ import lenz.htw.gawihs.net.NetworkClient;
 public class GawihsClient {
 
     private static int getNextPlayerNumber(int currentPlayer) {
-        if (currentPlayer == 2) {
+        // TODO: if currentPlayer == players.length
+        if (currentPlayer >= 2) {
             return 0;
         }
         return currentPlayer + 1;
@@ -55,6 +56,13 @@ public class GawihsClient {
                     System.out.println(name + " (" + playerNumber + ") sent Move from (" + move.fromX + "," + move.fromY
                             + ") to (" + move.toX + "," + move.toY + ")\n");
                 } else {
+                    if (true) { // TODO: check if move really is not from the current player
+                        // TODO: player aus players löschen
+                        // TODO: player vom Board löschen
+                        // TODO: currentPlayer =
+                        // players.get(getNextPlayerNumber(currentPlayer.getPlayerNumberAsOrdinal()));
+                    }
+
                     currentPlayer.applyMove(move);
                     board.move(move.fromX, move.fromY, move.toX, move.toY);
                     currentPlayer = players.get(getNextPlayerNumber(currentPlayer.getPlayerNumberAsOrdinal()));

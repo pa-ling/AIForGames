@@ -58,6 +58,10 @@ public class GawihsPlayer {
         return this.playerNumber.ordinal();
     }
 
+    public List<Field> getPlayerStonePositions() {
+        return this.playerStonePositions;
+    }
+
     private List<Move> getPossibleMoves() {
         Set<Field> targetFields = new HashSet<>();
 

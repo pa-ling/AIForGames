@@ -47,6 +47,14 @@ public class GawihsBoard {
         getField(4, 4).push(FieldState.DESTROYED);
     }
 
+    public void deletePlayer() {
+        // TODO entweder positionen des playersteine übergeben oder Board nach
+        // übergebenem Enum-Wert durchsuchen
+        // playersteine entfernen, d.h. wenn Feld danach leer Feld destroyed, ansonsten
+        // bleibt anderer playerstein drauf
+        // Kann auch in player gemacht werden
+    }
+
     public Stack<FieldState> getField(int x, int y) {
         return this.board.get(y * SIZE + x); // rowIndex * numberOfColumns + columnIndex
     }
