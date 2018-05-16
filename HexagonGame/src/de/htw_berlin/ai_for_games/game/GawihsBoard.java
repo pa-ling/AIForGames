@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import lenz.htw.gawihs.Move;
+
 public class GawihsBoard {
 
     public enum FieldState {
@@ -42,8 +44,6 @@ public class GawihsBoard {
         return fieldsAround;
     }
 
-    // FIXME: Stack ist ein Problem. Wenn ein Spieler gekickt wird, müssen alle
-    // seine Steine entfernt werden, auch die blockierten.
     private final List<Stack<FieldState>> fields;
 
     public GawihsBoard() {
@@ -75,6 +75,23 @@ public class GawihsBoard {
         }
 
         getFieldState(4, 4).push(FieldState.DESTROYED);
+    }
+
+    public void applyMove(Move move) {
+        Stack<FieldState> sourceField = getFieldState(move.fromX, move.fromY);
+        if (sourceField.peek() == FieldState.UNOCCUPIED || sourceField.peek() == FieldState.DESTROYED) {
+            throw new IllegalStateException("SourceField does not contain a player stone!");
+        }
+
+        Stack<FieldState> targetField = getFieldState(move.toX, move.toY);
+        if (targetField.peek() == FieldState.DESTROYED) {
+            throw new IllegalStateException("TargetField ist destroyed!");
+        }
+
+        targetField.push(sourceField.pop());
+        if (sourceField.peek() == FieldState.UNOCCUPIED) {
+            sourceField.push(FieldState.DESTROYED);
+        }
     }
 
     /**
@@ -151,27 +168,10 @@ public class GawihsBoard {
      *            field to check
      * @param player
      *            player for which the check shall be performed
-     * @return {@code true} if the player can move otherwise {@code false}
+     * @return {@code true} if the player is on top otherwise {@code false}
      */
     public boolean isPlayerOnTopOfField(Field field, GawihsPlayer player) {
         return getFieldState(field.x, field.y).peek() == player.getPlayerNumber();
-    }
-
-    public void move(int x1, int y1, int x2, int y2) {
-        Stack<FieldState> sourceField = getFieldState(x1, y1);
-        if (sourceField.peek() == FieldState.UNOCCUPIED || sourceField.peek() == FieldState.DESTROYED) {
-            throw new IllegalStateException("SourceField does not contain a player stone!");
-        }
-
-        Stack<FieldState> targetField = getFieldState(x2, y2);
-        if (targetField.peek() == FieldState.DESTROYED) {
-            throw new IllegalStateException("TargetField ist destroyed!");
-        }
-
-        targetField.push(sourceField.pop());
-        if (sourceField.peek() == FieldState.UNOCCUPIED) {
-            sourceField.push(FieldState.DESTROYED);
-        }
     }
 
     public void print() {
@@ -184,11 +184,30 @@ public class GawihsBoard {
     }
 
     public void removePlayer(GawihsPlayer player) {
-        // TODO entweder positionen des playersteine übergeben oder Board nach
-        // übergebenem Enum-Wert durchsuchen
-        // playersteine entfernen, d.h. wenn Feld danach leer Feld destroyed, ansonsten
-        // bleibt anderer playerstein drauf
-        // Kann auch in player gemacht werden
+        for (Field field : player.getPlayerStonePositions()) {
+            Stack<FieldState> fieldState = getFieldState(field.x, field.y);
+            // two elements: unoccupied + playerStone
+            if (fieldState.size() == 2) {
+                // FIXME optional, remove?
+                fieldState.pop();
+                fieldState.push(FieldState.DESTROYED);
+                continue;
+            }
+            // three elements: unnoccupied + playerStone + enemy
+            // or unnoccupied + enemy + playerStone
+            // remove the top element - if we're lucky it's the player to remove and we can
+            // continue
+            FieldState topPlayer = fieldState.pop();
+            if (topPlayer == player.getPlayerNumber()) {
+                continue;
+            }
+
+            // the player to remove was not the top element so he has to be the second one
+            // on the stack
+            // remove the player from the stack and put the top player back on
+            fieldState.pop();
+            fieldState.push(topPlayer);
+        }
     }
 
 }
