@@ -1,6 +1,7 @@
 package de.htw_berlin.ai_for_games.game;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -12,60 +13,157 @@ public class GawihsBoard {
 
     public static final int SIZE = 9;
 
+    /**
+     * Returns {@link Field field objects} for the adjacent fields of a given center
+     * field. Does not check if the fields are occupied or destroyed.
+     *
+     * @param field
+     *            center field of the adjacent fields
+     * @return {@link List} containing {@link Field fields}. If there are no
+     *         available fields an empty list is returned.
+     */
+    public static List<Field> getFieldsAround(Field centerField) {
+        final List<Field> fieldsAround = new ArrayList<>();
+        fieldsAround.add(new Field(centerField.x - 1, centerField.y - 1));
+        fieldsAround.add(new Field(centerField.x, centerField.y - 1));
+        fieldsAround.add(new Field(centerField.x - 1, centerField.y));
+        fieldsAround.add(new Field(centerField.x + 1, centerField.y));
+        fieldsAround.add(new Field(centerField.x, centerField.y + 1));
+        fieldsAround.add(new Field(centerField.x + 1, centerField.y + 1));
+
+        Iterator<Field> itr = fieldsAround.iterator();
+        while (itr.hasNext()) {
+            Field field = itr.next();
+            if (field.x < 0 || field.x > 8 || field.y < 0 || field.y > 8) {
+                itr.remove();
+            }
+        }
+
+        return fieldsAround;
+    }
+
     // FIXME: Stack ist ein Problem. Wenn ein Spieler gekickt wird, müssen alle
     // seine Steine entfernt werden, auch die blockierten.
-    private final List<Stack<FieldState>> board;
+    private final List<Stack<FieldState>> fields;
 
     public GawihsBoard() {
-        this.board = new ArrayList<>(SIZE * SIZE);
+        this.fields = new ArrayList<>(SIZE * SIZE);
         for (int i = 0; i < SIZE * SIZE; i++) {
-            this.board.add(new Stack<>());
+            this.fields.add(new Stack<>());
         }
 
         // Set everything to unoccupied
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                getField(i, j).push(FieldState.UNOCCUPIED);
+                getFieldState(i, j).push(FieldState.UNOCCUPIED);
             }
         }
 
         // Set players
         for (int i = 0; i < 5; i++) {
-            getField(i, 0).push(FieldState.PLAYER_0);
-            getField(i, i + 4).push(FieldState.PLAYER_1);
-            getField(8, 8 - i).push(FieldState.PLAYER_2);
+            getFieldState(i, 0).push(FieldState.PLAYER_0);
+            getFieldState(i, i + 4).push(FieldState.PLAYER_1);
+            getFieldState(8, 8 - i).push(FieldState.PLAYER_2);
         }
 
         // Set destroyed areas
         for (int i = 0; i < 4; i++) {
             for (int j = i; j < 4; j++) {
-                getField(j + 5, i).push(FieldState.DESTROYED);
-                getField(i, j + 5).push(FieldState.DESTROYED);
+                getFieldState(j + 5, i).push(FieldState.DESTROYED);
+                getFieldState(i, j + 5).push(FieldState.DESTROYED);
             }
         }
 
-        getField(4, 4).push(FieldState.DESTROYED);
+        getFieldState(4, 4).push(FieldState.DESTROYED);
     }
 
-    public void deletePlayer() {
-        // TODO entweder positionen des playersteine übergeben oder Board nach
-        // übergebenem Enum-Wert durchsuchen
-        // playersteine entfernen, d.h. wenn Feld danach leer Feld destroyed, ansonsten
-        // bleibt anderer playerstein drauf
-        // Kann auch in player gemacht werden
+    /**
+     * Returns {@link Field field objects} for available adjacent fields of a given
+     * center field. Available means that the field is either unoccupied or occupied
+     * by just one player.
+     *
+     * @param field
+     *            center field of the adjacent fields
+     * @return {@link List} containing {@link Field fields}. If there are no
+     *         available fields an empty list is returned.
+     */
+    public List<Field> getAvailableFieldsAround(Field centerField) {
+        final List<Field> fields = getFieldsAround(centerField);
+        Iterator<Field> itr = fields.iterator();
+        while (itr.hasNext()) {
+            if (isFieldFullOrDestroyed(itr.next())) {
+                itr.remove();
+            }
+        }
+
+        return fields;
     }
 
-    public Stack<FieldState> getField(int x, int y) {
-        return this.board.get(y * SIZE + x); // rowIndex * numberOfColumns + columnIndex
+    /**
+     * Returns {@link Field field objects} for available adjacent fields of a given
+     * center field. A field is available for a player if it's either unoccupied or
+     * occupied by just one player but not by the player itself. This method is
+     * slightly optimized and performs it's check inside one loop.
+     *
+     * @param field
+     *            center field of the adjacent fields
+     * @param player
+     *            player for which the check shall be performed
+     * @return {@link List} containing {@link Field fields}. If there are no
+     *         available fields an empty list is returned
+     */
+    public List<Field> getAvailableFieldsForPlayerAround(Field centerField, GawihsPlayer player) {
+        final List<Field> fields = getFieldsAround(centerField);
+        Iterator<Field> itr = fields.iterator();
+        while (itr.hasNext()) {
+            Field field = itr.next();
+            if (isFieldFullOrDestroyed(field) || isPlayerOnTopOfField(field, player)) {
+                itr.remove();
+            }
+        }
+
+        return fields;
+    }
+
+    private Stack<FieldState> getFieldState(int x, int y) {
+        return this.fields.get(y * SIZE + x); // rowIndex * numberOfColumns + columnIndex
+    }
+
+    /**
+     * Checks if the given field is full or destroyed.
+     *
+     * @param field
+     *            field to check
+     * @return {@code true} if the field is occupied by more than two players or
+     *         destroyed otherwise {@code false}
+     */
+    public boolean isFieldFullOrDestroyed(Field field) {
+        Stack<FieldState> fieldStack = getFieldState(field.x, field.y);
+        // since the unoccupied state is also saved, full means that there are at least
+        // three elements on the stack: empty, player_x, player_y
+        return fieldStack.size() > 2 || fieldStack.peek() == FieldState.DESTROYED;
+    }
+
+    /**
+     * Checks if the given player is on top of the given field.
+     *
+     * @param field
+     *            field to check
+     * @param player
+     *            player for which the check shall be performed
+     * @return {@code true} if the player can move otherwise {@code false}
+     */
+    public boolean isPlayerOnTopOfField(Field field, GawihsPlayer player) {
+        return getFieldState(field.x, field.y).peek() == player.getPlayerNumber();
     }
 
     public void move(int x1, int y1, int x2, int y2) {
-        Stack<FieldState> sourceField = getField(x1, y1);
+        Stack<FieldState> sourceField = getFieldState(x1, y1);
         if (sourceField.peek() == FieldState.UNOCCUPIED || sourceField.peek() == FieldState.DESTROYED) {
             throw new IllegalStateException("SourceField does not contain a player stone!");
         }
 
-        Stack<FieldState> targetField = getField(x2, y2);
+        Stack<FieldState> targetField = getFieldState(x2, y2);
         if (targetField.peek() == FieldState.DESTROYED) {
             throw new IllegalStateException("TargetField ist destroyed!");
         }
@@ -76,13 +174,21 @@ public class GawihsBoard {
         }
     }
 
-    public void printBoard() {
+    public void print() {
         for (int j = SIZE - 1; j >= 0; j--) {
             for (int i = 0; i < SIZE; i++) {
-                System.out.print(getField(i, j).peek().toString() + "\t");
+                System.out.print(getFieldState(i, j).peek().toString() + "\t");
             }
             System.out.println("");
         }
+    }
+
+    public void removePlayer(GawihsPlayer player) {
+        // TODO entweder positionen des playersteine übergeben oder Board nach
+        // übergebenem Enum-Wert durchsuchen
+        // playersteine entfernen, d.h. wenn Feld danach leer Feld destroyed, ansonsten
+        // bleibt anderer playerstein drauf
+        // Kann auch in player gemacht werden
     }
 
 }

@@ -15,16 +15,16 @@ import lenz.htw.gawihs.net.NetworkClient;
 
 public class GawihsClient {
 
-    private static int getNextPlayerNumber(int currentPlayer) {
+    private static int getNextPlayerNumber(GawihsPlayer player) {
         // TODO: if currentPlayer == players.length
-        if (currentPlayer >= 2) {
+        int playerNumber = player.getPlayerNumberAsOrdinal();
+        if (playerNumber >= 2) {
             return 0;
         }
-        return currentPlayer + 1;
+        return playerNumber++;
     }
 
     public static void main(String[] args) {
-
         String host = args[0], name = args[1], logoPath = args[2];
         BufferedImage logo = null;
         try {
@@ -65,7 +65,7 @@ public class GawihsClient {
 
                     currentPlayer.applyMove(move);
                     board.move(move.fromX, move.fromY, move.toX, move.toY);
-                    currentPlayer = players.get(getNextPlayerNumber(currentPlayer.getPlayerNumberAsOrdinal()));
+                    currentPlayer = players.get(getNextPlayerNumber(currentPlayer));
                     System.out.println(name + " (" + playerNumber + ") received Move from (" + move.fromX + ","
                             + move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
                 }
