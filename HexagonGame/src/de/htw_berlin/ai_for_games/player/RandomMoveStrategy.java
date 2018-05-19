@@ -10,11 +10,12 @@ import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import lenz.htw.gawihs.Move;
 
-public class RandomMoveStrategy implements MoveStrategy {
-
-    private GawihsBoard board;
-
-    private GawihsPlayer player;
+/**
+ * A {@link MoveStrategy} which computes all possible moves and chooses one of
+ * them randomly.
+ *
+ */
+public class RandomMoveStrategy extends AbstractMoveStrategy {
 
     @Override
     public Move getBestMove() {
@@ -50,17 +51,6 @@ public class RandomMoveStrategy implements MoveStrategy {
         }
 
         return possibleMoves;
-    }
-
-    @Override
-    public void setBoard(GawihsBoard board) {
-        this.board = board;
-
-    }
-
-    @Override
-    public void setPlayer(GawihsPlayer player) {
-        this.player = player;
     }
 
 }
