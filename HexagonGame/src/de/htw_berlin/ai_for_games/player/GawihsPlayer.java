@@ -50,7 +50,8 @@ public class GawihsPlayer {
     public void applyMove(Move move) {
         Field fromField = new Field(move.fromX, move.fromY);
         if (!this.board.isPlayerOnTopOfField(fromField, this)) {
-            throw new IllegalStateException("We're not moving our stone!");
+            throw new IllegalStateException("We're not moving our stone! The element we try to move is "
+                    + this.board.getFieldTop(fromField) + " and we're " + this.playerNumber);
         }
         this.playerStonePositions.remove(fromField);
         this.playerStonePositions.add(new Field(move.toX, move.toY));

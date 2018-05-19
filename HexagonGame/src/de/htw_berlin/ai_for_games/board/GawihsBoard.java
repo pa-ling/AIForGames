@@ -148,6 +148,15 @@ public class GawihsBoard {
     }
 
     /**
+     * Returns the top element of the given {@link Field}.
+     *
+     * @return a {@link FieldState}
+     */
+    public FieldState getFieldTop(Field field) {
+        return getFieldState(field.x, field.y).peek();
+    }
+
+    /**
      * Checks if the given field is full or destroyed.
      *
      * @param field
