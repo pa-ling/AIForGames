@@ -1,4 +1,4 @@
-package de.htw_berlin.ai_for_games.game;
+package de.htw_berlin.ai_for_games.board;
 
 public class Field {
     public int x;

@@ -8,9 +8,9 @@ import java.util.Queue;
 
 import javax.imageio.ImageIO;
 
-import de.htw_berlin.ai_for_games.game.Field;
-import de.htw_berlin.ai_for_games.game.GawihsBoard;
-import de.htw_berlin.ai_for_games.game.GawihsPlayer;
+import de.htw_berlin.ai_for_games.board.Field;
+import de.htw_berlin.ai_for_games.board.GawihsBoard;
+import de.htw_berlin.ai_for_games.player.GawihsPlayer;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
 

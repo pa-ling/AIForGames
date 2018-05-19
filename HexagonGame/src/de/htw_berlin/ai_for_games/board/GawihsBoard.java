@@ -1,10 +1,11 @@
-package de.htw_berlin.ai_for_games.game;
+package de.htw_berlin.ai_for_games.board;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import de.htw_berlin.ai_for_games.player.GawihsPlayer;
 import lenz.htw.gawihs.Move;
 
 public class GawihsBoard {

@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import de.htw_berlin.ai_for_games.game.GawihsBoard;
-import de.htw_berlin.ai_for_games.game.GawihsPlayer;
+import de.htw_berlin.ai_for_games.board.GawihsBoard;
+import de.htw_berlin.ai_for_games.player.GawihsPlayer;
 import lenz.htw.gawihs.Move;
 
 class PlayerPerformanceTest {

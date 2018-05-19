@@ -1,4 +1,4 @@
-package de.htw_berlin.ai_for_games.game;
+package de.htw_berlin.ai_for_games.player;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,7 +8,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.htw_berlin.ai_for_games.game.GawihsBoard.FieldState;
+import de.htw_berlin.ai_for_games.board.Field;
+import de.htw_berlin.ai_for_games.board.GawihsBoard;
+import de.htw_berlin.ai_for_games.board.GawihsBoard.FieldState;
 import lenz.htw.gawihs.Move;
 
 public class GawihsPlayer {
