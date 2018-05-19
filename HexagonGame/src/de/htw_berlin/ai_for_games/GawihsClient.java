@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
+import de.htw_berlin.ai_for_games.player.FailAlwaysMoveStrategy;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
 import de.htw_berlin.ai_for_games.player.RandomMoveStrategy;
 import lenz.htw.gawihs.Move;
@@ -30,8 +31,8 @@ public class GawihsClient {
         NetworkClient client = new NetworkClient(host, name, logo);
         Queue<GawihsPlayer> players = new LinkedList<>();
         players.offer(new GawihsPlayer(0, new RandomMoveStrategy(), board));
-        players.offer(new GawihsPlayer(1, new RandomMoveStrategy(), board));
-        players.offer(new GawihsPlayer(2, new RandomMoveStrategy(), board));
+        players.offer(new GawihsPlayer(1, new FailAlwaysMoveStrategy(), board));
+        players.offer(new GawihsPlayer(2, new FailAlwaysMoveStrategy(), board));
 
         int playerNumber = client.getMyPlayerNumber();
         GawihsPlayer currentPlayer = players.poll();
@@ -43,7 +44,7 @@ public class GawihsClient {
             while (true) {
                 Move move = client.receiveMove();
                 if (move == null) {
-                    if (currentPlayer.getPlayerNumberAsOrdinal() != playerNumber) {
+                    while (currentPlayer.getPlayerNumberAsOrdinal() != playerNumber) {
                         System.out.println(
                                 "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
                         board.removePlayer(currentPlayer);
@@ -54,7 +55,7 @@ public class GawihsClient {
                     System.out.println(name + " (" + playerNumber + ") sent Move from (" + move.fromX + "," + move.fromY
                             + ") to (" + move.toX + "," + move.toY + ")\n");
                 } else {
-                    if (!board.isPlayerOnTopOfField(new Field(move.fromX, move.fromY), currentPlayer)) {
+                    while (!board.isPlayerOnTopOfField(new Field(move.fromX, move.fromY), currentPlayer)) {
                         System.out.println(
                                 "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
                         board.removePlayer(currentPlayer);
