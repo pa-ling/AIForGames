@@ -19,7 +19,11 @@ public class RandomMoveStrategy extends AbstractMoveStrategy {
 
     @Override
     public Move getBestMove() {
-        return getPossibleMoves().get(ThreadLocalRandom.current().nextInt(getPossibleMoves().size()));
+        int size = getPossibleMoves().size();
+        if (size == 0) {
+            return null;
+        }
+        return getPossibleMoves().get(ThreadLocalRandom.current().nextInt(size));
     }
 
     @Override
