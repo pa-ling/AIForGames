@@ -1,10 +1,7 @@
 package de.htw_berlin.ai_for_games.player;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,16 +32,24 @@ public class GawihsPlayer {
         return stream.collect(Collectors.toCollection(ArrayList::new));
     }
 
+    private final MoveStrategy moveStrategy;
+
     private final FieldState playerNumber;
 
     private final List<Field> playerStonePositions;
 
     private final GawihsBoard board;
 
-    public GawihsPlayer(int playerNumber, GawihsBoard board) {
+    public GawihsPlayer(int playerNumber, MoveStrategy moveStrategy, GawihsBoard board) {
+        // set up player
         this.playerNumber = FieldState.values()[playerNumber];
-        this.board = board;
         this.playerStonePositions = getStartingPositions(this.playerNumber);
+        this.board = board;
+
+        // set up move strategy
+        this.moveStrategy = moveStrategy;
+        this.moveStrategy.setBoard(board);
+        this.moveStrategy.setPlayer(this);
     }
 
     public void applyMove(Move move) {
@@ -69,42 +74,12 @@ public class GawihsPlayer {
         return this.playerStonePositions;
     }
 
-    private List<Move> getPossibleMoves() {
-        Set<Field> targetFields = new HashSet<>();
-
-        // get possible target fields
-        for (Field playerStone : this.playerStonePositions) {
-            targetFields.addAll(this.board.getAvailableFieldsForPlayerAround(playerStone, this));
-        }
-
-        // compute possible moves
-        // ein Zug ist möglich, wenn um das Zielfeld mindestens ein Spielerstein liegt
-        // und dieser Stein nicht der Stein ist, den wir gerade bewegen wollen
-        List<Move> possibleMoves = new ArrayList<>();
-        for (Field stoneToMove : this.playerStonePositions) {
-            if (!this.board.isPlayerOnTopOfField(stoneToMove, this)) {
-                continue;
-            }
-
-            for (Field targetField : targetFields) {
-                for (Field fieldAroundTarget : GawihsBoard.getFieldsAround(targetField)) {
-                    if (this.playerStonePositions.contains(fieldAroundTarget)
-                            && !stoneToMove.equals(fieldAroundTarget)) {
-                        possibleMoves.add(new Move(stoneToMove.x, stoneToMove.y, targetField.x, targetField.y));
-                    }
-                }
-            }
-        }
-
-        return possibleMoves;
-    }
-
     public Move move() {
-        List<Move> possibleMoves = getPossibleMoves();
-        if (possibleMoves.isEmpty()) {
+        final Move move = this.moveStrategy.getBestMove();
+        if (move == null) {
             throw new IllegalStateException(this.playerNumber + ": No moves are possible anymore!");
         }
 
-        return possibleMoves.get(ThreadLocalRandom.current().nextInt(possibleMoves.size()));
+        return move;
     }
 }

@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
+import de.htw_berlin.ai_for_games.player.RandomMoveStrategy;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
 
@@ -28,9 +29,9 @@ public class GawihsClient {
         GawihsBoard board = new GawihsBoard();
         NetworkClient client = new NetworkClient(host, name, logo);
         Queue<GawihsPlayer> players = new LinkedList<>();
-        players.offer(new GawihsPlayer(0, board));
-        players.offer(new GawihsPlayer(1, board));
-        players.offer(new GawihsPlayer(2, board));
+        players.offer(new GawihsPlayer(0, new RandomMoveStrategy(), board));
+        players.offer(new GawihsPlayer(1, new RandomMoveStrategy(), board));
+        players.offer(new GawihsPlayer(2, new RandomMoveStrategy(), board));
 
         int playerNumber = client.getMyPlayerNumber();
         GawihsPlayer currentPlayer = players.poll();

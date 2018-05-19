@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
+import de.htw_berlin.ai_for_games.player.RandomMoveStrategy;
 import lenz.htw.gawihs.Move;
 
 class PlayerPerformanceTest {
@@ -17,7 +18,7 @@ class PlayerPerformanceTest {
     @BeforeAll
     static void setup() {
         board = new GawihsBoard();
-        player1 = new GawihsPlayer(1, board);
+        player1 = new GawihsPlayer(1, new RandomMoveStrategy(), board);
     }
 
     @Test
