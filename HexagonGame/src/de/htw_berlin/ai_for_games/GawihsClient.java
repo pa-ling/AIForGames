@@ -63,6 +63,10 @@ public class GawihsClient {
                             + move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
                 }
             }
+        } catch (NullPointerException | IllegalStateException | IllegalArgumentException
+                | IndexOutOfBoundsException e) {
+            System.out.println(name + " (" + playerNumber + ") encountered an internal error:\n " + e + "\n");
+            e.printStackTrace();
         } catch (Exception e) {
             System.out.println(name + " (" + playerNumber + ") got kicked.\n Reason: " + e.getMessage() + "\n");
         }
