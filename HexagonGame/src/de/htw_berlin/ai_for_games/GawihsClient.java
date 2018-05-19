@@ -42,17 +42,21 @@ public class GawihsClient {
             while (true) {
                 Move move = client.receiveMove();
                 if (move == null) {
+                    if (currentPlayer.getPlayerNumberAsOrdinal() != playerNumber) {
+                        System.out.println(
+                                "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
+                        board.removePlayer(currentPlayer);
+                        currentPlayer = players.poll();
+                    }
                     move = currentPlayer.move();
                     client.sendMove(move);
                     System.out.println(name + " (" + playerNumber + ") sent Move from (" + move.fromX + "," + move.fromY
                             + ") to (" + move.toX + "," + move.toY + ")\n");
                 } else {
-                    // FIXME: test reaction to player dying
                     if (!board.isPlayerOnTopOfField(new Field(move.fromX, move.fromY), currentPlayer)) {
-                        System.out.println(currentPlayer + " will be removed.");
+                        System.out.println(
+                                "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
                         board.removePlayer(currentPlayer);
-                        // delete player by getting the next player without putting the currentPlayer on
-                        // the back of the queue
                         currentPlayer = players.poll();
                     }
                     currentPlayer.applyMove(move);
