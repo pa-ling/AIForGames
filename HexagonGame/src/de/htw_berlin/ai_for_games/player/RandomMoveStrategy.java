@@ -30,20 +30,20 @@ public class RandomMoveStrategy extends AbstractMoveStrategy {
     public List<Move> getPossibleMoves() {
         Set<Field> targetFields = new HashSet<>();
 
-        // get possible target fields
+        List<Field> availablePlayerStones = new ArrayList<>();
+
+        // get possible target fields and remove unavailable player stones
         for (Field playerStone : this.player.getPlayerStonePositions()) {
+            if (!this.board.isPlayerOnTopOfField(playerStone, this.player)) {
+                continue;
+            }
+            availablePlayerStones.add(playerStone);
             targetFields.addAll(this.board.getAvailableFieldsForPlayerAround(playerStone, this.player));
         }
 
         // compute possible moves
-        // ein Zug ist möglich, wenn um das Zielfeld mindestens ein Spielerstein liegt
-        // und dieser Stein nicht der Stein ist, den wir gerade bewegen wollen
         List<Move> possibleMoves = new ArrayList<>();
-        for (Field stoneToMove : this.player.getPlayerStonePositions()) {
-            if (!this.board.isPlayerOnTopOfField(stoneToMove, this.player)) {
-                continue;
-            }
-
+        for (Field stoneToMove : availablePlayerStones) {
             for (Field targetField : targetFields) {
                 for (Field fieldAroundTarget : GawihsBoard.getFieldsAround(targetField)) {
                     if (this.player.getPlayerStonePositions().contains(fieldAroundTarget)
