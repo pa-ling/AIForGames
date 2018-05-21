@@ -34,8 +34,7 @@ public abstract class AbstractMoveStrategy implements MoveStrategy {
         for (Field stoneToMove : availablePlayerStones) {
             for (Field targetField : targetFields) {
                 for (Field fieldAroundTarget : GawihsBoard.getFieldsAround(targetField)) {
-                    if (this.player.getPlayerStonePositions().contains(fieldAroundTarget)
-                            && !stoneToMove.equals(fieldAroundTarget)) {
+                    if (availablePlayerStones.contains(fieldAroundTarget) && !stoneToMove.equals(fieldAroundTarget)) {
                         possibleMoves.add(new Move(stoneToMove.x, stoneToMove.y, targetField.x, targetField.y));
                     }
                 }
