@@ -10,9 +10,8 @@ import javax.imageio.ImageIO;
 
 import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
-import de.htw_berlin.ai_for_games.player.FailAlwaysMoveStrategy;
+import de.htw_berlin.ai_for_games.player.AssessedMoveStrategy;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
-import de.htw_berlin.ai_for_games.player.RandomMoveStrategy;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
 
@@ -30,9 +29,14 @@ public class GawihsClient {
         GawihsBoard board = new GawihsBoard();
         NetworkClient client = new NetworkClient(host, name, logo);
         Queue<GawihsPlayer> players = new LinkedList<>();
-        players.offer(new GawihsPlayer(0, new RandomMoveStrategy(), board));
-        players.offer(new GawihsPlayer(1, new FailAlwaysMoveStrategy(), board));
-        players.offer(new GawihsPlayer(2, new FailAlwaysMoveStrategy(), board));
+
+        // players.offer(new GawihsPlayer(0, new RandomMoveStrategy(), board));
+        // players.offer(new GawihsPlayer(1, new RandomMoveStrategy(), board));
+        // players.offer(new GawihsPlayer(2, new RandomMoveStrategy(), board));
+
+        players.offer(new GawihsPlayer(0, new AssessedMoveStrategy(), board));
+        players.offer(new GawihsPlayer(1, new AssessedMoveStrategy(), board));
+        players.offer(new GawihsPlayer(2, new AssessedMoveStrategy(), board));
 
         int playerNumber = client.getMyPlayerNumber();
         GawihsPlayer currentPlayer = players.poll();
@@ -71,10 +75,10 @@ public class GawihsClient {
             }
         } catch (NullPointerException | IllegalStateException | IllegalArgumentException
                 | IndexOutOfBoundsException e) {
-            System.out.println(name + " (" + playerNumber + ") encountered an internal error:\n " + e + "\n");
+            System.err.println(name + " (" + playerNumber + ") encountered an internal error:\n " + e + "\n");
             e.printStackTrace();
         } catch (Exception e) {
-            System.out.println(name + " (" + playerNumber + ") got kicked.\n Reason: " + e.getMessage() + "\n");
+            System.err.println(name + " (" + playerNumber + ") got kicked.\n Reason: " + e.getMessage() + "\n");
         }
     }
 
