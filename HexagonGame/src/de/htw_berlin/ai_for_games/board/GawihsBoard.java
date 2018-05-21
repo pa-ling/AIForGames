@@ -78,15 +78,24 @@ public class GawihsBoard {
         getFieldState(4, 4).push(FieldState.DESTROYED);
     }
 
+    public GawihsBoard(GawihsBoard sourceBoard) {
+        this.fields = new ArrayList<>(SIZE * SIZE);
+        for (Stack<FieldState> currentStack : sourceBoard.fields) {
+            this.fields.add((Stack<FieldState>) currentStack.clone());
+        }
+
+    }
+
     public void applyMove(Move move) {
         Stack<FieldState> sourceField = getFieldState(move.fromX, move.fromY);
         if (sourceField.peek() == FieldState.UNOCCUPIED || sourceField.peek() == FieldState.DESTROYED) {
-            throw new IllegalStateException("SourceField does not contain a player stone!");
+            throw new IllegalStateException(
+                    "SourceField (" + move.fromX + "," + move.fromY + ") does not contain a player stone!");
         }
 
         Stack<FieldState> targetField = getFieldState(move.toX, move.toY);
         if (targetField.peek() == FieldState.DESTROYED) {
-            throw new IllegalStateException("TargetField ist destroyed!");
+            throw new IllegalStateException("TargetField (" + move.toX + "," + move.toY + ") is destroyed!");
         }
 
         targetField.push(sourceField.pop());
