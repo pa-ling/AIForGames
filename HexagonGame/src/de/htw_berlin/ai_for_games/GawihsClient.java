@@ -12,9 +12,9 @@ import javax.imageio.ImageIO;
 
 import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
-import de.htw_berlin.ai_for_games.player.AssessedMoveStrategy;
 import de.htw_berlin.ai_for_games.player.GawihsAIPlayer;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
+import de.htw_berlin.ai_for_games.player.strategies.AssessedMoveStrategy;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
 

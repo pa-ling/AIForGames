@@ -32,16 +32,15 @@ public class GawihsClientTest {
     private final String[] NAMES = { "Alice", "Bob", "Carol" };
     private final boolean AUTOMATIC_GAME_SERVER_STARTUP = true;
 
-    private final String LOGO_PATH = "HexagonGame/res/claptrap.png";
+    private final String LOGO_PATH = "res/claptrap.png";
 
     @Test
     public void testGame() throws InterruptedException, IOException {
         // start server
         Optional<Process> process = Optional.empty();
         if (this.AUTOMATIC_GAME_SERVER_STARTUP) {
-            process = Optional
-                    .of(new ProcessBuilder("java", "-Djava.library.path=lib/native", "-jar", "gawihs.jar", "640", "480")
-                            .directory(new File("HexagonGame/lib/")).inheritIO().start());
+            process = Optional.of(new ProcessBuilder("java", "-Djava.library.path=lib/native", "-jar", "gawihs.jar",
+                    "800", "600", "5", "showcoords").directory(new File("lib")).inheritIO().start());
             Thread.sleep(1000);
         }
 

@@ -1,4 +1,4 @@
-package de.htw_berlin.ai_for_games.player;
+package de.htw_berlin.ai_for_games.player.strategies;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
+import de.htw_berlin.ai_for_games.player.AbstractMoveStrategy;
+import de.htw_berlin.ai_for_games.player.AssessmentConfig;
 import lenz.htw.gawihs.Move;
 
 public class AssessedMoveStrategy extends AbstractMoveStrategy {

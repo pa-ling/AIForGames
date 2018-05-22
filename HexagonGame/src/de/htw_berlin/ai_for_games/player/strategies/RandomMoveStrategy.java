@@ -1,7 +1,9 @@
-package de.htw_berlin.ai_for_games.player;
+package de.htw_berlin.ai_for_games.player.strategies;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import de.htw_berlin.ai_for_games.player.AbstractMoveStrategy;
+import de.htw_berlin.ai_for_games.player.MoveStrategy;
 import lenz.htw.gawihs.Move;
 
 /**

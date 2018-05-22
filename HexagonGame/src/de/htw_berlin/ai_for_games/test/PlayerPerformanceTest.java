@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.GawihsAIPlayer;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
-import de.htw_berlin.ai_for_games.player.RandomMoveStrategy;
+import de.htw_berlin.ai_for_games.player.strategies.RandomMoveStrategy;
 import lenz.htw.gawihs.Move;
 
 class PlayerPerformanceTest {
