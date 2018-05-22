@@ -39,7 +39,6 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
     }
 
     private int assessBoard(GawihsBoard board, GawihsPlayer player) {
-
         // check for win
         // check for loose
         int score = 0;
@@ -48,8 +47,12 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
                 + board.getUnoccupiedFieldsCount() // Anzahl der noch leeren Felder
                 + player.getAvailablePlayerStonePositions().size()// Anzahl blockierter eigener Steine
                 + getPossibleMoves(board, player).size(); // mögliche Züge
-        // Anzahl blockierter gegnerischer Steine?
-        // mögliche Züge der Gegner?
+
+        for (GawihsPlayer enemy : this.enemies) {
+            score -= enemy.getAvailablePlayerStonePositions().size(); // Anzahl bewegbarer gegnerischer Steine
+            score -= getPossibleMoves(board, enemy).size(); // mögliche Züge der Gegner
+        }
+
         return score;
     }
 
