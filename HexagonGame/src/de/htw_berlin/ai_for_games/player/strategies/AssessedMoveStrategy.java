@@ -10,7 +10,6 @@ import com.google.gson.GsonBuilder;
 
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.AbstractMoveStrategy;
-import de.htw_berlin.ai_for_games.player.AssessmentConfig;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
 import lenz.htw.gawihs.Move;
 
@@ -22,6 +21,9 @@ import lenz.htw.gawihs.Move;
  *
  */
 public class AssessedMoveStrategy extends AbstractMoveStrategy {
+    private class AssessmentConfig {
+        public int multiplier;
+    }
 
     private AssessmentConfig config;
 
