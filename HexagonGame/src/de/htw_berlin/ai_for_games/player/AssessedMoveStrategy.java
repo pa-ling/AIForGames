@@ -32,6 +32,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
     }
 
     private int assessBoard(GawihsBoard board) {
+
         // check for win
         // check for loose
         // Anzahl der Gegner?

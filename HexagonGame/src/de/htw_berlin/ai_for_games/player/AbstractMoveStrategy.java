@@ -14,6 +14,8 @@ public abstract class AbstractMoveStrategy implements MoveStrategy {
     protected GawihsBoard board;
     protected GawihsPlayer player;
 
+    protected List<GawihsPlayer> enemies;
+
     @Override
     public List<Move> getPossibleMoves() {
         Set<Field> targetFields = new HashSet<>();
@@ -47,6 +49,11 @@ public abstract class AbstractMoveStrategy implements MoveStrategy {
     @Override
     public void setBoard(GawihsBoard board) {
         this.board = board;
+    }
+
+    @Override
+    public void setEnemies(List<GawihsPlayer> enemies) {
+
     }
 
     @Override

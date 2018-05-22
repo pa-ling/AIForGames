@@ -3,7 +3,6 @@ package de.htw_berlin.ai_for_games.player;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import lenz.htw.gawihs.Move;
 
 /**
@@ -11,7 +10,7 @@ import lenz.htw.gawihs.Move;
  * any {@link GawihsPlayer} using it fail.
  *
  */
-public class FailAlwaysMoveStrategy implements MoveStrategy {
+public class FailAlwaysMoveStrategy extends AbstractMoveStrategy {
 
     @Override
     public Move getBestMove() {
@@ -21,16 +20,6 @@ public class FailAlwaysMoveStrategy implements MoveStrategy {
     @Override
     public List<Move> getPossibleMoves() {
         return new ArrayList<>();
-    }
-
-    @Override
-    public void setBoard(GawihsBoard board) {
-        // not needed for this strategy
-    }
-
-    @Override
-    public void setPlayer(GawihsPlayer player) {
-        // not needed for this strategy
     }
 
 }

@@ -12,7 +12,7 @@ import lenz.htw.gawihs.Move;
  * Interface for all move strategies.
  *
  */
-interface MoveStrategy {
+public interface MoveStrategy {
 
     /**
      * Returns the best move possible according to the strategy implemented.
@@ -37,6 +37,8 @@ interface MoveStrategy {
      *            board to use
      */
     public void setBoard(GawihsBoard board);
+
+    public void setEnemies(List<GawihsPlayer> enemies);
 
     /**
      * Set the player on which the strategy shall be used.

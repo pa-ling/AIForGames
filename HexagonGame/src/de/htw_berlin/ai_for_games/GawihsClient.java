@@ -3,7 +3,9 @@ package de.htw_berlin.ai_for_games;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import javax.imageio.ImageIO;
@@ -11,6 +13,7 @@ import javax.imageio.ImageIO;
 import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.AssessedMoveStrategy;
+import de.htw_berlin.ai_for_games.player.GawihsAIPlayer;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
@@ -26,19 +29,39 @@ public class GawihsClient {
             System.err.println("There was a problem loading the logo.");
         }
 
-        GawihsBoard board = new GawihsBoard();
+        final GawihsBoard board = new GawihsBoard();
         NetworkClient client = new NetworkClient(host, name, logo);
         Queue<GawihsPlayer> players = new LinkedList<>();
-
-        // players.offer(new GawihsPlayer(0, new RandomMoveStrategy(), board));
-        // players.offer(new GawihsPlayer(1, new RandomMoveStrategy(), board));
-        // players.offer(new GawihsPlayer(2, new RandomMoveStrategy(), board));
-
-        players.offer(new GawihsPlayer(0, new AssessedMoveStrategy(), board));
-        players.offer(new GawihsPlayer(1, new AssessedMoveStrategy(), board));
-        players.offer(new GawihsPlayer(2, new AssessedMoveStrategy(), board));
+        List<GawihsPlayer> enemies = new ArrayList<>();
 
         int playerNumber = client.getMyPlayerNumber();
+        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, new AssessedMoveStrategy(), board);
+
+        if (playerNumber == 0) {
+            players.offer(ourPlayer);
+        } else {
+            GawihsPlayer enemy = new GawihsPlayer(0, board);
+            players.offer(enemy);
+            enemies.add(enemy);
+        }
+
+        if (playerNumber == 1) {
+            players.offer(ourPlayer);
+        } else {
+            GawihsPlayer enemy = new GawihsPlayer(1, board);
+            players.offer(enemy);
+            enemies.add(enemy);
+        }
+
+        if (playerNumber == 2) {
+            players.offer(ourPlayer);
+        } else {
+            GawihsPlayer enemy = new GawihsPlayer(2, board);
+            players.offer(enemy);
+            enemies.add(enemy);
+        }
+
+        ourPlayer.setEnemies(enemies);
         GawihsPlayer currentPlayer = players.poll();
 
         // client.getTimeLimitInSeconds();
@@ -52,6 +75,7 @@ public class GawihsClient {
                         System.out.println(
                                 "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
                         board.removePlayer(currentPlayer);
+                        ourPlayer.removeEnemy(currentPlayer);
                         currentPlayer = players.poll();
                     }
                     move = currentPlayer.move();
@@ -63,6 +87,7 @@ public class GawihsClient {
                         System.out.println(
                                 "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
                         board.removePlayer(currentPlayer);
+                        ourPlayer.removeEnemy(currentPlayer);
                         currentPlayer = players.poll();
                     }
                     currentPlayer.applyMove(move);
