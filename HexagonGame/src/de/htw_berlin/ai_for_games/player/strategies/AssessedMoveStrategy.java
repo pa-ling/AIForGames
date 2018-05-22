@@ -12,6 +12,7 @@ import com.google.gson.GsonBuilder;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.AbstractMoveStrategy;
 import de.htw_berlin.ai_for_games.player.AssessmentConfig;
+import de.htw_berlin.ai_for_games.player.GawihsPlayer;
 import lenz.htw.gawihs.Move;
 
 public class AssessedMoveStrategy extends AbstractMoveStrategy {
@@ -33,17 +34,19 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
         System.out.println(this.config.multiplier);
     }
 
-    private int assessBoard(GawihsBoard board) {
+    private int assessBoard(GawihsBoard board, GawihsPlayer player) {
 
         // check for win
         // check for loose
-        // Anzahl der Gegner?
-        // Anzahl der noch leeren Felder?
-        // Anzahl blockierter eigener Steine?
+        int score = 0;
+
+        score += this.enemies.size() // Anzahl der Gegner
+                + board.unoccupiedFieldsCount() // Anzahl der noch leeren Felder
+                + player.getAvailablePlayerStonePositions().size()// Anzahl blockierter eigener Steine
+                + getPossibleMoves(board, player).size(); // mögliche Züge
         // Anzahl blockierter gegnerischer Steine?
-        // mögliche Züge?
         // mögliche Züge der Gegner?
-        return 0;
+        return score;
     }
 
     @Override
@@ -58,7 +61,9 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
         for (Move possibleMove : possibleMoves) {
             GawihsBoard boardWithAppliedMove = new GawihsBoard(this.board);
             boardWithAppliedMove.applyMove(possibleMove);
-            int assessment = assessBoard(boardWithAppliedMove);
+            GawihsPlayer playerWithAppliedMove = new GawihsPlayer(this.player);
+            playerWithAppliedMove.applyMove(possibleMove);
+            int assessment = assessBoard(boardWithAppliedMove, playerWithAppliedMove);
             if (assessment > bestAssessment) {
                 bestMove = possibleMove;
                 bestAssessment = assessment;

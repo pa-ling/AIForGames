@@ -38,6 +38,15 @@ public class GawihsPlayer {
 
     private final GawihsBoard board;
 
+    public GawihsPlayer(GawihsPlayer sourcePlayer) {
+        this.playerNumber = sourcePlayer.playerNumber;
+        this.board = new GawihsBoard(sourcePlayer.board);
+        this.playerStonePositions = new ArrayList<>();
+        for (Field field : sourcePlayer.playerStonePositions) {
+            this.playerStonePositions.add(field);
+        }
+    }
+
     public GawihsPlayer(int playerNumber, GawihsBoard board) {
         // set up player
         this.playerNumber = FieldState.values()[playerNumber];
@@ -53,6 +62,20 @@ public class GawihsPlayer {
         }
         this.playerStonePositions.remove(fromField);
         this.playerStonePositions.add(new Field(move.toX, move.toY));
+    }
+
+    public List<Field> getAvailablePlayerStonePositions() {
+        List<Field> availablePlayerStones = new ArrayList<>();
+
+        // get possible target fields and remove unavailable player stones
+        for (Field playerStone : this.playerStonePositions) {
+            if (!this.board.isPlayerOnTopOfField(playerStone, this)) {
+                continue;
+            }
+            availablePlayerStones.add(playerStone);
+        }
+
+        return availablePlayerStones;
     }
 
     public FieldState getPlayerNumber() {

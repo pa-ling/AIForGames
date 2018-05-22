@@ -11,24 +11,14 @@ import lenz.htw.gawihs.Move;
 
 public abstract class AbstractMoveStrategy implements MoveStrategy {
 
-    protected GawihsBoard board;
-    protected GawihsPlayer player;
-
-    protected List<GawihsPlayer> enemies;
-
-    @Override
-    public List<Move> getPossibleMoves() {
+    public static List<Move> getPossibleMoves(GawihsBoard board, GawihsPlayer player) {
         Set<Field> targetFields = new HashSet<>();
 
-        List<Field> availablePlayerStones = new ArrayList<>();
+        List<Field> availablePlayerStones = player.getAvailablePlayerStonePositions();
 
         // get possible target fields and remove unavailable player stones
-        for (Field playerStone : this.player.getPlayerStonePositions()) {
-            if (!this.board.isPlayerOnTopOfField(playerStone, this.player)) {
-                continue;
-            }
-            availablePlayerStones.add(playerStone);
-            targetFields.addAll(this.board.getAvailableFieldsForPlayerAround(playerStone, this.player));
+        for (Field playerStone : availablePlayerStones) {
+            targetFields.addAll(board.getAvailableFieldsForPlayerAround(playerStone, player));
         }
 
         // compute possible moves
@@ -46,6 +36,17 @@ public abstract class AbstractMoveStrategy implements MoveStrategy {
         return possibleMoves;
     }
 
+    protected GawihsBoard board;
+
+    protected GawihsPlayer player;
+
+    protected List<GawihsPlayer> enemies;
+
+    @Override
+    public List<Move> getPossibleMoves() {
+        return getPossibleMoves(this.board, this.player);
+    }
+
     @Override
     public void setBoard(GawihsBoard board) {
         this.board = board;
@@ -53,7 +54,7 @@ public abstract class AbstractMoveStrategy implements MoveStrategy {
 
     @Override
     public void setEnemies(List<GawihsPlayer> enemies) {
-
+        this.enemies = enemies;
     }
 
     @Override
