@@ -15,6 +15,13 @@ import de.htw_berlin.ai_for_games.player.AssessmentConfig;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
 import lenz.htw.gawihs.Move;
 
+/**
+ * Chooses the best possible move by calculating all possible boards, assessing
+ * them and choosing the move which lead to the board with the best score.
+ *
+ * @author paling
+ *
+ */
 public class AssessedMoveStrategy extends AbstractMoveStrategy {
 
     private AssessmentConfig config;

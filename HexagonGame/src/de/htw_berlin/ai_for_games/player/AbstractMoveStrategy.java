@@ -11,7 +11,18 @@ import lenz.htw.gawihs.Move;
 
 public abstract class AbstractMoveStrategy implements MoveStrategy {
 
-    public static List<Move> getPossibleMoves(GawihsBoard board, GawihsPlayer player) {
+    /**
+     * Returns a list of all possible moves for the given player and board
+     * configuration. Imposes no restrictions expect the ones according to the rules
+     *
+     * @param board
+     *            board configuration to check for possible moves
+     * @param player
+     *            player to calculate possible moves for
+     * @return a {@link List} of {@link Move Moves} or an empty list if no move is
+     *         possible anymore
+     */
+    protected static List<Move> getPossibleMoves(GawihsBoard board, GawihsPlayer player) {
         Set<Field> targetFields = new HashSet<>();
 
         List<Field> availablePlayerStones = player.getAvailablePlayerStonePositions();

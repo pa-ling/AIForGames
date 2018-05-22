@@ -38,6 +38,12 @@ public interface MoveStrategy {
      */
     public void setBoard(GawihsBoard board);
 
+    /**
+     * Set the enemies which shall be used during assessment.
+     *
+     * @param enemies
+     *            enemies to consider
+     */
     public void setEnemies(List<GawihsPlayer> enemies);
 
     /**
