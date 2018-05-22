@@ -166,6 +166,22 @@ public class GawihsBoard {
     }
 
     /**
+     * Returns the number of unoccupied fields of this board.
+     *
+     * @return an int between zero and the maximum number of fields of this board
+     */
+    public int getUnoccupiedFieldsCount() {
+        int count = 0;
+        for (Stack<FieldState> fieldStack : this.fields) {
+            if (fieldStack.peek() == FieldState.UNOCCUPIED) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
      * Checks if the given field is full or destroyed.
      *
      * @param field
@@ -227,20 +243,6 @@ public class GawihsBoard {
             fieldState.pop();
             fieldState.push(topPlayer);
         }
-    }
-
-    public int unoccupiedFieldsCount() {
-        int count = 0;
-
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (getFieldState(i, j).peek() == FieldState.UNOCCUPIED) {
-                    count++;
-                }
-            }
-        }
-
-        return count;
     }
 
 }

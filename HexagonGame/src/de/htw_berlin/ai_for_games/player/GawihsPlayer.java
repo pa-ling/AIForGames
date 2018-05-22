@@ -16,17 +16,17 @@ public class GawihsPlayer {
         Stream<Field> stream;
 
         switch (player) {
-        case PLAYER_0:
-            stream = Stream.of(new Field(0, 0), new Field(1, 0), new Field(2, 0), new Field(3, 0), new Field(4, 0));
-            break;
-        case PLAYER_1:
-            stream = Stream.of(new Field(0, 4), new Field(1, 5), new Field(2, 6), new Field(3, 7), new Field(4, 8));
-            break;
-        case PLAYER_2:
-            stream = Stream.of(new Field(8, 4), new Field(8, 5), new Field(8, 6), new Field(8, 7), new Field(8, 8));
-            break;
-        default:
-            return new ArrayList<>();
+            case PLAYER_0:
+                stream = Stream.of(new Field(0, 0), new Field(1, 0), new Field(2, 0), new Field(3, 0), new Field(4, 0));
+                break;
+            case PLAYER_1:
+                stream = Stream.of(new Field(0, 4), new Field(1, 5), new Field(2, 6), new Field(3, 7), new Field(4, 8));
+                break;
+            case PLAYER_2:
+                stream = Stream.of(new Field(8, 4), new Field(8, 5), new Field(8, 6), new Field(8, 7), new Field(8, 8));
+                break;
+            default:
+                return new ArrayList<>();
         }
 
         return stream.collect(Collectors.toCollection(ArrayList::new));
@@ -69,10 +69,9 @@ public class GawihsPlayer {
 
         // get possible target fields and remove unavailable player stones
         for (Field playerStone : this.playerStonePositions) {
-            if (!this.board.isPlayerOnTopOfField(playerStone, this)) {
-                continue;
+            if (this.board.isPlayerOnTopOfField(playerStone, this)) {
+                availablePlayerStones.add(playerStone);
             }
-            availablePlayerStones.add(playerStone);
         }
 
         return availablePlayerStones;
@@ -91,6 +90,6 @@ public class GawihsPlayer {
     }
 
     public Move move() {
-        throw new IllegalStateException("This method is not implemented here.");
+        throw new UnsupportedOperationException("This method is not implemented here.");
     }
 }

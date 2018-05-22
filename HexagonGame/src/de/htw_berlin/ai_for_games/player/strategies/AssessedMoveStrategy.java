@@ -1,10 +1,9 @@
 package de.htw_berlin.ai_for_games.player.strategies;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,14 +26,10 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
     private AssessmentConfig config;
 
     public AssessedMoveStrategy() {
-        File configFile = new File("res/config.json");
-        Reader configReader;
-        try {
-            configReader = new FileReader(configFile);
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            this.config = gson.fromJson(configReader, AssessmentConfig.class);
-        } catch (FileNotFoundException e) {
+        try (Reader reader = new FileReader(new File("res/config.json"))) {
+            Gson gson = new GsonBuilder().create();
+            this.config = gson.fromJson(reader, AssessmentConfig.class);
+        } catch (IOException e) {
             this.config = new AssessmentConfig();
             e.printStackTrace();
         }
@@ -48,7 +43,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
         int score = 0;
 
         score += this.enemies.size() // Anzahl der Gegner
-                + board.unoccupiedFieldsCount() // Anzahl der noch leeren Felder
+                + board.getUnoccupiedFieldsCount() // Anzahl der noch leeren Felder
                 + player.getAvailablePlayerStonePositions().size()// Anzahl blockierter eigener Steine
                 + getPossibleMoves(board, player).size(); // mögliche Züge
         // Anzahl blockierter gegnerischer Steine?
@@ -58,18 +53,15 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
 
     @Override
     public Move getBestMove() {
-        List<Move> possibleMoves = getPossibleMoves();
-        if (possibleMoves.size() == 0) {
-            return null;
-        }
-
         Move bestMove = null;
         int bestAssessment = Integer.MIN_VALUE;
-        for (Move possibleMove : possibleMoves) {
-            GawihsBoard boardWithAppliedMove = new GawihsBoard(this.board);
+        for (Move possibleMove : getPossibleMoves()) {
+            final GawihsBoard boardWithAppliedMove = new GawihsBoard(this.board);
             boardWithAppliedMove.applyMove(possibleMove);
-            GawihsPlayer playerWithAppliedMove = new GawihsPlayer(this.player);
+
+            final GawihsPlayer playerWithAppliedMove = new GawihsPlayer(this.player);
             playerWithAppliedMove.applyMove(possibleMove);
+
             int assessment = assessBoard(boardWithAppliedMove, playerWithAppliedMove);
             if (assessment > bestAssessment) {
                 bestMove = possibleMove;
