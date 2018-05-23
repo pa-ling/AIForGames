@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,6 +22,7 @@ import lenz.htw.gawihs.Move;
  *
  */
 public class AssessedMoveStrategy extends AbstractMoveStrategy {
+
     private class AssessmentConfig {
         public int multiplier;
     }
@@ -38,7 +40,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
         System.out.println(this.config.multiplier);
     }
 
-    private int assessBoard(GawihsBoard board, GawihsPlayer player) {
+    private int assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
         // check for win
         // check for loose
         int score = 0;
@@ -48,7 +50,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
                 + player.getAvailablePlayerStonePositions().size()// Anzahl blockierter eigener Steine
                 + getPossibleMoves(board, player).size(); // mögliche Züge
 
-        for (GawihsPlayer enemy : this.enemies) {
+        for (GawihsPlayer enemy : enemies) {
             score -= enemy.getAvailablePlayerStonePositions().size(); // Anzahl bewegbarer gegnerischer Steine
             score -= getPossibleMoves(board, enemy).size(); // mögliche Züge der Gegner
         }
@@ -67,7 +69,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
             final GawihsPlayer playerWithAppliedMove = new GawihsPlayer(this.player);
             playerWithAppliedMove.applyMove(possibleMove);
 
-            int assessment = assessBoard(boardWithAppliedMove, playerWithAppliedMove);
+            int assessment = assessBoard(boardWithAppliedMove, playerWithAppliedMove, this.enemies);
             if (assessment > bestAssessment) {
                 bestMove = possibleMove;
                 bestAssessment = assessment;
