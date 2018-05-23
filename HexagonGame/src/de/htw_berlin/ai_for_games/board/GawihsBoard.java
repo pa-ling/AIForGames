@@ -230,16 +230,17 @@ public class GawihsBoard {
             }
             // three elements: unnoccupied + playerStone + enemy
             // or unnoccupied + enemy + playerStone
-            // remove the top element - if we're lucky it's the player to remove and we can
-            // continue
-            FieldState topPlayer = fieldState.pop();
+            // look at the top element - if it's the player to remove we leave it there
+            // because of the rules of the game
+            FieldState topPlayer = fieldState.peek();
             if (topPlayer == player.getPlayerNumber()) {
                 continue;
             }
 
             // the player to remove was not the top element so he has to be the second one
             // on the stack
-            // remove the player from the stack and put the top player back on
+            // remove both stones from the stack and put the top player back on
+            fieldState.pop();
             fieldState.pop();
             fieldState.push(topPlayer);
         }
