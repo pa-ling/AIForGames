@@ -50,14 +50,20 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
     }
 
     private int assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
-        // check for win?
-        // check for loose?
-        int score = 0;
+        if (enemies.isEmpty()) {
+            return Integer.MAX_VALUE; // win
+        }
 
+        int possibleMoves = getPossibleMoves(board, player).size();
+        if (possibleMoves == 0) {
+            return Integer.MIN_VALUE; // loose
+        }
+
+        int score = 0;
         // + empty fields + available player stones + possible moves
         score += this.config.unoccupiedFieldsMultiplier * board.getUnoccupiedFieldsCount()
                 + this.config.playerStonesMultiplier * player.getAvailablePlayerStonePositions().size()
-                + this.config.possibleMovesMultiplier * getPossibleMoves(board, player).size();
+                + this.config.possibleMovesMultiplier * possibleMoves;
 
         // - enemies - enemy stones - possible moves of enemies
         for (GawihsPlayer enemy : enemies) {
