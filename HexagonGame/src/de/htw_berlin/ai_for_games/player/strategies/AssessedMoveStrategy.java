@@ -42,17 +42,17 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
                 + this.config.getEnemyPossibleMovesMultiplier());
     }
 
-    protected int assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
+    protected long assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
         if (enemies.isEmpty()) {
-            return Integer.MAX_VALUE; // win
+            return Long.MAX_VALUE; // win
         }
 
         int possibleMoves = getPossibleMoves(board, player).size();
         if (possibleMoves == 0) {
-            return Integer.MIN_VALUE; // loose
+            return Long.MIN_VALUE; // loose
         }
 
-        int score = 0;
+        long score = 0;
         // + empty fields + available player stones + possible moves
         score += this.config.getUnoccupiedFieldsMultiplier() * board.getUnoccupiedFieldsCount()
                 + this.config.getPlayerStonesMultiplier() * player.getAvailablePlayerStonePositions().size()
@@ -71,7 +71,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
     @Override
     public Move getBestMove() {
         Move bestMove = null;
-        int bestAssessment = Integer.MIN_VALUE;
+        long bestAssessment = Long.MIN_VALUE;
         for (Move possibleMove : getPossibleMoves()) {
             final GawihsBoard boardWithAppliedMove = new GawihsBoard(this.board);
             boardWithAppliedMove.applyMove(possibleMove);
@@ -79,7 +79,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
             final GawihsPlayer playerWithAppliedMove = new GawihsPlayer(this.player);
             playerWithAppliedMove.applyMove(possibleMove);
 
-            int assessment = assessBoard(boardWithAppliedMove, playerWithAppliedMove, this.enemies);
+            long assessment = assessBoard(boardWithAppliedMove, playerWithAppliedMove, this.enemies);
             if (assessment > bestAssessment || bestMove == null) {
                 bestMove = possibleMove;
                 bestAssessment = assessment;
