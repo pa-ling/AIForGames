@@ -6,45 +6,53 @@ import java.util.List;
 import java.util.Queue;
 
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
-import de.htw_berlin.ai_for_games.player.GawihsPlayer;
+import de.htw_berlin.ai_for_games.board.GawihsBoard.FieldState;
 import lenz.htw.gawihs.Move;
 
 public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
     private class GameTreeNode {
         /**
+         * TODO: Kann das weg? Das ist nur für den sanity check
+         *
          * Zeigt auf den vorherigen Node, der den BoardState darstellt, bevor der in
          * diesem Node gespeicherte Move auf das Board angewendet wurde.
          */
         public GameTreeNode parent;
 
         /**
+         * TODO: kann das weg? Ich muss die Referenz eigentlich nicht aufheben, ich
+         * benötige sie nur einmal ganz am Ende
+         *
          * Kinder, die die BoardStates darstellen, die nach diesem BoardState möglich
          * sind.
          */
         public List<GameTreeNode> children;
 
-        /** Bewertung des aktuellen Knotens. */
+        /**
+         * TODO: Kann das weg? ich bruache das nur einmal ganz am Ende, um den Zug zu
+         * suchen, der das Beste Ergebnis bringt
+         *
+         * Bewertung des aktuellen Knotens.
+         */
         public long assessment;
 
-        /** Nummer des Spielers, für den der Zug gefunden werden. */
+        /** Nummer des Spielers, für den der Zug gefunden werden soll. */
         public int ourPlayerNumber;
 
-        /** Spieler, der in diesem Node die Züge generiert (aka der dran ist). */
-        public GawihsPlayer currentPlayer;
-
-        /** State des ersten Spieler, nach dem Zug. */
-        public GawihsPlayer playerOne;
-
-        /** State des zweiten Spieler, nach dem Zug. */
-        public GawihsPlayer playerTwo;
-
-        /** State des dritten Spieler, nach dem Zug. */
-        public GawihsPlayer playerThree;
+        /**
+         * Nummer des Spieler, der in diesem Node die Züge generiert (aka der dran ist).
+         */
+        public int currentPlayerNumber;
 
         /** Das Board, nachdem der Move des Zuges darauf angewendet wurde. */
         public GawihsBoard boardState;
 
-        /** Move, der in diesem Zug angewendet wurde. */
+        /**
+         * TODO: Kann der weg? Ich brauche den nur ganz am Ende, aber ich speichere das
+         * für jedes Blatt
+         *
+         * Move, der in diesem Zug angewendet wurde.
+         */
         public Move move;
 
     }
@@ -62,22 +70,17 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
         if (currentDepth == 0) {
             // this is a terminal node - assess it
             // sanity check - assert that last player is our player
-            if (currentNode.parent.currentPlayer.getPlayerNumberAsOrdinal() != currentNode.ourPlayerNumber) {
+            if (currentNode.parent.currentPlayerNumber != currentNode.ourPlayerNumber) {
                 throw new IllegalStateException("Bewertung des Blattes findet nicht für unseren Spieler statt!");
             }
-            List<GawihsPlayer> enemies = new ArrayList<>();
-            enemies.add(currentNode.playerOne);
-            enemies.add(currentNode.playerTwo);
-            enemies.add(currentNode.playerThree);
-            enemies.remove(currentNode.currentPlayer);
-            return assessBoard(currentNode.boardState, currentNode.currentPlayer, enemies);
+            return assessBoard(currentNode.boardState, this.player, this.enemies);
         }
 
-        List<Move> possibleMoves = getPossibleMoves(currentNode.boardState, currentNode.currentPlayer);
+        List<Move> possibleMoves = getPossibleMoves(currentNode.boardState, currentNode.currentPlayerNumber);
 
         if (possibleMoves.size() == 0) {
             // this is a node where one player dies
-            if (currentNode.currentPlayer.getPlayerNumberAsOrdinal() == currentNode.ourPlayerNumber) {
+            if (currentNode.currentPlayerNumber == currentNode.ourPlayerNumber) {
                 // we die - assess lowest possible rating
                 return Long.MIN_VALUE;
             }
@@ -106,7 +109,7 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
             GameTreeNode child = generateChild(currentNode, possibleMove);
             // a player is maximizing if it is our player
             v = Math.min(v, alphabeta(child, currentDepth - 1, alpha, beta,
-                    child.currentPlayer.getPlayerNumberAsOrdinal() == currentNode.ourPlayerNumber));
+                    child.currentPlayerNumber == currentNode.ourPlayerNumber));
             beta = Math.min(beta, v);
             if (beta <= alpha) {
                 // alpha cut-off
@@ -120,40 +123,30 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
     private GameTreeNode generateChild(GameTreeNode parent, Move moveToApply) {
         GameTreeNode node = new GameTreeNode();
         node.parent = parent;
-        parent.children.add(node);
+        // Tracking the children makes the RAM explode!
+        // parent.children.add(node);
         node.children = new ArrayList<>();
         node.move = moveToApply;
         node.ourPlayerNumber = parent.ourPlayerNumber;
         node.boardState = new GawihsBoard(parent.boardState);
 
-        // copy players and determine next player
-        Queue<GawihsPlayer> playerQueue = new LinkedList<>();
-        if (parent.playerOne != null) {
-            node.playerOne = new GawihsPlayer(parent.playerOne);
-            playerQueue.add(node.playerOne);
-        }
-        if (parent.playerTwo != null) {
-            node.playerTwo = new GawihsPlayer(parent.playerTwo);
-            playerQueue.add(node.playerTwo);
-        }
-        if (parent.playerThree != null) {
-            node.playerThree = new GawihsPlayer(parent.playerThree);
-            playerQueue.add(node.playerThree);
-        }
+        Queue<Integer> playerNumberQueue = new LinkedList<>();
+        playerNumberQueue.add(FieldState.PLAYER_0.ordinal());
+        playerNumberQueue.add(FieldState.PLAYER_1.ordinal());
+        playerNumberQueue.add(FieldState.PLAYER_2.ordinal());
 
         // determine the nextPlayer through a queue
-        GawihsPlayer currentPlayer;
+        Integer currentPlayerNumber;
         do {
-            currentPlayer = playerQueue.poll();
-            playerQueue.add(currentPlayer);
-        } while (currentPlayer.getPlayerNumberAsOrdinal() != parent.currentPlayer.getPlayerNumberAsOrdinal());
+            currentPlayerNumber = playerNumberQueue.poll();
+            playerNumberQueue.add(currentPlayerNumber);
+        } while (currentPlayerNumber != parent.currentPlayerNumber);
 
         // apply move to board and player
-        node.boardState.applyMove(moveToApply);
-        currentPlayer.applyMove(moveToApply);
+        node.boardState.applyMove(currentPlayerNumber, moveToApply);
 
         // hand over turn to next player
-        node.currentPlayer = playerQueue.poll();
+        node.currentPlayerNumber = playerNumberQueue.poll();
         return node;
     }
 
@@ -174,21 +167,7 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
         GameTreeNode root = new GameTreeNode();
         root.children = new ArrayList<>();
         root.boardState = new GawihsBoard(this.board);
-        root.currentPlayer = new GawihsPlayer(this.player);
-        root.playerOne = root.playerTwo = root.playerThree = root.currentPlayer;
-        root.ourPlayerNumber = this.player.getPlayerNumberAsOrdinal();
-
-        for (GawihsPlayer enemy : this.enemies) {
-            if (enemy.getPlayerNumberAsOrdinal() == 0) {
-                root.playerOne = new GawihsPlayer(enemy);
-            }
-            if (enemy.getPlayerNumberAsOrdinal() == 1) {
-                root.playerTwo = new GawihsPlayer(enemy);
-            }
-            if (enemy.getPlayerNumberAsOrdinal() == 2) {
-                root.playerThree = new GawihsPlayer(enemy);
-            }
-        }
+        root.currentPlayerNumber = root.ourPlayerNumber = this.player.getPlayerNumberAsOrdinal();
 
         long bestValue = alphabeta(root, targetDepth, Long.MIN_VALUE, Long.MAX_VALUE, true);
         // get best move by iterating over direct children and return move of the child
