@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-class TrainAssessement {
+class ExecuteAssessmentTraining {
 
     private final static String[] NAMES = { "Alice", "Bob", "Carol" };
     private final static String[] CONFIGS = { "res/configA.json", "res/configB.json", "res/configC.json" };
