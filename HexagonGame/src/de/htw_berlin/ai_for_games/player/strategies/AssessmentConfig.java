@@ -66,4 +66,14 @@ public class AssessmentConfig {
     public void setUnoccupiedFieldsMultiplier(int unoccupiedFieldsMultiplier) {
         this.unoccupiedFieldsMultiplier = unoccupiedFieldsMultiplier;
     }
+
+    @Override
+    public String toString() {
+        return "AssessmentConfig [unoccupiedFieldsMultiplier=" + this.unoccupiedFieldsMultiplier
+                + ", playerStonesMultiplier=" + this.playerStonesMultiplier + ", possibleMovesMultiplier="
+                + this.possibleMovesMultiplier + ", enemyCountMultiplier=" + this.enemyCountMultiplier
+                + ", enemyStonesMultiplier=" + this.enemyStonesMultiplier + ", enemyPossibleMovesMultiplier="
+                + this.enemyPossibleMovesMultiplier + "]";
+    }
+
 }
