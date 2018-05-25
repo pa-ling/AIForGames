@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import de.htw_berlin.ai_for_games.GawihsClient;
-import de.htw_berlin.ai_for_games.player.strategies.AssessmentConfig;
 
 public class TrainAssessement {
 
@@ -37,10 +36,6 @@ public class TrainAssessement {
     private final boolean AUTOMATIC_GAME_SERVER_STARTUP = true;
     private final String LOGO_PATH = "res/claptrap.png";
 
-    private void createConfig() {
-        AssessmentConfig config = new AssessmentConfig();
-    }
-
     @Test
     public void testGame() throws InterruptedException, IOException {
         // start server
@@ -54,8 +49,10 @@ public class TrainAssessement {
 
         // start Clients
         ExecutorService executor = Executors.newFixedThreadPool(this.NAMES.length);
-        for (final String name : this.NAMES) {
-            GameClientTask gameClientTask = new GameClientTask("127.0.0.1", name, this.LOGO_PATH, this.BEST_CONFIG);
+        for (int i = 0; i < this.NAMES.length; i++) {
+            String name = this.NAMES[i];
+            String config = this.CONFIGS[i];
+            GameClientTask gameClientTask = new GameClientTask("127.0.0.1", name, this.LOGO_PATH, config);
             executor.execute(gameClientTask);
         }
         executor.shutdown();
