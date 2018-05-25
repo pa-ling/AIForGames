@@ -1,8 +1,8 @@
 {
-	unoccupiedFieldsMultiplier: 3,
-	playerStonesMultiplier: 3,
-	possibleMovesMultiplier: 3,
-	enemyCountMultiplier: 3,
-	enemyStonesMultiplier: 3,
-	enemyPossibleMovesMultiplier: 3
+  "unoccupiedFieldsMultiplier": 3,
+  "playerStonesMultiplier": 3,
+  "possibleMovesMultiplier": 3,
+  "enemyCountMultiplier": 3,
+  "enemyStonesMultiplier": 3,
+  "enemyPossibleMovesMultiplier": 3
 }

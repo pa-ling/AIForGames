@@ -1,7 +1,9 @@
 package de.htw_berlin.ai_for_games.test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +12,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import de.htw_berlin.ai_for_games.GawihsClient;
 import de.htw_berlin.ai_for_games.player.strategies.AssessmentConfig;
@@ -31,6 +36,16 @@ public class TrainAssessement {
             String[] args = { this.host, this.name, this.logoPath, this.configPath };
             GawihsClient.main(args);
         }
+    }
+
+    private static void writeConfig(AssessmentConfig config, String filePath) throws FileNotFoundException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonContent = gson.toJson(config, AssessmentConfig.class);
+
+        try (PrintWriter out = new PrintWriter(filePath)) {
+            out.println(jsonContent);
+        }
+
     }
 
     private final String[] NAMES = { "Alice", "Bob", "Carol" };
