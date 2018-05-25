@@ -35,11 +35,11 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
             e.printStackTrace();
         }
         System.out.println("Assessment strategy loaded from '" + configPath + "' with the following multipliers:"
-                + "\nunoccupiedFields: " + this.config.unoccupiedFieldsMultiplier + "\nplayerStones: "
-                + this.config.playerStonesMultiplier + "\npossibleMoves: " + this.config.possibleMovesMultiplier
-                + "\nenemyCount: " + this.config.enemyCountMultiplier + "\nenemyStonesMultiplier: "
-                + this.config.enemyStonesMultiplier + "\nenemyPossibleMoves: "
-                + this.config.enemyPossibleMovesMultiplier);
+                + "\nunoccupiedFields: " + this.config.getUnoccupiedFieldsMultiplier() + "\nplayerStones: "
+                + this.config.getPlayerStonesMultiplier() + "\npossibleMoves: "
+                + this.config.getPossibleMovesMultiplier() + "\nenemyCount: " + this.config.getEnemyCountMultiplier()
+                + "\nenemyStonesMultiplier: " + this.config.getEnemyStonesMultiplier() + "\nenemyPossibleMoves: "
+                + this.config.getEnemyPossibleMovesMultiplier());
     }
 
     protected int assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
@@ -54,15 +54,15 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
 
         int score = 0;
         // + empty fields + available player stones + possible moves
-        score += this.config.unoccupiedFieldsMultiplier * board.getUnoccupiedFieldsCount()
-                + this.config.playerStonesMultiplier * player.getAvailablePlayerStonePositions().size()
-                + this.config.possibleMovesMultiplier * possibleMoves;
+        score += this.config.getUnoccupiedFieldsMultiplier() * board.getUnoccupiedFieldsCount()
+                + this.config.getPlayerStonesMultiplier() * player.getAvailablePlayerStonePositions().size()
+                + this.config.getPossibleMovesMultiplier() * possibleMoves;
 
         // - enemies - enemy stones - possible moves of enemies
         for (GawihsPlayer enemy : enemies) {
-            score -= this.config.enemyCountMultiplier * enemies.size()
-                    - this.config.enemyStonesMultiplier * enemy.getAvailablePlayerStonePositions().size()
-                    - this.config.enemyPossibleMovesMultiplier * getPossibleMoves(board, enemy).size();
+            score -= this.config.getEnemyCountMultiplier() * enemies.size()
+                    - this.config.getEnemyStonesMultiplier() * enemy.getAvailablePlayerStonePositions().size()
+                    - this.config.getEnemyPossibleMovesMultiplier() * getPossibleMoves(board, enemy).size();
         }
 
         return score;
