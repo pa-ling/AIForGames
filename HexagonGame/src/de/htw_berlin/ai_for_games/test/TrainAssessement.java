@@ -2,6 +2,8 @@ package de.htw_berlin.ai_for_games.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import de.htw_berlin.ai_for_games.GawihsClient;
+import de.htw_berlin.ai_for_games.player.strategies.AssessmentConfig;
 
 public class TrainAssessement {
 
@@ -32,9 +35,28 @@ public class TrainAssessement {
 
     private final String[] NAMES = { "Alice", "Bob", "Carol" };
     private final String[] CONFIGS = { "res/configA.json", "res/configB.json", "res/configC.json" };
-    private final String BEST_CONFIG = "res/config.json";
     private final boolean AUTOMATIC_GAME_SERVER_STARTUP = true;
     private final String LOGO_PATH = "res/claptrap.png";
+
+    private List<AssessmentConfig> createCandidates() {
+        return null;
+    }
+
+    private HashMap<AssessmentConfig, Integer> evaluateCandidates(List<AssessmentConfig> candidates) {
+        return null;
+    }
+
+    private List<AssessmentConfig> mutateCandidates(List<AssessmentConfig> candidates) {
+        return null;
+    }
+
+    private List<AssessmentConfig> recombineCandidates(List<AssessmentConfig> candidates) {
+        return null;
+    }
+
+    private List<AssessmentConfig> selectCandidates(HashMap<AssessmentConfig, Integer> candidates) {
+        return null;
+    }
 
     @Test
     public void testGame() throws InterruptedException, IOException {
