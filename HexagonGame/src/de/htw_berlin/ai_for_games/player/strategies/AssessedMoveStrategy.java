@@ -30,15 +30,16 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
             Gson gson = new GsonBuilder().create();
             this.config = gson.fromJson(reader, AssessmentConfig.class);
         } catch (IOException e) {
-            this.config = new AssessmentConfig();
+            // this.config = new AssessmentConfig();
             System.err.println("There was a problem loading the config file at '" + configPath + "'");
             e.printStackTrace();
         }
-        System.out.println("Assessment strategy loaded with the following multipliers:" + "\nunoccupiedFields: "
-                + this.config.unoccupiedFieldsMultiplier + "\nplayerStones: " + this.config.playerStonesMultiplier
-                + "\npossibleMoves: " + this.config.possibleMovesMultiplier + "\nenemyCount: "
-                + this.config.enemyCountMultiplier + "\nenemyStonesMultiplier: " + this.config.enemyStonesMultiplier
-                + "\nenemyPossibleMoves: " + this.config.enemyPossibleMovesMultiplier);
+        System.out.println("Assessment strategy loaded from '" + configPath + "' with the following multipliers:"
+                + "\nunoccupiedFields: " + this.config.unoccupiedFieldsMultiplier + "\nplayerStones: "
+                + this.config.playerStonesMultiplier + "\npossibleMoves: " + this.config.possibleMovesMultiplier
+                + "\nenemyCount: " + this.config.enemyCountMultiplier + "\nenemyStonesMultiplier: "
+                + this.config.enemyStonesMultiplier + "\nenemyPossibleMoves: "
+                + this.config.enemyPossibleMovesMultiplier);
     }
 
     private int assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
