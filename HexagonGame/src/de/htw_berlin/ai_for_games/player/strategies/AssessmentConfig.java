@@ -9,6 +9,16 @@ public class AssessmentConfig {
     private int enemyStonesMultiplier;
     private int enemyPossibleMovesMultiplier;
 
+    public AssessmentConfig(int unoccupiedFieldsMultiplier, int playerStonesMultiplier, int possibleMovesMultiplier,
+            int enemyCountMultiplier, int enemyStonesMultiplier, int enemyPossibleMovesMultiplier) {
+        this.unoccupiedFieldsMultiplier = unoccupiedFieldsMultiplier;
+        this.playerStonesMultiplier = playerStonesMultiplier;
+        this.possibleMovesMultiplier = possibleMovesMultiplier;
+        this.enemyCountMultiplier = enemyCountMultiplier;
+        this.enemyStonesMultiplier = enemyStonesMultiplier;
+        this.enemyPossibleMovesMultiplier = enemyPossibleMovesMultiplier;
+    }
+
     public int getEnemyCountMultiplier() {
         return this.enemyCountMultiplier;
     }
