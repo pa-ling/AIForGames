@@ -49,7 +49,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
 
         int possibleMoves = getPossibleMoves(board, player).size();
         if (possibleMoves == 0) {
-            return Integer.MIN_VALUE; // loose
+            return Integer.MIN_VALUE + 1; // loose (+1 so that the 'null' move in getBestMove will be overridden)
         }
 
         int score = 0;
