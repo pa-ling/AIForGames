@@ -1,0 +1,8 @@
+{
+	unoccupiedFieldsMultiplier: 2,
+	playerStonesMultiplier: 2,
+	possibleMovesMultiplier: 2,
+	enemyCountMultiplier: 2,
+	enemyStonesMultiplier: 2,
+	enemyPossibleMovesMultiplier: 2
+}

@@ -23,23 +23,15 @@ import lenz.htw.gawihs.Move;
  */
 public class AssessedMoveStrategy extends AbstractMoveStrategy {
 
-    private class AssessmentConfig {
-        int unoccupiedFieldsMultiplier;
-        int playerStonesMultiplier;
-        int possibleMovesMultiplier;
-        int enemyCountMultiplier;
-        int enemyStonesMultiplier;
-        int enemyPossibleMovesMultiplier;
-    }
-
     private AssessmentConfig config;
 
-    public AssessedMoveStrategy() {
-        try (Reader reader = new FileReader(new File("res/config.json"))) {
+    public AssessedMoveStrategy(String configPath) {
+        try (Reader reader = new FileReader(new File(configPath))) {
             Gson gson = new GsonBuilder().create();
             this.config = gson.fromJson(reader, AssessmentConfig.class);
         } catch (IOException e) {
             this.config = new AssessmentConfig();
+            System.err.println("There was a problem loading the config file at '" + configPath + "'");
             e.printStackTrace();
         }
         System.out.println("Assessment strategy loaded with the following multipliers:" + "\nunoccupiedFields: "

@@ -21,7 +21,12 @@ import lenz.htw.gawihs.net.NetworkClient;
 public class GawihsClient {
 
     public static void main(String[] args) {
-        String host = args[0], name = args[1], logoPath = args[2];
+        String host = args[0], name = args[1], logoPath = args[2], configPath = "res/config.json";
+
+        if (args.length > 3) {
+            configPath = args[3];
+        }
+
         BufferedImage logo = null;
         try {
             logo = ImageIO.read(new File(logoPath));
@@ -35,7 +40,7 @@ public class GawihsClient {
         List<GawihsPlayer> enemies = new ArrayList<>();
 
         int playerNumber = client.getMyPlayerNumber();
-        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, new AssessedMoveStrategy(), board);
+        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, new AssessedMoveStrategy(configPath), board);
 
         if (playerNumber == 0) {
             players.offer(ourPlayer);
