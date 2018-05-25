@@ -1,0 +1,8 @@
+{
+  "unoccupiedFieldsMultiplier": 9,
+  "playerStonesMultiplier": 8,
+  "possibleMovesMultiplier": 7,
+  "enemyCountMultiplier": 6,
+  "enemyStonesMultiplier": 5,
+  "enemyPossibleMovesMultiplier": 4
+}

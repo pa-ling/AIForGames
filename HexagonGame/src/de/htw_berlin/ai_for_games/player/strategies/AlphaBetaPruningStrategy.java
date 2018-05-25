@@ -1,0 +1,205 @@
+package de.htw_berlin.ai_for_games.player.strategies;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import de.htw_berlin.ai_for_games.board.GawihsBoard;
+import de.htw_berlin.ai_for_games.player.GawihsPlayer;
+import lenz.htw.gawihs.Move;
+
+public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
+    private class GameTreeNode {
+        /**
+         * Zeigt auf den vorherigen Node, der den BoardState darstellt, bevor der in
+         * diesem Node gespeicherte Move auf das Board angewendet wurde.
+         */
+        public GameTreeNode parent;
+
+        /**
+         * Kinder, die die BoardStates darstellen, die nach diesem BoardState möglich
+         * sind.
+         */
+        public List<GameTreeNode> children;
+
+        /** Bewertung des aktuellen Knotens. */
+        public long assessment;
+
+        /** Nummer des Spielers, für den der Zug gefunden werden. */
+        public int ourPlayerNumber;
+
+        /** Spieler, der in diesem Node die Züge generiert (aka der dran ist). */
+        public GawihsPlayer currentPlayer;
+
+        /** State des ersten Spieler, nach dem Zug. */
+        public GawihsPlayer playerOne;
+
+        /** State des zweiten Spieler, nach dem Zug. */
+        public GawihsPlayer playerTwo;
+
+        /** State des dritten Spieler, nach dem Zug. */
+        public GawihsPlayer playerThree;
+
+        /** Das Board, nachdem der Move des Zuges darauf angewendet wurde. */
+        public GawihsBoard boardState;
+
+        /** Move, der in diesem Zug angewendet wurde. */
+        public Move move;
+
+    }
+
+    public AlphaBetaPruningStrategy(String configPath) {
+        super(configPath);
+    }
+
+    /**
+     * Bewertet den übergebenen Node. Basiert auf:
+     * https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning#Pseudocode
+     */
+    private long alphabeta(GameTreeNode currentNode, int currentDepth, long alpha, long beta,
+            boolean isMaximizingPlayer) {
+        if (currentDepth == 0) {
+            // this is a terminal node - assess it
+            // sanity check - assert that last player is our player
+            if (currentNode.parent.currentPlayer.getPlayerNumberAsOrdinal() != currentNode.ourPlayerNumber) {
+                throw new IllegalStateException("Bewertung des Blattes findet nicht für unseren Spieler statt!");
+            }
+            List<GawihsPlayer> enemies = new ArrayList<>();
+            enemies.add(currentNode.playerOne);
+            enemies.add(currentNode.playerTwo);
+            enemies.add(currentNode.playerThree);
+            enemies.remove(currentNode.currentPlayer);
+            return assessBoard(currentNode.boardState, currentNode.currentPlayer, enemies);
+        }
+
+        List<Move> possibleMoves = getPossibleMoves(currentNode.boardState, currentNode.currentPlayer);
+
+        if (possibleMoves.size() == 0) {
+            // this is a node where one player dies
+            if (currentNode.currentPlayer.getPlayerNumberAsOrdinal() == currentNode.ourPlayerNumber) {
+                // we die - assess lowest possible rating
+                return Long.MIN_VALUE;
+            }
+            // someone else dies - assess high rating
+            return Long.MAX_VALUE;
+
+        }
+
+        if (isMaximizingPlayer) {
+            long v = Long.MIN_VALUE;
+            for (Move possibleMove : possibleMoves) {
+                GameTreeNode child = generateChild(currentNode, possibleMove);
+                v = Math.max(v, alphabeta(child, currentDepth - 1, alpha, beta, false));
+                v = Math.max(alpha, v);
+                if (beta <= alpha) {
+                    // beta cut-off
+                    break;
+                }
+            }
+            currentNode.assessment = v;
+            return v;
+        }
+        // it's a minimizing player
+        long v = Long.MAX_VALUE;
+        for (Move possibleMove : possibleMoves) {
+            GameTreeNode child = generateChild(currentNode, possibleMove);
+            // a player is maximizing if it is our player
+            v = Math.min(v, alphabeta(child, currentDepth - 1, alpha, beta,
+                    child.currentPlayer.getPlayerNumberAsOrdinal() == currentNode.ourPlayerNumber));
+            beta = Math.min(beta, v);
+            if (beta <= alpha) {
+                // alpha cut-off
+                break;
+            }
+        }
+        currentNode.assessment = v;
+        return v;
+    }
+
+    private GameTreeNode generateChild(GameTreeNode parent, Move moveToApply) {
+        GameTreeNode node = new GameTreeNode();
+        node.parent = parent;
+        parent.children.add(node);
+        node.children = new ArrayList<>();
+        node.move = moveToApply;
+        node.ourPlayerNumber = parent.ourPlayerNumber;
+        node.boardState = new GawihsBoard(parent.boardState);
+
+        // copy players and determine next player
+        Queue<GawihsPlayer> playerQueue = new LinkedList<>();
+        if (parent.playerOne != null) {
+            node.playerOne = new GawihsPlayer(parent.playerOne);
+            playerQueue.add(node.playerOne);
+        }
+        if (parent.playerTwo != null) {
+            node.playerTwo = new GawihsPlayer(parent.playerTwo);
+            playerQueue.add(node.playerTwo);
+        }
+        if (parent.playerThree != null) {
+            node.playerThree = new GawihsPlayer(parent.playerThree);
+            playerQueue.add(node.playerThree);
+        }
+
+        // determine the nextPlayer through a queue
+        GawihsPlayer currentPlayer;
+        do {
+            currentPlayer = playerQueue.poll();
+            playerQueue.add(currentPlayer);
+        } while (currentPlayer.getPlayerNumberAsOrdinal() != parent.currentPlayer.getPlayerNumberAsOrdinal());
+
+        // apply move to board and player
+        node.boardState.applyMove(moveToApply);
+        currentPlayer.applyMove(moveToApply);
+
+        // hand over turn to next player
+        node.currentPlayer = playerQueue.poll();
+        return node;
+    }
+
+    @Override
+    public Move getBestMove() {
+        // check if we can move at all
+        if (getPossibleMoves(this.board, this.player).size() == 0) {
+            throw new IllegalStateException("No moves left");
+        }
+
+        // generate and assess GameTree
+        int numberOfPlayers = this.enemies.size() + 1;
+        // FIXME tweak me
+        int numberOfPlies = 1;
+        // Zahl der Stufen bei 2 zwei Spielern = 3 (+ die Wurzel, bei 3 Spielern = 4 (+
+        // die Wurzel)
+        int targetDepth = (numberOfPlayers + 1) * numberOfPlies;
+        GameTreeNode root = new GameTreeNode();
+        root.children = new ArrayList<>();
+        root.boardState = new GawihsBoard(this.board);
+        root.currentPlayer = new GawihsPlayer(this.player);
+        root.playerOne = root.playerTwo = root.playerThree = root.currentPlayer;
+        root.ourPlayerNumber = this.player.getPlayerNumberAsOrdinal();
+
+        for (GawihsPlayer enemy : this.enemies) {
+            if (enemy.getPlayerNumberAsOrdinal() == 0) {
+                root.playerOne = new GawihsPlayer(enemy);
+            }
+            if (enemy.getPlayerNumberAsOrdinal() == 1) {
+                root.playerTwo = new GawihsPlayer(enemy);
+            }
+            if (enemy.getPlayerNumberAsOrdinal() == 2) {
+                root.playerThree = new GawihsPlayer(enemy);
+            }
+        }
+
+        long bestValue = alphabeta(root, targetDepth, Long.MIN_VALUE, Long.MAX_VALUE, true);
+        // get best move by iterating over direct children and return move of the child
+        // with the best value
+        for (GameTreeNode child : root.children) {
+            if (child.assessment == bestValue) {
+                return child.move;
+            }
+        }
+
+        throw new IllegalStateException("No moves left");
+    }
+
+}
