@@ -42,14 +42,14 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
                 + this.config.enemyPossibleMovesMultiplier);
     }
 
-    private int assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
+    protected int assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
         if (enemies.isEmpty()) {
             return Integer.MAX_VALUE; // win
         }
 
         int possibleMoves = getPossibleMoves(board, player).size();
         if (possibleMoves == 0) {
-            return Integer.MIN_VALUE + 1; // loose (+1 so that the 'null' move in getBestMove will be overridden)
+            return Integer.MIN_VALUE; // loose
         }
 
         int score = 0;
@@ -80,7 +80,7 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
             playerWithAppliedMove.applyMove(possibleMove);
 
             int assessment = assessBoard(boardWithAppliedMove, playerWithAppliedMove, this.enemies);
-            if (assessment > bestAssessment) {
+            if (assessment > bestAssessment || bestMove == null) {
                 bestMove = possibleMove;
                 bestAssessment = assessment;
             }
