@@ -14,14 +14,14 @@ import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.GawihsAIPlayer;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
-import de.htw_berlin.ai_for_games.player.strategies.AssessedMoveStrategy;
+import de.htw_berlin.ai_for_games.player.strategies.RandomMoveStrategy;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
 
 public class GawihsClient {
 
     public static void main(String[] args) {
-        String host = args[0], name = args[1], logoPath = args[2], configPath = "res/config.json";
+        String host = args[0], name = args[1], logoPath = args[2], configPath = "HexagonGame/res/config.json";
 
         if (args.length > 3) {
             configPath = args[3];
@@ -40,7 +40,7 @@ public class GawihsClient {
         List<GawihsPlayer> enemies = new ArrayList<>();
 
         int playerNumber = client.getMyPlayerNumber();
-        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, new AssessedMoveStrategy(configPath), board);
+        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, new RandomMoveStrategy(), board);
 
         if (playerNumber == 0) {
             players.offer(ourPlayer);
@@ -88,15 +88,14 @@ public class GawihsClient {
                     System.out.println(name + " (" + playerNumber + ") sent Move from (" + move.fromX + "," + move.fromY
                             + ") to (" + move.toX + "," + move.toY + ")\n");
                 } else {
-                    while (!board.isPlayerOnTopOfField(new Field(move.fromX, move.fromY), currentPlayer)) {
+                    while (board.getFieldTop(new Field(move.fromX, move.fromY)) != currentPlayer.getPlayerNumber()) {
                         System.out.println(
                                 "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
                         board.removePlayer(currentPlayer);
                         ourPlayer.removeEnemy(currentPlayer);
                         currentPlayer = players.poll();
                     }
-                    currentPlayer.applyMove(move);
-                    board.applyMove(move);
+                    board.applyMove(currentPlayer, move);
                     players.offer(currentPlayer);
                     currentPlayer = players.poll();
                     System.out.println(name + " (" + playerNumber + ") received Move from (" + move.fromX + ","

@@ -4,6 +4,11 @@ public class Field {
     public int x;
     public int y;
 
+    public Field(Field srcField) {
+        this.x = srcField.x;
+        this.y = srcField.y;
+    }
+
     public Field(int x, int y) {
         this.x = x;
         this.y = y;
@@ -11,12 +16,15 @@ public class Field {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true; // self check
-        if (o == null)
+        }
+        if (o == null) {
             return false; // null check
-        if (!(o instanceof Field))
+        }
+        if (!(o instanceof Field)) {
             return false; // type check
+        }
 
         Field field = (Field) o;
         return this.x == field.x && this.y == field.y; // member comparison

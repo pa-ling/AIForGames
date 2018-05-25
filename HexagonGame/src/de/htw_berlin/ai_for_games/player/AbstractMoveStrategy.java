@@ -11,25 +11,29 @@ import lenz.htw.gawihs.Move;
 
 public abstract class AbstractMoveStrategy implements MoveStrategy {
 
+    protected static List<Move> getPossibleMoves(GawihsBoard board, GawihsPlayer player) {
+        return getPossibleMoves(board, player.getPlayerNumberAsOrdinal());
+    }
+
     /**
      * Returns a list of all possible moves for the given player and board
      * configuration. Imposes no restrictions expect the ones according to the rules
      *
      * @param board
      *            board configuration to check for possible moves
-     * @param player
+     * @param playerNumber
      *            player to calculate possible moves for
      * @return a {@link List} of {@link Move Moves} or an empty list if no move is
      *         possible anymore
      */
-    protected static List<Move> getPossibleMoves(GawihsBoard board, GawihsPlayer player) {
+    protected static List<Move> getPossibleMoves(GawihsBoard board, int playerNumber) {
         Set<Field> targetFields = new HashSet<>();
 
-        List<Field> availablePlayerStones = player.getAvailablePlayerStonePositions();
+        List<Field> availablePlayerStones = board.getAvailablePlayerStonePositions(playerNumber);
 
         // get possible target fields and remove unavailable player stones
         for (Field playerStone : availablePlayerStones) {
-            targetFields.addAll(board.getAvailableFieldsForPlayerAround(playerStone, player));
+            targetFields.addAll(board.getAvailableFieldsForPlayerAround(playerStone, playerNumber));
         }
 
         // compute possible moves
