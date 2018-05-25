@@ -29,7 +29,7 @@ public abstract class AbstractMoveStrategy implements MoveStrategy {
     protected static List<Move> getPossibleMoves(GawihsBoard board, int playerNumber) {
         Set<Field> targetFields = new HashSet<>();
 
-        List<Field> availablePlayerStones = board.getAvailablePlayerStonePositions(playerNumber);
+        List<Field> availablePlayerStones = board.getAvailablePlayerStones(playerNumber);
 
         // get possible target fields and remove unavailable player stones
         for (Field playerStone : availablePlayerStones) {

@@ -181,13 +181,11 @@ public class GawihsBoard {
         return fields;
     }
 
-    // TODO ditch the "position"
-    public List<Field> getAvailablePlayerStonePositions(GawihsPlayer player) {
-        return getAvailablePlayerStonePositions(player.getPlayerNumberAsOrdinal());
+    public List<Field> getAvailablePlayerStones(GawihsPlayer player) {
+        return getAvailablePlayerStones(player.getPlayerNumberAsOrdinal());
     }
 
-    // TODO ditch the "position"
-    public List<Field> getAvailablePlayerStonePositions(int playerNumber) {
+    public List<Field> getAvailablePlayerStones(int playerNumber) {
         List<Field> availablePlayerStones = new ArrayList<>();
 
         // get possible target fields and remove unavailable player stones
