@@ -55,13 +55,13 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
         long score = 0;
         // + empty fields + available player stones + possible moves
         score += this.config.getUnoccupiedFieldsMultiplier() * board.getUnoccupiedFieldsCount()
-                + this.config.getPlayerStonesMultiplier() * player.getAvailablePlayerStonePositions().size()
+                + this.config.getPlayerStonesMultiplier() * board.getAvailablePlayerStones(player).size()
                 + this.config.getPossibleMovesMultiplier() * possibleMoves;
 
         // - enemies - enemy stones - possible moves of enemies
         for (GawihsPlayer enemy : enemies) {
             score -= this.config.getEnemyCountMultiplier() * enemies.size()
-                    - this.config.getEnemyStonesMultiplier() * enemy.getAvailablePlayerStonePositions().size()
+                    - this.config.getEnemyStonesMultiplier() * board.getAvailablePlayerStones(enemy).size()
                     - this.config.getEnemyPossibleMovesMultiplier() * getPossibleMoves(board, enemy).size();
         }
 
@@ -74,12 +74,9 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
         long bestAssessment = Long.MIN_VALUE;
         for (Move possibleMove : getPossibleMoves()) {
             final GawihsBoard boardWithAppliedMove = new GawihsBoard(this.board);
-            boardWithAppliedMove.applyMove(possibleMove);
+            boardWithAppliedMove.applyMove(this.player, possibleMove);
 
-            final GawihsPlayer playerWithAppliedMove = new GawihsPlayer(this.player);
-            playerWithAppliedMove.applyMove(possibleMove);
-
-            long assessment = assessBoard(boardWithAppliedMove, playerWithAppliedMove, this.enemies);
+            long assessment = assessBoard(boardWithAppliedMove, this.player, this.enemies);
             if (assessment > bestAssessment || bestMove == null) {
                 bestMove = possibleMove;
                 bestAssessment = assessment;

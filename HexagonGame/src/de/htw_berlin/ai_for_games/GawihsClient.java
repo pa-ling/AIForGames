@@ -14,7 +14,7 @@ import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.GawihsAIPlayer;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
-import de.htw_berlin.ai_for_games.player.strategies.RandomMoveStrategy;
+import de.htw_berlin.ai_for_games.player.strategies.AssessedMoveStrategy;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
 
@@ -40,7 +40,7 @@ public class GawihsClient {
         List<GawihsPlayer> enemies = new ArrayList<>();
 
         int playerNumber = client.getMyPlayerNumber();
-        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, new RandomMoveStrategy(), board);
+        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, new AssessedMoveStrategy(configPath), board);
 
         if (playerNumber == 0) {
             players.offer(ourPlayer);
