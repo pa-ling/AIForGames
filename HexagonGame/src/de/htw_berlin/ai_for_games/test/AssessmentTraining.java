@@ -94,8 +94,7 @@ class AssessmentTraining {
         this.logoPath = logoPath;
     }
 
-    public HashMap<AssessmentConfig, Long> evaluateCandidates(List<AssessmentConfig> candidates) {
-
+    public Map<AssessmentConfig, Long> evaluateCandidates(List<AssessmentConfig> candidates) {
         if (candidates.size() < 3) {
             throw new IllegalArgumentException("There must be at least 3 candidates for evaluation.");
         }
@@ -132,11 +131,8 @@ class AssessmentTraining {
                     try {
                         writeConfig(candidateC, this.configPaths[2]);
                         Map<String, Integer> scores = playAGame(this.names, this.configPaths, this.logoPath);
-                        System.out.println("Scores: " + scores);
                         for (Map.Entry<String, Integer> entry : scores.entrySet()) {
                             AssessmentConfig currentCandidate = null;
-                            System.out.println(
-                                    entry.getKey() + "=" + this.names[0] + "=" + this.names[1] + "=" + this.names[2]);
                             if (entry.getKey().equals(this.names[0])) {
                                 currentCandidate = candidateA;
                             } else if (entry.getKey().equals(this.names[1])) {
@@ -146,7 +142,6 @@ class AssessmentTraining {
                             }
 
                             if (currentCandidate != null) {
-                                System.out.println("currentCandidate: " + currentCandidate);
                                 evaluatedCandidates.put(currentCandidate,
                                         evaluatedCandidates.get(currentCandidate) + entry.getValue());
                             }
@@ -164,7 +159,8 @@ class AssessmentTraining {
     }
 
     public List<AssessmentConfig> mutateCandidates(List<AssessmentConfig> candidates) {
-        return null;
+        List<AssessmentConfig> mutatedCandidates = new ArrayList<>();
+        return mutatedCandidates;
     }
 
     private void printCandidates(List<AssessmentConfig> candidates) {
@@ -174,11 +170,27 @@ class AssessmentTraining {
     }
 
     public List<AssessmentConfig> recombineCandidates(List<AssessmentConfig> candidates) {
-        return null;
+        List<AssessmentConfig> recombinedCandidates = new ArrayList<>();
+        return recombinedCandidates;
     }
 
-    public List<AssessmentConfig> selectCandidates(HashMap<AssessmentConfig, Integer> candidates) {
-        return null;
+    public List<AssessmentConfig> selectCandidates(Map<AssessmentConfig, Long> candidates, int selectCount) {
+        List<AssessmentConfig> selectedCandidates = new ArrayList<>();
+
+        for (int i = 0; i < selectCount; i++) {
+            // get candidate with max score in map
+            Map.Entry<AssessmentConfig, Long> bestCandidate = null;
+            for (Map.Entry<AssessmentConfig, Long> entry : candidates.entrySet()) {
+                if (bestCandidate == null || (entry.getValue().compareTo(bestCandidate.getValue()) > 0
+                        && !selectedCandidates.contains(entry.getKey()))) {
+                    bestCandidate = entry;
+                }
+            }
+            selectedCandidates.add(bestCandidate.getKey());
+            candidates.remove(bestCandidate.getKey());
+        }
+
+        return selectedCandidates;
     }
 
 }
