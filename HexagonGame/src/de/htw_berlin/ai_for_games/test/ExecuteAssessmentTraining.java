@@ -15,12 +15,13 @@ class ExecuteAssessmentTraining {
     private final static String LOGO_PATH = "res/claptrap.png";
 
     private final static int CANDIDATES_COUNT = 3;
+    private final static int PROPERTY_BOUND = 10000;
     private final static int CANDIDATES_TO_SELECT = 3;
 
     public static void main(String[] args) throws InterruptedException, IOException {
         AssessmentTraining assessmentTraining = new AssessmentTraining(NAMES, CONFIGS, LOGO_PATH);
         // create random candidates
-        List<AssessmentConfig> candidates = AssessmentTraining.createCandidates(CANDIDATES_COUNT);
+        List<AssessmentConfig> candidates = AssessmentTraining.createCandidates(CANDIDATES_COUNT, PROPERTY_BOUND);
         System.out.println("Random candidates:" + candidates);
         // get currently best configuration
         candidates.add(AssessedMoveStrategy.readConfig(BEST_CONFIG));
@@ -35,6 +36,8 @@ class ExecuteAssessmentTraining {
         candidates = assessmentTraining.recombineCandidates(candidates, CANDIDATES_COUNT);
         System.out.println("Recombined candidates:" + candidates);
         // mutate some aspects of the new candidates
+        candidates = assessmentTraining.mutateCandidates(candidates, PROPERTY_BOUND);
+        System.out.println("Mutated candidates: " + candidates);
     }
 
 }

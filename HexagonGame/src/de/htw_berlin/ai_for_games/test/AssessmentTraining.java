@@ -22,15 +22,18 @@ import de.htw_berlin.ai_for_games.player.strategies.AssessmentConfig;
 
 class AssessmentTraining {
 
-    public static List<AssessmentConfig> createCandidates(int count) {
+    private final static int PROPERTIES_COUNT = 6;
+    private final static int MAX_PROPERTIES_TO_MUTATE = PROPERTIES_COUNT / 2;
+    private final static int CHANCE_FOR_MUTATION = 5; // percent
+
+    public static List<AssessmentConfig> createCandidates(int count, int bound) {
         List<AssessmentConfig> candidates = new ArrayList<>();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i < count; i++) {
             // TODO: maybe check for linear independance among the candidates;
-            AssessmentConfig config = new AssessmentConfig(random.nextInt(1, Integer.MAX_VALUE),
-                    random.nextInt(1, Integer.MAX_VALUE), random.nextInt(1, Integer.MAX_VALUE),
-                    random.nextInt(1, Integer.MAX_VALUE), random.nextInt(1, Integer.MAX_VALUE),
-                    random.nextInt(1, Integer.MAX_VALUE));
+            AssessmentConfig config = new AssessmentConfig(random.nextInt(1, bound), random.nextInt(1, bound),
+                    random.nextInt(1, bound), random.nextInt(1, bound), random.nextInt(1, bound),
+                    random.nextInt(1, bound));
             candidates.add(config);
         }
         return candidates;
@@ -158,8 +161,39 @@ class AssessmentTraining {
         return evaluatedCandidates;
     }
 
-    public List<AssessmentConfig> mutateCandidates(List<AssessmentConfig> candidates) {
+    public List<AssessmentConfig> mutateCandidates(List<AssessmentConfig> candidates, int bound) {
         List<AssessmentConfig> mutatedCandidates = new ArrayList<>();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        for (AssessmentConfig candidate : candidates) {
+            int isMutated = random.nextInt(100);
+            if (isMutated >= CHANCE_FOR_MUTATION) {
+                mutatedCandidates.add(candidate);
+                continue;
+            }
+
+            int propertiesToMutateCount = random.nextInt(MAX_PROPERTIES_TO_MUTATE) + 1;
+            for (int i = 0; i < propertiesToMutateCount; i++) {
+                int propertyToMutate = random.nextInt(PROPERTIES_COUNT);
+                int randomValue = random.nextInt(bound);
+                if (propertyToMutate == 0) {
+                    candidate.setUnoccupiedFieldsMultiplier(randomValue);
+                } else if (propertyToMutate == 1) {
+                    candidate.setPlayerStonesMultiplier(randomValue);
+                } else if (propertyToMutate == 2) {
+                    candidate.setPossibleMovesMultiplier(randomValue);
+                } else if (propertyToMutate == 3) {
+                    candidate.setEnemyCountMultiplier(randomValue);
+                } else if (propertyToMutate == 4) {
+                    candidate.setEnemyStonesMultiplier(randomValue);
+                } else if (propertyToMutate == 5) {
+                    candidate.setEnemyPossibleMovesMultiplier(randomValue);
+                }
+                System.out.println("[INFO] Mutation in property " + propertyToMutate + " to " + randomValue);
+            }
+            mutatedCandidates.add(candidate);
+        }
+
         return mutatedCandidates;
     }
 
