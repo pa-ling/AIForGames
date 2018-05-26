@@ -15,7 +15,7 @@ public class GawihsClientTest {
 
     @Test
     public void testGame() throws InterruptedException, IOException {
-        Map<String, Integer> scores = AssessmentTraining.playAGame(this.NAMES, this.CONFIGS, this.LOGO_PATH);
+        Map<String, Integer> scores = AssessmentTraining.playAGame(this.NAMES, this.CONFIGS, this.LOGO_PATH, "5");
         System.out.println("Score: " + scores);
     }
 

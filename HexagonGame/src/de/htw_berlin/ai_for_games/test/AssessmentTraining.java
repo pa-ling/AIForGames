@@ -39,11 +39,11 @@ class AssessmentTraining {
         return candidates;
     }
 
-    public static Map<String, Integer> playAGame(String[] names, String[] configs, String logoPath)
+    public static Map<String, Integer> playAGame(String[] names, String[] configs, String logoPath, String timeOut)
             throws IOException, InterruptedException {
         // start server
         ProcessBuilder processBuilder = new ProcessBuilder("java", "-Djava.library.path=lib/native", "-jar",
-                "gawihs.jar", "800", "600", "5", "noanim", "autoclose").directory(new File("lib"));
+                "gawihs.jar", "800", "600", timeOut, "noanim", "showcoords").directory(new File("lib"));
         Process process = processBuilder.start();
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         Thread.sleep(1000);
@@ -63,6 +63,11 @@ class AssessmentTraining {
         String line = null;
         Map<String, Integer> scores = new HashMap<>(3);
         while ((line = reader.readLine()) != null) {
+
+            if (line.startsWith("Game ends due to 10 uninterrupted staple moves")) {
+                System.err.println("[ERROR]" + line);
+            }
+
             if (!line.startsWith("Final result:")) {
                 continue;
             }
@@ -133,7 +138,7 @@ class AssessmentTraining {
                     }
                     try {
                         writeConfig(candidateC, this.configPaths[2]);
-                        Map<String, Integer> scores = playAGame(this.names, this.configPaths, this.logoPath);
+                        Map<String, Integer> scores = playAGame(this.names, this.configPaths, this.logoPath, "5");
                         for (Map.Entry<String, Integer> entry : scores.entrySet()) {
                             AssessmentConfig currentCandidate = null;
                             if (entry.getKey().equals(this.names[0])) {
