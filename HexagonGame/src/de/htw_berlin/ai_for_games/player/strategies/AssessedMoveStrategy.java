@@ -34,12 +34,13 @@ public class AssessedMoveStrategy extends AbstractMoveStrategy {
             System.err.println("There was a problem loading the config file at '" + configPath + "'");
             e.printStackTrace();
         }
-        System.out.println("Assessment strategy loaded from '" + configPath + "' with the following multipliers:"
-                + "\nunoccupiedFields: " + this.config.getUnoccupiedFieldsMultiplier() + "\nplayerStones: "
-                + this.config.getPlayerStonesMultiplier() + "\npossibleMoves: "
-                + this.config.getPossibleMovesMultiplier() + "\nenemyCount: " + this.config.getEnemyCountMultiplier()
-                + "\nenemyStonesMultiplier: " + this.config.getEnemyStonesMultiplier() + "\nenemyPossibleMoves: "
-                + this.config.getEnemyPossibleMovesMultiplier());
+        System.out.print("Assessment strategy loaded from '" + configPath + "' with the following multipliers:\n\t"
+                + this.config.getUnoccupiedFieldsMultiplier() + " (unoccupiedFields)\n\t"
+                + this.config.getPlayerStonesMultiplier() + " (playerStones)\n\t"
+                + this.config.getPossibleMovesMultiplier() + " (possibleMoves)\n\n\t"
+                + this.config.getEnemyCountMultiplier() + " (enemyCount)\n\t"
+                + this.config.getEnemyStonesMultiplier() + " (enemyStonesMultiplier)\n\t"
+                + this.config.getEnemyPossibleMovesMultiplier() + " (enemyPossibleMoves)\n\n");
     }
 
     protected long assessBoard(GawihsBoard board, GawihsPlayer player, List<GawihsPlayer> enemies) {
