@@ -95,6 +95,11 @@ class AssessmentTraining {
     }
 
     public HashMap<AssessmentConfig, Long> evaluateCandidates(List<AssessmentConfig> candidates) {
+
+        if (candidates.size() < 3) {
+            throw new IllegalArgumentException("There must be at least 3 candidates for evaluation.");
+        }
+
         HashMap<AssessmentConfig, Long> evaluatedCandidates = new HashMap<>();
         for (AssessmentConfig candidate : candidates) {
             evaluatedCandidates.put(candidate, (long) 0);
@@ -108,6 +113,9 @@ class AssessmentTraining {
                 continue;
             }
             for (AssessmentConfig candidateB : candidates) {
+                if (candidateB == candidateA) {
+                    continue;
+                }
                 try {
                     writeConfig(candidateB, this.configPaths[1]);
                 } catch (FileNotFoundException e) {
@@ -115,22 +123,32 @@ class AssessmentTraining {
                     continue;
                 }
                 for (AssessmentConfig candidateC : candidates) {
+                    if (candidateC == candidateA) {
+                        continue;
+                    }
+                    if (candidateC == candidateB) {
+                        continue;
+                    }
                     try {
                         writeConfig(candidateC, this.configPaths[2]);
                         Map<String, Integer> scores = playAGame(this.names, this.configPaths, this.logoPath);
+                        System.out.println("Scores: " + scores);
                         for (Map.Entry<String, Integer> entry : scores.entrySet()) {
                             AssessmentConfig currentCandidate = null;
-                            if (entry.getKey() == this.names[0]) {
+                            System.out.println(
+                                    entry.getKey() + "=" + this.names[0] + "=" + this.names[1] + "=" + this.names[2]);
+                            if (entry.getKey().equals(this.names[0])) {
                                 currentCandidate = candidateA;
-                            } else if (entry.getKey() == this.names[1]) {
-                                currentCandidate = candidateA;
-                            } else if (entry.getKey() == this.names[0]) {
-                                currentCandidate = candidateA;
+                            } else if (entry.getKey().equals(this.names[1])) {
+                                currentCandidate = candidateB;
+                            } else if (entry.getKey().equals(this.names[2])) {
+                                currentCandidate = candidateC;
                             }
 
                             if (currentCandidate != null) {
+                                System.out.println("currentCandidate: " + currentCandidate);
                                 evaluatedCandidates.put(currentCandidate,
-                                        evaluatedCandidates.get(candidateA) + entry.getValue());
+                                        evaluatedCandidates.get(currentCandidate) + entry.getValue());
                             }
                         }
                     } catch (IOException e) {
@@ -142,7 +160,7 @@ class AssessmentTraining {
             }
         }
 
-        return null;
+        return evaluatedCandidates;
     }
 
     public List<AssessmentConfig> mutateCandidates(List<AssessmentConfig> candidates) {
