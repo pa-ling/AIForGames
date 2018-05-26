@@ -47,6 +47,15 @@ public class GawihsPlayer {
         }
     }
 
+    public GawihsPlayer(GawihsPlayer sourcePlayer, GawihsBoard board) {
+        this.playerNumber = sourcePlayer.playerNumber;
+        this.playerStonePositions = new ArrayList<>();
+        for (Field field : sourcePlayer.playerStonePositions) {
+            this.playerStonePositions.add(field);
+        }
+        this.board = board;
+    }
+
     public GawihsPlayer(int playerNumber, GawihsBoard board) {
         // set up player
         this.playerNumber = FieldState.values()[playerNumber];

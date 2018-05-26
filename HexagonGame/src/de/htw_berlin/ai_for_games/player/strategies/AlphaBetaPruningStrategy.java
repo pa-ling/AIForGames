@@ -103,15 +103,15 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
         // copy players and determine next player
         Queue<GawihsPlayer> playerQueue = new LinkedList<>();
         if (parent.playerOne != null) {
-            node.playerOne = new GawihsPlayer(parent.playerOne);
+            node.playerOne = new GawihsPlayer(parent.playerOne, node.boardState);
             playerQueue.add(node.playerOne);
         }
         if (parent.playerTwo != null) {
-            node.playerTwo = new GawihsPlayer(parent.playerTwo);
+            node.playerTwo = new GawihsPlayer(parent.playerTwo, node.boardState);
             playerQueue.add(node.playerTwo);
         }
         if (parent.playerThree != null) {
-            node.playerThree = new GawihsPlayer(parent.playerThree);
+            node.playerThree = new GawihsPlayer(parent.playerThree, node.boardState);
             playerQueue.add(node.playerThree);
         }
 
@@ -123,8 +123,8 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
         } while (currentPlayer.getPlayerNumberAsOrdinal() != parent.currentPlayer.getPlayerNumberAsOrdinal());
 
         // apply move to board and player
-        node.boardState.applyMove(moveToApply);
         currentPlayer.applyMove(moveToApply);
+        node.boardState.applyMove(moveToApply);
 
         // hand over turn to next player
         node.currentPlayer = playerQueue.poll();
@@ -134,16 +134,11 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
     @Override
     public Move getBestMove() {
         // generate and assess GameTree
-        int numberOfPlayers = this.enemies.size() + 1;
-        // FIXME tweak me
-        int numberOfPlies = 1;
-        // Zahl der Stufen bei 2 zwei Spielern = 3 (+ die Wurzel, bei 3 Spielern = 4 (+
-        // die Wurzel)
-        // int targetDepth = (numberOfPlayers + 1) * numberOfPlies;
+        // more kills performance
         int targetDepth = 2;
         GameTreeNode root = new GameTreeNode();
         root.boardState = new GawihsBoard(this.board);
-        root.currentPlayer = new GawihsPlayer(this.player);
+        root.currentPlayer = new GawihsPlayer(this.player, root.boardState);
         root.playerOne = root.playerTwo = root.playerThree = root.currentPlayer;
         root.ourPlayerNumber = this.player.getPlayerNumberAsOrdinal();
 
@@ -158,8 +153,11 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
                 root.playerThree = new GawihsPlayer(enemy);
             }
         }
-
-        return startAlphaBetaSearch(root, targetDepth);
+        long computationTime = System.nanoTime();
+        Move move = startAlphaBetaSearch(root, targetDepth);
+        System.out
+                .println("Turn for player " + this.player + " took: " + (System.nanoTime() - computationTime) + " ms");
+        return move;
     }
 
     private Move startAlphaBetaSearch(GameTreeNode root, int currentDepth) {
