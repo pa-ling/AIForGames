@@ -1,8 +1,9 @@
 package de.htw_berlin.ai_for_games.player.strategies;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
@@ -11,31 +12,7 @@ import lenz.htw.gawihs.Move;
 
 public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
     private class GameTreeNode {
-        /**
-         * TODO: Kann das weg? Das ist nur für den sanity check
-         *
-         * Zeigt auf den vorherigen Node, der den BoardState darstellt, bevor der in
-         * diesem Node gespeicherte Move auf das Board angewendet wurde.
-         */
-        public GameTreeNode parent;
-
-        /**
-         * TODO: kann das weg? Ich muss die Referenz eigentlich nicht aufheben, ich
-         * benötige sie nur einmal ganz am Ende
-         *
-         * Kinder, die die BoardStates darstellen, die nach diesem BoardState möglich
-         * sind.
-         */
-        public List<GameTreeNode> children;
-
-        /**
-         * TODO: Kann das weg? ich bruache das nur einmal ganz am Ende, um den Zug zu
-         * suchen, der das Beste Ergebnis bringt
-         *
-         * Bewertung des aktuellen Knotens.
-         */
-        public long assessment;
-
+        // TODO remove
         /** Nummer des Spielers, für den der Zug gefunden werden soll. */
         public int ourPlayerNumber;
 
@@ -46,14 +23,6 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
 
         /** Das Board, nachdem der Move des Zuges darauf angewendet wurde. */
         public GawihsBoard boardState;
-
-        /**
-         * TODO: Kann der weg? Ich brauche den nur ganz am Ende, aber ich speichere das
-         * für jedes Blatt
-         *
-         * Move, der in diesem Zug angewendet wurde.
-         */
-        public Move move;
 
     }
 
@@ -69,10 +38,7 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
             boolean isMaximizingPlayer) {
         if (currentDepth == 0) {
             // this is a terminal node - assess it
-            // sanity check - assert that last player is our player
-            if (currentNode.parent.currentPlayerNumber != currentNode.ourPlayerNumber) {
-                throw new IllegalStateException("Bewertung des Blattes findet nicht für unseren Spieler statt!");
-            }
+            // TODO get state of current enemies
             return assessBoard(currentNode.boardState, this.player, this.enemies);
         }
 
@@ -100,7 +66,6 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
                     break;
                 }
             }
-            currentNode.assessment = v;
             return v;
         }
         // it's a minimizing player
@@ -116,17 +81,11 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
                 break;
             }
         }
-        currentNode.assessment = v;
         return v;
     }
 
     private GameTreeNode generateChild(GameTreeNode parent, Move moveToApply) {
         GameTreeNode node = new GameTreeNode();
-        node.parent = parent;
-        // Tracking the children makes the RAM explode!
-        // parent.children.add(node);
-        node.children = new ArrayList<>();
-        node.move = moveToApply;
         node.ourPlayerNumber = parent.ourPlayerNumber;
         node.boardState = new GawihsBoard(parent.boardState);
 
@@ -165,20 +124,36 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
         // die Wurzel)
         int targetDepth = (numberOfPlayers + 1) * numberOfPlies;
         GameTreeNode root = new GameTreeNode();
-        root.children = new ArrayList<>();
         root.boardState = new GawihsBoard(this.board);
         root.currentPlayerNumber = root.ourPlayerNumber = this.player.getPlayerNumberAsOrdinal();
 
-        long bestValue = alphabeta(root, targetDepth, Long.MIN_VALUE, Long.MAX_VALUE, true);
-        // get best move by iterating over direct children and return move of the child
-        // with the best value
-        for (GameTreeNode child : root.children) {
-            if (child.assessment == bestValue) {
-                return child.move;
-            }
+        return startAlphaBetaSearch(root, targetDepth);
+    }
+
+    private Move startAlphaBetaSearch(GameTreeNode root, int currentDepth) {
+        List<Move> possibleMoves = getPossibleMoves(root.boardState, root.currentPlayerNumber);
+
+        if (possibleMoves.size() == 0) {
+            // check if we can move at all
+            throw new IllegalStateException("No moves left");
         }
 
-        throw new IllegalStateException("No moves left");
+        // our first node is always a maximizing player
+        long currentBestValue = Long.MIN_VALUE;
+        long alpha = Long.MIN_VALUE;
+        long beta = Long.MAX_VALUE;
+        Map<Long, Move> generatedMoves = new HashMap<>();
+        for (Move possibleMove : possibleMoves) {
+            GameTreeNode child = generateChild(root, possibleMove);
+            currentBestValue = Math.max(currentBestValue, alphabeta(child, currentDepth - 1, alpha, beta, false));
+            currentBestValue = Math.max(alpha, currentBestValue);
+            generatedMoves.put(currentBestValue, possibleMove);
+            if (beta <= alpha) {
+                // beta cut-off
+                break;
+            }
+        }
+        return generatedMoves.get(currentBestValue);
     }
 
 }
