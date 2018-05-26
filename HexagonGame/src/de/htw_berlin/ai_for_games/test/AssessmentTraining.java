@@ -24,7 +24,7 @@ class AssessmentTraining {
 
     private final static int PROPERTIES_COUNT = 6;
     private final static int MAX_PROPERTIES_TO_MUTATE = PROPERTIES_COUNT / 2;
-    private final static int CHANCE_FOR_MUTATION = 5; // percent
+    private final static int CHANCE_FOR_MUTATION = 7; // percent
 
     public static List<AssessmentConfig> createCandidates(int count, int bound) {
         List<AssessmentConfig> candidates = new ArrayList<>();
