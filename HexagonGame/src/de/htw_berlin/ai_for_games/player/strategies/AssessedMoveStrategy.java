@@ -23,18 +23,26 @@ import lenz.htw.gawihs.Move;
  */
 public class AssessedMoveStrategy extends AbstractMoveStrategy {
 
-    private AssessmentConfig config;
-
-    public AssessedMoveStrategy(String configPath) {
+    public static AssessmentConfig readConfig(String configPath) {
+        AssessmentConfig config = null;
         try (Reader reader = new FileReader(new File(configPath))) {
             Gson gson = new GsonBuilder().create();
-            this.config = gson.fromJson(reader, AssessmentConfig.class);
+            config = gson.fromJson(reader, AssessmentConfig.class);
         } catch (IOException e) {
             // this.config = new AssessmentConfig();
             System.err.println("There was a problem loading the config file at '" + configPath + "'");
             e.printStackTrace();
         }
-        System.out.print("Assessment strategy loaded from '" + configPath + "' with the following multipliers:\n\t"
+
+        return config;
+    }
+
+    private final AssessmentConfig config;
+
+    public AssessedMoveStrategy(String configPath) {
+        this.config = readConfig(configPath);
+
+        System.out.print("[INFO] Assessment strategy loaded from '" + configPath + "' with the following multipliers:\n\t"
                 + this.config.getUnoccupiedFieldsMultiplier() + " (unoccupiedFields)\n\t"
                 + this.config.getPlayerStonesMultiplier() + " (playerStones)\n\t"
                 + this.config.getPossibleMovesMultiplier() + " (possibleMoves)\n\n\t"
