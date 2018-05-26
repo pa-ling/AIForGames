@@ -36,7 +36,7 @@ class AssessmentTraining {
         return candidates;
     }
 
-    public static Map<String, Long> playAGame(String[] names, String[] configs, String logoPath)
+    public static Map<String, Integer> playAGame(String[] names, String[] configs, String logoPath)
             throws IOException, InterruptedException {
         // start server
         ProcessBuilder processBuilder = new ProcessBuilder("java", "-Djava.library.path=lib/native", "-jar",
@@ -58,7 +58,7 @@ class AssessmentTraining {
 
         // get Scores
         String line = null;
-        Map<String, Long> scores = new HashMap<>(3);
+        Map<String, Integer> scores = new HashMap<>(3);
         while ((line = reader.readLine()) != null) {
             if (!line.startsWith("Final result:")) {
                 continue;
@@ -66,7 +66,7 @@ class AssessmentTraining {
 
             for (int i = 0; i < 3; i++) {
                 String[] placementString = reader.readLine().split(": ");
-                scores.put(placementString[0], Long.valueOf(placementString[1]));
+                scores.put(placementString[0], Integer.valueOf(placementString[1]));
             }
             break;
         }
@@ -74,7 +74,7 @@ class AssessmentTraining {
         return scores;
     }
 
-    private static void writeConfig(AssessmentConfig config, String filePath) throws FileNotFoundException {
+    public static void writeConfig(AssessmentConfig config, String filePath) throws FileNotFoundException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonContent = gson.toJson(config, AssessmentConfig.class);
 
@@ -84,7 +84,64 @@ class AssessmentTraining {
 
     }
 
-    public HashMap<AssessmentConfig, Integer> evaluateCandidates(List<AssessmentConfig> candidates) {
+    private final String[] names;
+    private final String[] configPaths;
+    private final String logoPath;
+
+    public AssessmentTraining(String[] names, String[] configs, String logoPath) {
+        this.names = names;
+        this.configPaths = configs;
+        this.logoPath = logoPath;
+    }
+
+    public HashMap<AssessmentConfig, Long> evaluateCandidates(List<AssessmentConfig> candidates) {
+        HashMap<AssessmentConfig, Long> evaluatedCandidates = new HashMap<>();
+        for (AssessmentConfig candidate : candidates) {
+            evaluatedCandidates.put(candidate, (long) 0);
+        }
+
+        for (AssessmentConfig candidateA : candidates) {
+            try {
+                writeConfig(candidateA, this.configPaths[0]);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                continue;
+            }
+            for (AssessmentConfig candidateB : candidates) {
+                try {
+                    writeConfig(candidateB, this.configPaths[1]);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                for (AssessmentConfig candidateC : candidates) {
+                    try {
+                        writeConfig(candidateC, this.configPaths[2]);
+                        Map<String, Integer> scores = playAGame(this.names, this.configPaths, this.logoPath);
+                        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+                            AssessmentConfig currentCandidate = null;
+                            if (entry.getKey() == this.names[0]) {
+                                currentCandidate = candidateA;
+                            } else if (entry.getKey() == this.names[1]) {
+                                currentCandidate = candidateA;
+                            } else if (entry.getKey() == this.names[0]) {
+                                currentCandidate = candidateA;
+                            }
+
+                            if (currentCandidate != null) {
+                                evaluatedCandidates.put(currentCandidate,
+                                        evaluatedCandidates.get(candidateA) + entry.getValue());
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
         return null;
     }
 
