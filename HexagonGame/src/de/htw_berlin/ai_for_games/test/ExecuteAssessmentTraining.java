@@ -21,17 +21,20 @@ class ExecuteAssessmentTraining {
         AssessmentTraining assessmentTraining = new AssessmentTraining(NAMES, CONFIGS, LOGO_PATH);
         // create random candidates
         List<AssessmentConfig> candidates = AssessmentTraining.createCandidates(CANDIDATES_COUNT);
+        System.out.println("Random candidates:" + candidates);
         // get currently best configuration
         candidates.add(AssessedMoveStrategy.readConfig(BEST_CONFIG));
         // find out what are the 3 best configs
         Map<AssessmentConfig, Long> evaluatedCandidates = assessmentTraining.evaluateCandidates(candidates);
-        System.out.println(evaluatedCandidates);
+        System.out.println("Evaluated candidates:" + evaluatedCandidates);
         candidates = assessmentTraining.selectCandidates(evaluatedCandidates, CANDIDATES_TO_SELECT);
+        System.out.println("Selected candidates:" + candidates);
         // save the best config
         AssessmentTraining.writeConfig(candidates.get(0), BEST_CONFIG);
         // recombinate new candidates out of the best 3
+        candidates = assessmentTraining.recombineCandidates(candidates, CANDIDATES_COUNT);
+        System.out.println("Recombined candidates:" + candidates);
         // mutate some aspects of the new candidates
-        System.out.println(candidates);
     }
 
 }

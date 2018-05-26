@@ -169,15 +169,31 @@ class AssessmentTraining {
         }
     }
 
-    public List<AssessmentConfig> recombineCandidates(List<AssessmentConfig> candidates) {
+    public List<AssessmentConfig> recombineCandidates(List<AssessmentConfig> candidates, int count) {
         List<AssessmentConfig> recombinedCandidates = new ArrayList<>();
+        recombinedCandidates.addAll(candidates);
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        while (recombinedCandidates.size() <= count) {
+            int unoccupiedFieldsMultiplier = candidates.get(random.nextInt(candidates.size()))
+                    .getUnoccupiedFieldsMultiplier();
+            int playerStonesMultiplier = candidates.get(random.nextInt(candidates.size())).getPlayerStonesMultiplier();
+            int possibleMovesMultiplier = candidates.get(random.nextInt(candidates.size()))
+                    .getEnemyPossibleMovesMultiplier();
+            int enemyCountMultiplier = candidates.get(random.nextInt(candidates.size())).getEnemyCountMultiplier();
+            int enemyStonesMultiplier = candidates.get(random.nextInt(candidates.size())).getEnemyStonesMultiplier();
+            int enemyPossibleMovesMultiplier = candidates.get(random.nextInt(candidates.size()))
+                    .getEnemyPossibleMovesMultiplier();
+            recombinedCandidates.add(
+                    new AssessmentConfig(unoccupiedFieldsMultiplier, playerStonesMultiplier, possibleMovesMultiplier,
+                            enemyCountMultiplier, enemyStonesMultiplier, enemyPossibleMovesMultiplier));
+        }
         return recombinedCandidates;
     }
 
-    public List<AssessmentConfig> selectCandidates(Map<AssessmentConfig, Long> candidates, int selectCount) {
+    public List<AssessmentConfig> selectCandidates(Map<AssessmentConfig, Long> candidates, int count) {
         List<AssessmentConfig> selectedCandidates = new ArrayList<>();
 
-        for (int i = 0; i < selectCount; i++) {
+        for (int i = 0; i < count; i++) {
             // get candidate with max score in map
             Map.Entry<AssessmentConfig, Long> bestCandidate = null;
             for (Map.Entry<AssessmentConfig, Long> entry : candidates.entrySet()) {
