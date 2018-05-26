@@ -50,7 +50,7 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
             enemies.add(currentNode.playerTwo);
             enemies.add(currentNode.playerThree);
             enemies.remove(currentNode.currentPlayer);
-            return assessBoard(currentNode.boardState, currentNode.currentPlayer, enemies);
+            return assessBoard(currentNode.boardState, this.player, enemies);
         }
 
         List<Move> possibleMoves = getPossibleMoves(currentNode.boardState, currentNode.currentPlayer);
@@ -139,7 +139,8 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
         int numberOfPlies = 1;
         // Zahl der Stufen bei 2 zwei Spielern = 3 (+ die Wurzel, bei 3 Spielern = 4 (+
         // die Wurzel)
-        int targetDepth = (numberOfPlayers + 1) * numberOfPlies;
+        // int targetDepth = (numberOfPlayers + 1) * numberOfPlies;
+        int targetDepth = 2;
         GameTreeNode root = new GameTreeNode();
         root.boardState = new GawihsBoard(this.board);
         root.currentPlayer = new GawihsPlayer(this.player);
