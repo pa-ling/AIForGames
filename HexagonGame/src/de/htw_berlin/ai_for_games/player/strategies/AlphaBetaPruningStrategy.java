@@ -135,7 +135,7 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
     public Move getBestMove() {
         // generate and assess GameTree
         // more kills performance
-        int targetDepth = 2;
+        int targetDepth = 3;
         GameTreeNode root = new GameTreeNode();
         root.boardState = new GawihsBoard(this.board);
         root.currentPlayer = new GawihsPlayer(this.player, root.boardState);
