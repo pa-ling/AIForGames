@@ -177,7 +177,7 @@ public class AlphaBetaPruningStrategy extends AssessedMoveStrategy {
             GameTreeNode child = generateChild(root, possibleMove);
             currentBestValue = Math.max(currentBestValue, alphabeta(child, currentDepth - 1, alpha, beta, false));
             alpha = Math.max(alpha, currentBestValue);
-            generatedMoves.put(alpha, possibleMove);
+            generatedMoves.putIfAbsent(alpha, possibleMove);
             if (beta <= alpha) {
                 // beta cut-off
                 break;
