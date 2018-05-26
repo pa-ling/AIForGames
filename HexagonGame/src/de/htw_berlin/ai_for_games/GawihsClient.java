@@ -77,20 +77,20 @@ public class GawihsClient {
                 Move move = client.receiveMove();
                 if (move == null) {
                     while (currentPlayer.getPlayerNumberAsOrdinal() != playerNumber) {
-                        System.out.println(
-                                "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
+                        System.out.println("[INFO] Apparently " + currentPlayer.getPlayerNumber()
+                                + " was kicked. He will be removed.");
                         board.removePlayer(currentPlayer);
                         ourPlayer.removeEnemy(currentPlayer);
                         currentPlayer = players.poll();
                     }
                     move = currentPlayer.move();
                     client.sendMove(move);
-                    System.out.println(name + " (" + playerNumber + ") sent Move from (" + move.fromX + "," + move.fromY
-                            + ") to (" + move.toX + "," + move.toY + ")\n");
+                    System.out.println("[INFO] " + name + " (" + playerNumber + ") sent Move from (" + move.fromX + ","
+                            + move.fromY + ") to (" + move.toX + "," + move.toY + ")");
                 } else {
                     while (!board.isPlayerOnTopOfField(new Field(move.fromX, move.fromY), currentPlayer)) {
-                        System.out.println(
-                                "Apparently " + currentPlayer.getPlayerNumber() + " was kicked. He will be removed.");
+                        System.out.println("[INFO] Apparently " + currentPlayer.getPlayerNumber()
+                                + " was kicked. He will be removed.");
                         board.removePlayer(currentPlayer);
                         ourPlayer.removeEnemy(currentPlayer);
                         currentPlayer = players.poll();
@@ -99,16 +99,21 @@ public class GawihsClient {
                     board.applyMove(move);
                     players.offer(currentPlayer);
                     currentPlayer = players.poll();
-                    System.out.println(name + " (" + playerNumber + ") received Move from (" + move.fromX + ","
-                            + move.fromY + ") to (" + move.toX + "," + move.toY + ")\n");
+                    System.out.println("[INFO] " + name + " (" + playerNumber + ") received Move from (" + move.fromX
+                            + "," + move.fromY + ") to (" + move.toX + "," + move.toY + ")");
                 }
             }
-        } catch (NullPointerException | IllegalStateException | IllegalArgumentException
-                | IndexOutOfBoundsException e) {
-            System.err.println(name + " (" + playerNumber + ") encountered an internal error:\n " + e + "\n");
+        } catch (IllegalStateException e) {
+            System.err.println(
+                    "[ERROR] " + name + " (" + playerNumber + ") encountered an internal error:\n " + e + "\n");
+            client.sendMove(new Move(0, 0, 0, 0)); // send illegal move so we do not have to wait for the timeout
+        } catch (NullPointerException | IllegalArgumentException | IndexOutOfBoundsException e) {
+            System.err.println(
+                    "[ERROR] " + name + " (" + playerNumber + ") encountered an internal error:\n " + e + "\n");
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println(name + " (" + playerNumber + ") got kicked.\n Reason: " + e.getMessage() + "\n");
+            System.err.println(
+                    "[ERROR] " + name + " (" + playerNumber + ") got kicked.\n Reason: " + e.getMessage() + "\n");
         }
     }
 
