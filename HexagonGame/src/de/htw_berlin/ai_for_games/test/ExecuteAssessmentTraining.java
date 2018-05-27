@@ -25,7 +25,7 @@ class ExecuteAssessmentTraining {
         System.out.println("Random candidates:" + candidates);
         // get currently best configuration
         candidates.add(AssessedMoveStrategy.readConfig(BEST_CONFIG));
-        while (true) {
+        do {
             // find out what are the 3 best configs
             Map<AssessmentConfig, Long> evaluatedCandidates = assessmentTraining.evaluateCandidates(candidates);
             System.out.println("Evaluated candidates:" + evaluatedCandidates);
@@ -39,7 +39,7 @@ class ExecuteAssessmentTraining {
             // mutate some aspects of the new candidates
             candidates = assessmentTraining.mutateCandidates(candidates, PROPERTY_BOUND);
             System.out.println("Mutated candidates: " + candidates);
-        }
+        } while (true);
 
     }
 
