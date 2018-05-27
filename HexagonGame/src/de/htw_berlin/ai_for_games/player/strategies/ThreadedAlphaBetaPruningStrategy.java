@@ -175,6 +175,9 @@ public class ThreadedAlphaBetaPruningStrategy implements MoveStrategy {
                 throw new IllegalStateException("No moves left");
             }
 
+            // fallback -> set first move found as best move to avoid having no moves at all
+            this.caller.setBestMove(possibleMoves.get(0));
+
             // our first node is always a maximizing player
             long v = Long.MIN_VALUE;
             long alpha = Long.MIN_VALUE;
