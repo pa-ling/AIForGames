@@ -1,8 +1,8 @@
 {
-  "unoccupiedFieldsMultiplier": 1410,
-  "playerStonesMultiplier": 9516,
-  "possibleMovesMultiplier": 4274,
-  "enemyCountMultiplier": 1929,
-  "enemyStonesMultiplier": 7421,
-  "enemyPossibleMovesMultiplier": 1621
+  "unoccupiedFieldsMultiplier": 919,
+  "playerStonesMultiplier": 5842,
+  "possibleMovesMultiplier": 1694,
+  "enemyCountMultiplier": 4451,
+  "enemyStonesMultiplier": 2319,
+  "enemyPossibleMovesMultiplier": 8
 }
