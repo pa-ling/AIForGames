@@ -211,12 +211,16 @@ public class ThreadedAlphaBetaPruningStrategy implements MoveStrategy {
         Thread thread = new Thread(this.task);
         thread.start();
         try {
-            Thread.sleep((long) (0.95 * (this.timeout * 1000)));
+            Thread.sleep((long) (0.8 * (this.timeout * 1000)));
         } catch (InterruptedException e) {
             thread.interrupt();
             e.printStackTrace();
         }
         Move move = this.bestMove;
+        if (move == null) {
+            System.out.println("[ERROR] No move could be found in time.");
+        }
+        this.bestMove = null;
         thread.interrupt();
         return move;
     }
