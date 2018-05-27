@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.GawihsAIPlayer;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
-import de.htw_berlin.ai_for_games.player.strategies.AlphaBetaPruningStrategy;
+import de.htw_berlin.ai_for_games.player.strategies.ThreadedAlphaBetaPruningStrategy;
 
 class AlphaBetaPlayerRemoveTest {
 
@@ -21,7 +21,7 @@ class AlphaBetaPlayerRemoveTest {
     @BeforeAll
     static void setup() {
         board = new GawihsBoard();
-        player1 = new GawihsAIPlayer(0, new AlphaBetaPruningStrategy("HexagonGame/res/configP.json"), board);
+        player1 = new GawihsAIPlayer(0, new ThreadedAlphaBetaPruningStrategy("res/configP.json", 5), board);
         player2 = new GawihsPlayer(1, board);
         player3 = new GawihsPlayer(2, board);
         List<GawihsPlayer> enemies = new ArrayList<>();
@@ -32,9 +32,9 @@ class AlphaBetaPlayerRemoveTest {
 
     @Test
     void test() {
-        player1.move();
+        System.out.println(player1.move());
         player1.removeEnemy(player2);
-        player1.move();
+        System.out.println(player1.move());
 
     }
 
