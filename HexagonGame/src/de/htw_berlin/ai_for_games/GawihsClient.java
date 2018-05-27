@@ -14,7 +14,7 @@ import de.htw_berlin.ai_for_games.board.Field;
 import de.htw_berlin.ai_for_games.board.GawihsBoard;
 import de.htw_berlin.ai_for_games.player.GawihsAIPlayer;
 import de.htw_berlin.ai_for_games.player.GawihsPlayer;
-import de.htw_berlin.ai_for_games.player.strategies.AssessedMoveStrategy;
+import de.htw_berlin.ai_for_games.player.strategies.ThreadedAlphaBetaPruningStrategy;
 import lenz.htw.gawihs.Move;
 import lenz.htw.gawihs.net.NetworkClient;
 
@@ -40,7 +40,9 @@ public class GawihsClient {
         List<GawihsPlayer> enemies = new ArrayList<>();
 
         int playerNumber = client.getMyPlayerNumber();
-        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, new AssessedMoveStrategy(configPath), board);
+        ThreadedAlphaBetaPruningStrategy moveStrategy = new ThreadedAlphaBetaPruningStrategy(configPath,
+                client.getTimeLimitInSeconds());
+        GawihsAIPlayer ourPlayer = new GawihsAIPlayer(playerNumber, moveStrategy, board);
 
         if (playerNumber == 0) {
             players.offer(ourPlayer);
@@ -69,12 +71,10 @@ public class GawihsClient {
         ourPlayer.setEnemies(enemies);
         GawihsPlayer currentPlayer = players.poll();
 
-        // client.getTimeLimitInSeconds();
-        // client.getExpectedNetworkLatencyInMilliseconds();
-
         try {
             while (true) {
                 Move move = client.receiveMove();
+                moveStrategy.setExpectedNetworkLatency(client.getExpectedNetworkLatencyInMilliseconds());
                 if (move == null) {
                     while (currentPlayer.getPlayerNumberAsOrdinal() != playerNumber) {
                         System.out.println("[INFO] Apparently " + currentPlayer.getPlayerNumber()

@@ -202,23 +202,34 @@ public class ThreadedAlphaBetaPruningStrategy implements MoveStrategy {
     private Move bestMove;
 
     private final AlphaBetaPruningStrategyTask task;
-    private final int timeout;
+    private final long timeout;
+    private long expectedNetworkLatency;
 
     public ThreadedAlphaBetaPruningStrategy(String configPath, int timeout) {
         this.task = new AlphaBetaPruningStrategyTask(configPath, this);
-        this.timeout = timeout;
+        this.timeout = timeout * 1000;
     }
 
     @Override
     public Move getBestMove() {
         Thread thread = new Thread(this.task);
         thread.start();
-        try {
-            Thread.sleep((long) (0.8 * (this.timeout * 1000)));
-        } catch (InterruptedException e) {
-            thread.interrupt();
-            e.printStackTrace();
+        if (this.expectedNetworkLatency > this.timeout) {
+            this.expectedNetworkLatency = 0;
         }
+        long timeLimit = (long) (0.95 * (this.timeout - this.expectedNetworkLatency));
+        long elapsedTime = 0;
+        do {
+            long startTime = System.nanoTime();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                thread.interrupt();
+                e.printStackTrace();
+            }
+            elapsedTime += (System.nanoTime() - startTime) / 1000000L;
+        } while (elapsedTime < timeLimit && thread.isAlive());
+
         Move move = this.bestMove;
         if (move == null) {
             System.out.println("[ERROR] No move could be found in time.");
@@ -246,6 +257,10 @@ public class ThreadedAlphaBetaPruningStrategy implements MoveStrategy {
     @Override
     public void setEnemies(List<GawihsPlayer> enemies) {
         this.task.setEnemies(enemies);
+    }
+
+    public void setExpectedNetworkLatency(long networkLatency) {
+        this.expectedNetworkLatency = networkLatency;
     }
 
     @Override
