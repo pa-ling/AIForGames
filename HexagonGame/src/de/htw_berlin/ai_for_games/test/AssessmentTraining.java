@@ -43,7 +43,7 @@ class AssessmentTraining {
             throws IOException, InterruptedException {
         // start server
         ProcessBuilder processBuilder = new ProcessBuilder("java", "-Djava.library.path=lib/native", "-jar",
-                "gawihs.jar", "800", "600", timeOut, "noanim", "showcoords").directory(new File("lib"));
+                "gawihs.jar", "800", "600", timeOut, "noanim", "autoclose").directory(new File("lib"));
         Process process = processBuilder.start();
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         Thread.sleep(1000);
@@ -65,7 +65,7 @@ class AssessmentTraining {
         while ((line = reader.readLine()) != null) {
 
             if (line.startsWith("Game ends due to 10 uninterrupted staple moves")) {
-                System.err.println("[ERROR]" + line);
+                System.err.println("[ERROR] " + line);
             }
 
             if (!line.startsWith("Final result:")) {
