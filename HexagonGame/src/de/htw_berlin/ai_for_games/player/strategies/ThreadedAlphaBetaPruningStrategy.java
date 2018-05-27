@@ -37,9 +37,12 @@ public class ThreadedAlphaBetaPruningStrategy implements MoveStrategy {
 
         private final ThreadedAlphaBetaPruningStrategy caller;
 
+        private final MoveStrategy fallbackStrategy;
+
         public AlphaBetaPruningStrategyTask(String configPath, ThreadedAlphaBetaPruningStrategy caller) {
             super(configPath);
             this.caller = caller;
+            this.fallbackStrategy = new AssessedMoveStrategy(configPath);
         }
 
         /**
@@ -143,7 +146,29 @@ public class ThreadedAlphaBetaPruningStrategy implements MoveStrategy {
 
         @Override
         public void run() {
-            startAlphaBetaSearch();
+            if (this.enemies.isEmpty()) {
+                this.caller.setBestMove(this.fallbackStrategy.getBestMove());
+            } else {
+                startAlphaBetaSearch();
+            }
+        }
+
+        @Override
+        public void setBoard(GawihsBoard board) {
+            this.fallbackStrategy.setBoard(board);
+            super.setBoard(board);
+        }
+
+        @Override
+        public void setEnemies(List<GawihsPlayer> enemies) {
+            this.fallbackStrategy.setEnemies(enemies);
+            super.setEnemies(enemies);
+        }
+
+        @Override
+        public void setPlayer(GawihsPlayer player) {
+            this.fallbackStrategy.setPlayer(player);
+            super.setPlayer(player);
         }
 
         private void startAlphaBetaSearch() {
@@ -175,8 +200,8 @@ public class ThreadedAlphaBetaPruningStrategy implements MoveStrategy {
                 throw new IllegalStateException("No moves left");
             }
 
-            // fallback -> set first move found as best move to avoid having no moves at all
-            this.caller.setBestMove(possibleMoves.get(0));
+            // set a fallback move in case we can't determine a good move in time
+            this.caller.setBestMove(this.fallbackStrategy.getBestMove());
 
             // our first node is always a maximizing player
             long v = Long.MIN_VALUE;
