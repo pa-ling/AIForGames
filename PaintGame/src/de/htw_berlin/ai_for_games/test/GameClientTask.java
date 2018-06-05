@@ -13,7 +13,7 @@ class GameClientTask implements Runnable {
 
     @Override
     public void run() {
-        String[] args = { this.host, this.name, this.message};
+        String[] args = { this.host, this.name, this.message };
         ZpifubClient.main(args);
     }
 }
