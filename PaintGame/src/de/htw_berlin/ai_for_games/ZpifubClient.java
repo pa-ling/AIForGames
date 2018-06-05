@@ -6,7 +6,9 @@ import lenz.htw.zpifub.net.NetworkClient;
 public class ZpifubClient {
 
     public static void main(String[] args) {
-        NetworkClient client = new NetworkClient("127.0.0.1", "Teamname", "Gewinnnachricht");
+        String host = args[0], name = args[1], message = args[2];
+        
+        NetworkClient client = new NetworkClient(host, name, message);
         client.getMyPlayerNumber(); // 0 = rot, 1 = grün, 2 = blau
 
         client.getScore(0); // Punkte von rot
