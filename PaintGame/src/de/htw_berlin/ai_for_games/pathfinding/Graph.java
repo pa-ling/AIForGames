@@ -3,6 +3,8 @@ package de.htw_berlin.ai_for_games.pathfinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import lenz.htw.zpifub.Update;
+
 public class Graph {
 
     private static final int GRAPH_WIDTH = 10;
@@ -49,6 +51,39 @@ public class Graph {
         }
 
         return this.nodes.get(index);
+    }
+
+    /**
+     * Returns the {@link Node} which contains the given pixel.
+     *
+     * @param x
+     *            x coordinate of the pixel
+     * @param y
+     *            y coordinate of the pixel
+     * @return a node or {@code null} if the pixel is not found in this graph
+     */
+    public Node getNodeForPixelPosition(int x, int y) {
+        // TODO use function which maps a pixel to a node
+        return null;
+    }
+
+    public void setItemAsObstacle(Update update) {
+        // TODO set item as obstacle
+        // we know the item is bad
+        // set node value for pixel position to -infinity to mark it as obstacle
+    }
+
+    /**
+     * Update the color values inside the graph according to the update.
+     *
+     * @param update
+     *            update to apply to the graph
+     */
+    public void update(Update update) {
+        // TODO update graph color values
+        // check if update is relevant
+        // get the affected area
+        // update node and pixel values
     }
 
 }

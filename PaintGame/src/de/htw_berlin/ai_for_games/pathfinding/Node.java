@@ -42,7 +42,7 @@ public class Node {
         return true;
     }
 
-    public int getCost(final Node targetNode, final int modifier) {
+    public int getCost(final Node targetNode) {
         // sanity check
         if (targetNode.x != this.x && targetNode.x != this.x + 1 && targetNode.x != this.x - 1
                 || targetNode.y != this.y && targetNode.y != this.y + 1 && targetNode.y != this.y - 1) {
@@ -56,8 +56,8 @@ public class Node {
             return 0;
         }
 
-        // TODO this needs work
-        return modifier * targetNode.value;
+        // TODO cost function must be improved
+        return targetNode.value;
     }
 
     @Override
