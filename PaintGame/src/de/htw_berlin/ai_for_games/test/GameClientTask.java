@@ -1,6 +1,6 @@
 package de.htw_berlin.ai_for_games.test;
 
-import de.htw_berlin.ai_for_games.ZpifubClient;
+import de.htw_berlin.ai_for_games.ZpifubController;
 
 class GameClientTask implements Runnable {
     private final String host, name, message;
@@ -13,7 +13,6 @@ class GameClientTask implements Runnable {
 
     @Override
     public void run() {
-        String[] args = { this.host, this.name, this.message };
-        ZpifubClient.main(args);
+        new ZpifubController().startGame(this.host, this.name, this.message);
     }
 }
