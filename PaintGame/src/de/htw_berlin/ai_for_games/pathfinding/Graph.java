@@ -3,18 +3,20 @@ package de.htw_berlin.ai_for_games.pathfinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Graph {
+public class Graph {
 
-    /**
-     * Creates a new independent subgraph of this graph with the given points as
-     * frame.
-     *
-     * @param xTopLeft
-     * @param yTopLeft
-     * @param xBottomRight
-     * @param yBottomRight
-     */
-    public abstract Graph createSubgraph(int xTopLeft, int yTopLeft, int xBottomRight, int yBottomRight);
+    private static final int GRAPH_WIDTH = 10;
+
+    private final List<Node> nodes;
+
+    public Graph() {
+        this.nodes = new ArrayList<>();
+        for (int j = 0; j < GRAPH_WIDTH; j++) {
+            for (int i = 0; i < GRAPH_WIDTH; i++) {
+                this.nodes.add(new Node(i, j));
+            }
+        }
+    }
 
     /**
      * Returns all neighboring nodes of the given node. Must not contain
@@ -27,7 +29,6 @@ public abstract class Graph {
     public List<Node> getNeighbors(Node node) {
         List<Node> neighbors = new ArrayList<>();
         // TODO actually find the neighbors
-        // leave offset calculation to getNode method
         neighbors.removeIf(e -> e == null);
         return neighbors;
     }
@@ -41,6 +42,13 @@ public abstract class Graph {
      *            y coordinate of the node
      * @return a {@link Node} or {@code null} if the node is not inside this graph
      */
-    public abstract Node getNode(int x, int y);
+    public Node getNode(int x, int y) {
+        int index = GRAPH_WIDTH * y + x;
+        if (index > GRAPH_WIDTH * GRAPH_WIDTH - 1) {
+            return null;
+        }
+
+        return this.nodes.get(index);
+    }
 
 }

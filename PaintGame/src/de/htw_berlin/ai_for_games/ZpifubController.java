@@ -1,7 +1,6 @@
 package de.htw_berlin.ai_for_games;
 
 import de.htw_berlin.ai_for_games.pathfinding.Graph;
-import de.htw_berlin.ai_for_games.pathfinding.Maingraph;
 import lenz.htw.zpifub.Update;
 import lenz.htw.zpifub.net.NetworkClient;
 
@@ -16,7 +15,7 @@ public class ZpifubController {
         System.out.println(
                 "Client started with '" + host + "' as host, '" + name + "' as name and '" + message + "' as message.");
         // init
-        final Graph maingraph = new Maingraph();
+        final Graph maingraph = new Graph();
         NetworkClient client = new NetworkClient(host, name, message);
         // game loop
         while (client.isAlive()) {
