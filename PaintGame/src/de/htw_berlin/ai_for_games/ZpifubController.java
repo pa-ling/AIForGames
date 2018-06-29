@@ -8,6 +8,7 @@ import de.htw_berlin.ai_for_games.Bot.Bot;
 import de.htw_berlin.ai_for_games.Bot.LargeBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SmallBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SpraycanBot;
+import de.htw_berlin.ai_for_games.pathfinding.Color;
 import de.htw_berlin.ai_for_games.pathfinding.Graph;
 import lenz.htw.zpifub.Update;
 import lenz.htw.zpifub.net.NetworkClient;
@@ -19,8 +20,11 @@ public class ZpifubController {
         new ZpifubController().startGame(host, name, message);
     }
 
-    private Bot findBotNextToItem(Update update) {
+    private Bot findBotNextToItem(List<Bot> botList, Update update) {
         // TODO find bot which is next to the item
+        // get item position
+        // check if bots are in certain range of item (e.g.) 10 nodes or so
+        // what about enemy bots?
         return null;
     }
 
@@ -28,8 +32,8 @@ public class ZpifubController {
         System.out.println(
                 "Client started with '" + host + "' as host, '" + name + "' as name and '" + message + "' as message.");
         // init
-        final Graph colorGraph = new Graph();
-        final Graph obstacleGraph = new Graph();
+        final BoardInterface colorGraph = new Graph();
+        final BoardInterface obstacleGraph = new Graph();
         // TODO add strategies
         final Bot spraycan = new SpraycanBot(null, null, obstacleGraph, colorGraph);
         final Bot smallBrush = new SmallBrushBot(null, null, obstacleGraph, colorGraph);
@@ -37,6 +41,9 @@ public class ZpifubController {
         final List<Bot> botList = Arrays.asList(spraycan, smallBrush, largeBrush);
         final NetworkClient client = new NetworkClient(host, name, message);
         final int myPlayerNumber = client.getMyPlayerNumber();
+
+        colorGraph.setOurColor(
+                Arrays.stream(Color.values()).filter(c -> c.intValue == myPlayerNumber).findFirst().get().intValue);
 
         // game loop
         boolean graphsAreInitalized = false;
@@ -50,7 +57,7 @@ public class ZpifubController {
                 client.setMoveDirection(largeBrush.getBotNumber(), 0, 1);
 
                 // init graphs
-                // TODO loop over each pixel and set value of node
+                // TODO initialize obstacles
             }
 
             // begin game logic
@@ -59,21 +66,25 @@ public class ZpifubController {
                 System.out.print("Received Update:\n" + "position: (" + update.x + "," + update.y + ")\n" + "player: "
                         + update.player + "\n" + "bot: " + update.bot + "\n" + "powerup type: " + update.type + "\n");
 
-                // set item as prio target if necessary
-                if (update.type != null) {
-                    if (update.type.equals(ItemType.BOMB.powerUpType)
-                            || update.type.equals(ItemType.RAIN.powerUpType)) {
-                        Bot nextBot = findBotNextToItem(update);
-                        if (nextBot != null) {
-                            nextBot.setPriorityTarget(update);
-                        }
-                    } else {
-                        obstacleGraph.setItemAsObstacle(update);
-                        colorGraph.setItemAsObstacle(update);
-                    }
-                }
+                // update graph color values
+                // colorGraph.update(update, client);
 
-                // // TODO delete prio item
+                // set item as prio target if necessary
+                // TODO later: enable search for item
+                // if (update.type != null) {
+                // if (update.type.equals(ItemType.BOMB.powerUpType)
+                // || update.type.equals(ItemType.RAIN.powerUpType)) {
+                // Bot nextBot = findBotNextToItem(botList, update);
+                // if (nextBot != null) {
+                // nextBot.setPriorityTarget(update);
+                // }
+                // } else {
+                // obstacleGraph.setItemAsObstacle(update);
+                // colorGraph.setItemAsObstacle(update);
+                // }
+                // }
+
+                // // TODO later: delete prio item
                 // if (update said that an item was consumed && the item was good && the item
                 // was not consumed by us){
                 // the field has changed, we should calculate new targets
@@ -83,9 +94,7 @@ public class ZpifubController {
                 // });
                 // }
 
-                if (update.player != myPlayerNumber) {
-                    colorGraph.update(update);
-                } else {
+                if (update.player == myPlayerNumber) {
                     Optional<Bot> botToUpdate = botList.stream().filter(b -> b.getBotNumber() == update.bot)
                             .findFirst();
                     if (botToUpdate.isPresent()) {

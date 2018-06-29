@@ -2,6 +2,7 @@ package de.htw_berlin.ai_for_games.pathfinding;
 
 import java.util.List;
 
+import de.htw_berlin.ai_for_games.BoardInterface;
 import de.htw_berlin.ai_for_games.BotType;
 
 public interface PathfindingStrategy {
@@ -18,5 +19,5 @@ public interface PathfindingStrategy {
      * @return a List containing all nodes which must be passed in order to reach
      *         the target or {@code null} if no path was found.
      */
-    public List<Node> getPath(Graph graph, Node startNode, Node targetNode, BotType bot);
+    public List<Node> getPath(BoardInterface graph, Node startNode, Node targetNode, BotType bot);
 }

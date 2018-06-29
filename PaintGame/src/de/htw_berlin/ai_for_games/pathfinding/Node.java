@@ -7,8 +7,6 @@ package de.htw_berlin.ai_for_games.pathfinding;
  *
  */
 public class Node {
-    public static final int OBSTACLE_VALUE = Integer.MAX_VALUE;
-
     final int x;
 
     final int y;
@@ -18,6 +16,7 @@ public class Node {
     public Node(final int x, final int y) {
         this.x = x;
         this.y = y;
+        this.value = Color.WHITE.intValue;
     }
 
     @Override
@@ -40,24 +39,6 @@ public class Node {
             return false;
         }
         return true;
-    }
-
-    public int getCost(final Node targetNode) {
-        // sanity check
-        if (targetNode.x != this.x && targetNode.x != this.x + 1 && targetNode.x != this.x - 1
-                || targetNode.y != this.y && targetNode.y != this.y + 1 && targetNode.y != this.y - 1) {
-            throw new IllegalStateException(String.format(
-                    "Cannot calculate cost. The node %d, %d is not a direct neighbor of this node (%d, %d).",
-                    targetNode.x, targetNode.y, this.x, this.y));
-        }
-
-        // cost to oneself is zero
-        if (targetNode.equals(this)) {
-            return 0;
-        }
-
-        // TODO cost function must be improved
-        return targetNode.value;
     }
 
     @Override

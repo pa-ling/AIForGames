@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import de.htw_berlin.ai_for_games.BoardInterface;
 import de.htw_berlin.ai_for_games.BotType;
 
 public final class AStarSearch implements PathfindingStrategy {
@@ -43,7 +44,7 @@ public final class AStarSearch implements PathfindingStrategy {
     }
 
     @Override
-    public List<Node> getPath(Graph graph, Node startNode, Node targetNode, BotType bot) {
+    public List<Node> getPath(BoardInterface graph, Node startNode, Node targetNode, BotType bot) {
         // openList -> nodes to search
         final PriorityQueue<NodePriorityPair> openList = new PriorityQueue<>(Comparator.comparingInt(n -> n.priority));
         openList.add(new NodePriorityPair(startNode, 0));
@@ -64,7 +65,7 @@ public final class AStarSearch implements PathfindingStrategy {
             }
 
             for (final Node nextNode : graph.getNeighbors(currentNode)) {
-                Integer newCost = costs.get(currentNode) + currentNode.getCost(nextNode);
+                Integer newCost = costs.get(currentNode) + graph.getCost(currentNode, nextNode);
                 if (!costs.containsKey(nextNode) || newCost < costs.get(nextNode)) {
                     costs.put(nextNode, newCost);
                     int priority = newCost + calculateHeuristic(nextNode, targetNode);
@@ -76,7 +77,7 @@ public final class AStarSearch implements PathfindingStrategy {
 
         // check if path was found
         if (!cameFrom.containsKey(targetNode)) {
-            return null;
+            return new ArrayList<>();
         }
 
         // return path

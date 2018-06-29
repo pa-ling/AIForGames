@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import de.htw_berlin.ai_for_games.BoardInterface;
 import de.htw_berlin.ai_for_games.BotType;
 import de.htw_berlin.ai_for_games.Direction;
 import de.htw_berlin.ai_for_games.pathfinding.AStarSearch;
-import de.htw_berlin.ai_for_games.pathfinding.Graph;
 import de.htw_berlin.ai_for_games.pathfinding.Node;
 import de.htw_berlin.ai_for_games.pathfinding.PathfindingStrategy;
 import de.htw_berlin.ai_for_games.pathfinding.TargetLocationStrategy;
@@ -23,16 +23,17 @@ public abstract class Bot {
 
     private final PathfindingStrategy pathfindingStrategy;
 
-    private final Graph obstacleGraph;
+    private final BoardInterface obstacleGraph;
 
-    private final Graph colorGraph;
+    private final BoardInterface colorGraph;
 
     private final Queue<Node> path;
 
     private final Queue<Node> priorityPath;
 
-    public Bot(BotType botType, TargetLocationStrategy targetLocationStrategy, PathfindingStrategy pathfindingStrategy,
-            Graph obstacleGraph, Graph colorGraph) {
+    public Bot(final BotType botType, final TargetLocationStrategy targetLocationStrategy,
+            final PathfindingStrategy pathfindingStrategy, final BoardInterface obstacleGraph,
+            final BoardInterface colorGraph) {
         this.botType = botType;
         this.targetLocationStrategy = targetLocationStrategy;
         this.pathfindingStrategy = pathfindingStrategy;
@@ -49,14 +50,10 @@ public abstract class Bot {
 
     public void findNextTarget() {
         final Node targetNode = this.targetLocationStrategy.getNextTarget(this.colorGraph, this.botType);
-        List<Node> path = this.pathfindingStrategy.getPath(this.colorGraph, this.currentPosition, targetNode,
+        final List<Node> newPath = this.pathfindingStrategy.getPath(this.colorGraph, this.currentPosition, targetNode,
                 this.botType);
-        if (path == null) {
-            // TODO no path found, fallback or exception?
-        } else {
-            this.path.clear();
-            this.path.addAll(path);
-        }
+        this.path.clear();
+        this.path.addAll(newPath);
     }
 
     public int getBotNumber() {
@@ -87,18 +84,14 @@ public abstract class Bot {
     }
 
     public void setPriorityTarget(final Update update) {
-        Node targetNode = this.obstacleGraph.getNodeForPixelPosition(update.x, update.y);
-        List<Node> newPath = new AStarSearch().getPath(this.obstacleGraph, this.currentPosition, targetNode,
+        final Node targetNode = this.obstacleGraph.getNodeForPixelPosition(update.x, update.y);
+        final List<Node> newPath = new AStarSearch().getPath(this.obstacleGraph, this.currentPosition, targetNode,
                 this.botType);
-        if (this.path.isEmpty()) {
-            // TODO no path found, fallback or exception?
-        } else {
-            this.priorityPath.clear();
-            this.priorityPath.addAll(newPath);
-        }
+        this.priorityPath.clear();
+        this.priorityPath.addAll(newPath);
     }
 
-    public void updatePosition(Update update) {
+    public void updatePosition(final Update update) {
         this.currentPosition = this.obstacleGraph.getNodeForPixelPosition(update.x, update.y);
     }
 
