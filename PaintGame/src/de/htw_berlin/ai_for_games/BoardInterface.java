@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.htw_berlin.ai_for_games.pathfinding.Node;
 import lenz.htw.zpifub.Update;
+import lenz.htw.zpifub.net.NetworkClient;
 
 public interface BoardInterface {
 
@@ -64,12 +65,23 @@ public interface BoardInterface {
      */
     public void setItemAsObstacle(Update update);
 
+    // currently needed inside getCost method of the graph (not pushed) but I'm sure
+    // it will be needed in the new class too.
+    /**
+     * Set the {@link NetworkClient} for the board. Used in color calculation and
+     * obstacle detection.
+     *
+     * @param client
+     *            NetworkClient to set for this board
+     */
+    public void setNetworkClient(NetworkClient client);
+
     // ourColor is needed in getCost function
     /**
      * Makes the color of the current player known to the board.
      *
      * @param ourColor
-     *            ourColor coded as int
+     *            ourColor coded as integer
      */
     public void setOurColor(int ourColor);
 
