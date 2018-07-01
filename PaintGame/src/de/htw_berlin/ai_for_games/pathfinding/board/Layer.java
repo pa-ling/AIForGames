@@ -39,7 +39,7 @@ public class Layer {
         int targetNodeValue = this.nodes[x][y];
 
         if (targetNodeValue == Color.WHITE.intValue) {
-            return 128;
+            return 310;
         }
 
         if (targetNodeValue == Color.BLACK.intValue) {
