@@ -2,12 +2,7 @@ package de.htw_berlin.ai_for_games.pathfinding;
 
 public enum Color {
 
-    // TODO correct color player numbers and intValues
-    WHITE(-1, 16777215), //
-    BLACK(-1, 0), //
-    RED(0, 0), //
-    GREEN(1, 0), //
-    BLUE(2, 0);
+    WHITE(-1, 0x00FFFFFF), BLACK(-1, 0x00000000), RED(0, 0x00FF0000), GREEN(1, 0x0000FF00), BLUE(2, 0x000000FF);
 
     public final int playerNumber;
     public final int intValue;

@@ -7,16 +7,20 @@ package de.htw_berlin.ai_for_games.pathfinding;
  *
  */
 public class Node {
-    final int x;
 
-    final int y;
+    public final int x;
+    public final int y;
+    public int value;
 
-    int value;
-
-    public Node(final int x, final int y) {
+    public Node(int x, int y) {
         this.x = x;
         this.y = y;
         this.value = Color.WHITE.intValue;
+    }
+
+    public Node(int x, int y, int value) {
+        this(x, y);
+        this.value = value;
     }
 
     @Override
