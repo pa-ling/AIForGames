@@ -44,6 +44,8 @@ public class ZpifubController {
 
         quadTree.initNodes();
 
+        System.out.println("Finished initialization!");
+
         // game loop
         while (client.isAlive()) {
             Update update;
@@ -70,6 +72,8 @@ public class ZpifubController {
 
                     Direction dir = bot.getNextDirection();
                     client.setMoveDirection(bot.getBotNumber(), dir.x, dir.y);
+                    System.out
+                            .println("Direction sent for Bot" + bot.getBotNumber() + ": (" + dir.x + "," + dir.y + ")");
                 }
             }
         }
