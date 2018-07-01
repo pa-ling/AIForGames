@@ -108,4 +108,10 @@ public class Graph implements BoardInterface {
         }
     }
 
+    @Override
+    public void setNetworkClient(NetworkClient client) {
+        // TODO Auto-generated method stub
+
+    }
+
 }
