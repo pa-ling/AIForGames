@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.htw_berlin.ai_for_games.pathfinding.Color;
-import de.htw_berlin.ai_for_games.pathfinding.Node;
 import lenz.htw.zpifub.Update;
 import lenz.htw.zpifub.net.NetworkClient;
 
@@ -42,13 +41,18 @@ public class Layer {
 
     public int getCost(int x, int y) {
         int targetNodeValue = nodes[x][y];
+
+        if (targetNodeValue == Color.WHITE.intValue) {
+            return 128;
+        }
+
+        if (targetNodeValue == Color.BLACK.intValue) {
+            return Integer.MAX_VALUE;
+        }
+
         int blueValue = targetNodeValue & 0xFF;
         int greenValue = (targetNodeValue >> 8) & 0xFF;
         int redValue = (targetNodeValue >> 16) & 0xFF;
-
-        if (redValue == 255 && greenValue == 255 && blueValue == 255) { // Field is white
-            return 128;
-        }
 
         int costs = 510;
         if (playerColor == Color.RED) { // we are red
@@ -68,12 +72,12 @@ public class Layer {
         return costs;
     }
 
-    public List<Node> getNeighbors(int x, int y) {
-        List<Node> neighbours = new ArrayList<>(8);
+    public List<Pair> getNeighbors(int x, int y) {
+        List<Pair> neighbours = new ArrayList<>(8);
         for (int i = -1; i <= 1; i++) {
 
             int neighbourX = x + i;
-            if (neighbourX < 0 || neighbourX > this.size) { // OutOfBounds check
+            if (neighbourX < 0 || neighbourX >= this.size) { // OutOfBounds check
                 continue;
             }
 
@@ -84,18 +88,27 @@ public class Layer {
 
                 int neighbourY = y + j;
 
-                if (neighbourY < 0 || neighbourY > this.size) { // OutOfBounds check
+                if (neighbourY < 0 || neighbourY >= this.size) { // OutOfBounds check
                     continue;
                 }
 
-                neighbours.add(new Node(neighbourX, neighbourY, nodes[neighbourX][neighbourY]));
+                neighbours.add(new Pair(neighbourX, neighbourY));
             }
         }
         return neighbours;
     }
 
-    public Node getNodeForPixelPosition(int x, int y) {
-        return new Node(x / (size / 2), y / (size / 2)); // ???
+    public Pair getNodeForPixelPosition(int x, int y) {
+        int layerDifference = 10 - this.number;
+        int power = (int) Math.pow(2, layerDifference);
+        return new Pair(x / power, y / power);
+    }
+
+    public Pair getPixelPositionForNode(int x, int y) {
+        int layerDifference = 10 - this.number;
+        int power = (int) Math.pow(2, layerDifference);
+        // TODO: get center of node
+        return new Pair(x * power, y * power);
     }
 
     public void removeObstacleItem(Update update) {

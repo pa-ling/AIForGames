@@ -1,7 +1,6 @@
 package de.htw_berlin.ai_for_games.pathfinding.board;
 
 import de.htw_berlin.ai_for_games.pathfinding.Color;
-import de.htw_berlin.ai_for_games.pathfinding.Node;
 import lenz.htw.zpifub.net.NetworkClient;
 
 public class QuadTree {
@@ -27,8 +26,15 @@ public class QuadTree {
         return this.pathLayer;
     }
 
+    public void initNodes() {
+        updateLayer.updateNode(0, 0);
+        updateLayer.updateNode(1, 0);
+        updateLayer.updateNode(0, 1);
+        updateLayer.updateNode(1, 1);
+    }
+
     public void updateQuad(int x, int y) {
-        Node nodeToUpdate = updateLayer.getNodeForPixelPosition(x, y);
+        Pair nodeToUpdate = updateLayer.getNodeForPixelPosition(x, y);
         updateLayer.updateNode(nodeToUpdate.x, nodeToUpdate.y);
     }
 

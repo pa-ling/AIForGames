@@ -3,10 +3,10 @@ package de.htw_berlin.ai_for_games.Bot;
 import de.htw_berlin.ai_for_games.BotType;
 import de.htw_berlin.ai_for_games.pathfinding.board.QuadTree;
 
-public class LargeBrushBot extends Bot {
+public class SprayCanBot extends Bot {
 
-    public LargeBrushBot(QuadTree quadTree) {
-        super(BotType.LARGE_BRUSH, quadTree);
+    public SprayCanBot(QuadTree quadTree) {
+        super(BotType.SPRAY_CAN, quadTree);
     }
 
 }
