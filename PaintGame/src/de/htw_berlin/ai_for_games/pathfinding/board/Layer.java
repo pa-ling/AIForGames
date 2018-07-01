@@ -11,11 +11,20 @@ public class Layer {
 
     private final int number;
     private final int size;
-    private int[][] nodes;
-    private Layer bottomLayer;
+    private final int[][] nodes;
+    private final Layer bottomLayer;
 
-    private NetworkClient networkClient;
-    private Color playerColor;
+    private final NetworkClient networkClient;
+    private final Color playerColor;
+
+    public Layer(int number, Color playerColor, Layer bottomLayer) {
+        this.bottomLayer = bottomLayer;
+        this.number = number;
+        this.size = (int) Math.pow(2, this.number + 1);
+        this.nodes = new int[this.size][this.size];
+        this.playerColor = playerColor;
+        this.networkClient = null;
+    }
 
     public Layer(int number, Color playerColor, NetworkClient networkClient) {
         this.bottomLayer = null;
@@ -26,44 +35,32 @@ public class Layer {
         this.networkClient = networkClient;
     }
 
-    public Layer(int number, Color playerColor, Layer bottomLayer) {
-        this.bottomLayer = bottomLayer;
-        this.number = number;
-        this.size = (int) Math.pow(2, this.number + 1);
-        this.nodes = new int[size][size];
-        this.playerColor = playerColor;
-        this.networkClient = null;
-    }
-
-    public int getNumber() {
-        return this.number;
-    }
-
     public int getCost(int x, int y) {
-        int targetNodeValue = nodes[x][y];
+        int targetNodeValue = this.nodes[x][y];
 
         if (targetNodeValue == Color.WHITE.intValue) {
             return 128;
         }
 
         if (targetNodeValue == Color.BLACK.intValue) {
-            return Integer.MAX_VALUE;
+            // leave room for heuristic
+            return Integer.MAX_VALUE - 5000;
         }
 
         int blueValue = targetNodeValue & 0xFF;
-        int greenValue = (targetNodeValue >> 8) & 0xFF;
-        int redValue = (targetNodeValue >> 16) & 0xFF;
+        int greenValue = targetNodeValue >> 8 & 0xFF;
+        int redValue = targetNodeValue >> 16 & 0xFF;
 
         int costs = 510;
-        if (playerColor == Color.RED) { // we are red
+        if (this.playerColor == Color.RED) { // we are red
             costs += redValue;
             costs -= greenValue;
             costs -= blueValue;
-        } else if (playerColor == Color.GREEN) { // we are green
+        } else if (this.playerColor == Color.GREEN) { // we are green
             costs -= redValue;
             costs += greenValue;
             costs -= blueValue;
-        } else if (playerColor == Color.BLUE) { // we are blue
+        } else if (this.playerColor == Color.BLUE) { // we are blue
             costs -= redValue;
             costs -= greenValue;
             costs += blueValue;
@@ -104,21 +101,6 @@ public class Layer {
         return new Pair(x / power, y / power);
     }
 
-    public Pair getPixelPositionForNode(int x, int y) {
-        int layerDifference = 10 - this.number;
-        int power = (int) Math.pow(2, layerDifference);
-        // TODO: get center of node
-        return new Pair(x * power, y * power);
-    }
-
-    public void removeObstacleItem(Update update) {
-        // TODO Auto-generated method stub
-    }
-
-    public void setItemAsObstacle(Update update) {
-        // TODO Auto-generated method stub
-    }
-
     public Pair getNodePositionWithHighestCosts(int layerNumber) {
         Pair currentTargetWithHighestCost = new Pair(0, 0);
         int currentHighestCost = 0;
@@ -136,7 +118,7 @@ public class Layer {
             return currentTargetWithHighestCost;
         }
 
-        return bottomLayer.getNodePositionWithHighestCostsRecursive(
+        return this.bottomLayer.getNodePositionWithHighestCostsRecursive(
                 getSubnodesPositions(currentTargetWithHighestCost.x, currentTargetWithHighestCost.y), layerNumber);
 
     }
@@ -156,15 +138,26 @@ public class Layer {
             return currentTargetWithHighestCost;
         }
 
-        return bottomLayer.getNodePositionWithHighestCostsRecursive(
+        return this.bottomLayer.getNodePositionWithHighestCostsRecursive(
                 getSubnodesPositions(currentTargetWithHighestCost.x, currentTargetWithHighestCost.y), layerNumber);
 
+    }
+
+    public int getNumber() {
+        return this.number;
+    }
+
+    public Pair getPixelPositionForNode(int x, int y) {
+        int layerDifference = 10 - this.number;
+        int power = (int) Math.pow(2, layerDifference);
+        // TODO: get center of node
+        return new Pair(x * power, y * power);
     }
 
     private List<Pair> getSubnodesPositions(int x, int y) {
         List<Pair> subnodes = new ArrayList<Pair>(4);
 
-        if (bottomLayer == null) {
+        if (this.bottomLayer == null) {
             return subnodes;
         }
 
@@ -179,15 +172,23 @@ public class Layer {
         return subnodes;
     }
 
+    public void removeObstacleItem(Update update) {
+        // TODO Auto-generated method stub
+    }
+
+    public void setItemAsObstacle(Update update) {
+        // TODO Auto-generated method stub
+    }
+
     public int updateNode(int x, int y) {
-        if (bottomLayer == null) {
-            return networkClient.getBoard(x, y);
+        if (this.bottomLayer == null) {
+            return this.networkClient.getBoard(x, y);
         }
 
         List<Pair> subnodesIndices = getSubnodesPositions(x, y);
         int nodeValue = 0;
         for (Pair subnode : subnodesIndices) {
-            nodeValue += bottomLayer.updateNode(subnode.x, subnode.y);
+            nodeValue += this.bottomLayer.updateNode(subnode.x, subnode.y);
         }
         nodeValue = nodeValue / subnodesIndices.size();
 
