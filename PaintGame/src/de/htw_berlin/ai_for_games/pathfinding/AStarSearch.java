@@ -21,15 +21,21 @@ public final class AStarSearch {
             this.node = node;
             this.priority = priority;
         }
+
+        @Override
+        public String toString() {
+            return "NodePriorityPair [Node: " + this.node.x + ", " + this.node.y + "; Prio " + this.priority + "]";
+        }
     }
 
     private static List<Pair> addPredecessor(final List<Pair> path, final Map<Pair, Pair> cameFrom,
             final Pair startNode) {
         final Pair currentNode = path.get(0);
-        path.add(0, cameFrom.get(currentNode));
         if (currentNode.equals(startNode)) {
             return path;
         }
+
+        path.add(0, cameFrom.get(currentNode));
         return addPredecessor(path, cameFrom, startNode);
     }
 
