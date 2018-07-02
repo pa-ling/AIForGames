@@ -29,7 +29,8 @@ public class Layer {
         this.playerColor = playerColor;
         this.networkClient = null;
 
-        System.out.println(this.number + "{size: " + this.size + ", nodeSize:" + this.nodeSize + "}");
+        // System.out.println(this.number + "{size: " + this.size + ", nodeSize:" +
+        // this.nodeSize + "}");
     }
 
     public Layer(int number, Color playerColor, NetworkClient networkClient) {
@@ -41,7 +42,8 @@ public class Layer {
         this.playerColor = playerColor;
         this.networkClient = networkClient;
 
-        System.out.println(this.number + "{size: " + this.size + ", nodeSize:" + this.nodeSize + "}");
+        // System.out.println(this.number + "{size: " + this.size + ", nodeSize:" +
+        // this.nodeSize + "}");
     }
 
     public Layer getBottomLayer() {

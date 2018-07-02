@@ -5,22 +5,23 @@ import lenz.htw.zpifub.net.NetworkClient;
 
 public class QuadTree {
 
-    private final Layer[] layers;
-    private final Layer pathLayer;
-    private final Layer updateLayer;
+    private static final int PATH_LAYER_NUMBER = 6;
+    private static final int UPDATE_LAYER_NUMBER = 2;
+
+    private Layer pathLayer;
+    private Layer updateLayer;
 
     public QuadTree(Color playerColor, NetworkClient networkClient) {
-        this.layers = new Layer[Layer.ROCK_BOTTOM_LAYER_NUMBER + 1];
-        this.layers[Layer.ROCK_BOTTOM_LAYER_NUMBER] = new Layer(Layer.ROCK_BOTTOM_LAYER_NUMBER, playerColor,
-                networkClient);
-        Layer previousLayer = this.layers[Layer.ROCK_BOTTOM_LAYER_NUMBER];
-        for (int i = this.layers.length - 2; i >= 0; i--) {
-            this.layers[i] = new Layer(i, playerColor, previousLayer);
-            previousLayer = this.layers[i];
+        Layer currentLayer = new Layer(Layer.ROCK_BOTTOM_LAYER_NUMBER, playerColor, networkClient);
+        for (int i = Layer.ROCK_BOTTOM_LAYER_NUMBER - 1; i >= UPDATE_LAYER_NUMBER; i--) {
+            currentLayer = new Layer(i, playerColor, currentLayer);
+            if (i == UPDATE_LAYER_NUMBER) {
+                this.updateLayer = currentLayer;
+            }
+            if (i == PATH_LAYER_NUMBER) {
+                this.pathLayer = currentLayer;
+            }
         }
-
-        this.updateLayer = this.layers[1]; // Layer 0 is never updated, but this is fine.
-        this.pathLayer = this.layers[6];
     }
 
     public Layer getPathLayer() {
