@@ -33,10 +33,11 @@ public class QuadTree {
     }
 
     public void initNodes() {
-        this.updateLayer.updateNode(0, 0);
-        this.updateLayer.updateNode(1, 0);
-        this.updateLayer.updateNode(0, 1);
-        this.updateLayer.updateNode(1, 1);
+        for (int i = 0; i < this.updateLayer.size; i++) {
+            for (int j = 0; j < this.updateLayer.size; j++) {
+                this.updateLayer.updateNode(i, j);
+            }
+        }
     }
 
     public void updateQuad(int x, int y) {
