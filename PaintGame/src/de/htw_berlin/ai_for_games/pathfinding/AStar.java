@@ -59,6 +59,7 @@ public class AStar {
                     this.openSet.add(neighbour);
                 }
 
+                // TODO: make cost method a parameter
                 int tentativeGScore = this.gScore.get(current) + pathLayer.getCost(neighbour.x, neighbour.y);
                 Integer currentGScore = this.gScore.get(neighbour);
                 if (currentGScore != null && tentativeGScore >= currentGScore) {

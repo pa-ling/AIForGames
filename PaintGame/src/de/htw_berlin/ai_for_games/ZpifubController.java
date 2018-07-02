@@ -84,6 +84,7 @@ public class ZpifubController {
                         bot.findNextTarget();
                     }
 
+                    // TODO: check bot position
                     Pair direction = bot.getNextDirection();
                     client.setMoveDirection(bot.getBotNumber(), direction.x, direction.y);
                     System.out.println("Direction sent for Bot" + bot.getBotNumber() + ": (" + direction.x + ","
