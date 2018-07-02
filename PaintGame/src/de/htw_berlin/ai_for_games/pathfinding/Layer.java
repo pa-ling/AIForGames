@@ -1,9 +1,9 @@
-package de.htw_berlin.ai_for_games.pathfinding.board;
+package de.htw_berlin.ai_for_games.pathfinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.htw_berlin.ai_for_games.pathfinding.Color;
+import de.htw_berlin.ai_for_games.Pair;
 import lenz.htw.zpifub.Update;
 import lenz.htw.zpifub.net.NetworkClient;
 

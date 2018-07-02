@@ -8,7 +8,7 @@ import de.htw_berlin.ai_for_games.Bot.LargeBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SmallBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SprayCanBot;
 import de.htw_berlin.ai_for_games.pathfinding.Color;
-import de.htw_berlin.ai_for_games.pathfinding.board.QuadTree;
+import de.htw_berlin.ai_for_games.pathfinding.QuadTree;
 import lenz.htw.zpifub.Update;
 import lenz.htw.zpifub.net.NetworkClient;
 
@@ -70,10 +70,10 @@ public class ZpifubController {
                         bot.findNextTarget();
                     }
 
-                    Direction dir = bot.getNextDirection();
-                    client.setMoveDirection(bot.getBotNumber(), dir.x, dir.y);
-                    System.out
-                            .println("Direction sent for Bot" + bot.getBotNumber() + ": (" + dir.x + "," + dir.y + ")");
+                    Pair direction = bot.getNextDirection();
+                    client.setMoveDirection(bot.getBotNumber(), direction.x, direction.y);
+                    System.out.println("Direction sent for Bot" + bot.getBotNumber() + ": (" + direction.x + ","
+                            + direction.y + ")");
                 }
             }
         }

@@ -4,10 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import de.htw_berlin.ai_for_games.Direction;
+import de.htw_berlin.ai_for_games.Pair;
 import de.htw_berlin.ai_for_games.pathfinding.AStar;
-import de.htw_berlin.ai_for_games.pathfinding.board.Pair;
-import de.htw_berlin.ai_for_games.pathfinding.board.QuadTree;
+import de.htw_berlin.ai_for_games.pathfinding.QuadTree;
 import lenz.htw.zpifub.Update;
 
 public abstract class Bot {
@@ -49,14 +48,14 @@ public abstract class Bot {
         return this.currentPosition;
     }
 
-    public Direction getNextDirection() {
+    public Pair getNextDirection() {
         final Queue<Pair> pathToUse = this.priorityPath.isEmpty() ? this.path : this.priorityPath;
         Pair nextNode = pathToUse.poll();
         if (nextNode.equals(this.currentPosition)) {
             nextNode = pathToUse.poll();
         }
 
-        return new Direction(nextNode.x - currentPosition.x, nextNode.y - currentPosition.y);
+        return new Pair(nextNode.x - currentPosition.x, nextNode.y - currentPosition.y);
     }
 
     public boolean pathQueuesAreEmpty() {

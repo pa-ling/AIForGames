@@ -1,4 +1,4 @@
-package de.htw_berlin.ai_for_games.pathfinding.board;
+package de.htw_berlin.ai_for_games;
 
 public class Pair {
 

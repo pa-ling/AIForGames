@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.htw_berlin.ai_for_games.pathfinding.board.Layer;
-import de.htw_berlin.ai_for_games.pathfinding.board.Pair;
+import de.htw_berlin.ai_for_games.Pair;
 
 public class AStar {
 
