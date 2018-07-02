@@ -34,13 +34,14 @@ public class ZpifubController {
         // init
         final NetworkClient client = new NetworkClient(host, name, message);
         final int myPlayerNumber = client.getMyPlayerNumber();
-
         Color myColor = Arrays.stream(Color.values()).filter(c -> c.playerNumber == myPlayerNumber).findFirst().get();
+        System.out.println(name + " has the playerNumber " + myPlayerNumber + " i.e. " + myColor);
+
         final QuadTree quadTree = new QuadTree(myColor, client);
-        final Bot spraycan = new SprayCanBot(quadTree);
+        final Bot sprayCan = new SprayCanBot(quadTree);
         final Bot smallBrush = new SmallBrushBot(quadTree);
         final Bot largeBrush = new LargeBrushBot(quadTree);
-        final List<Bot> botList = Arrays.asList(spraycan, smallBrush, largeBrush);
+        final List<Bot> botList = Arrays.asList(sprayCan, smallBrush, largeBrush);
 
         quadTree.initNodes();
 
