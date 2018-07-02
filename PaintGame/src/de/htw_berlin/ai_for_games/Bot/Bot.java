@@ -6,7 +6,7 @@ import java.util.Queue;
 
 import de.htw_berlin.ai_for_games.BotType;
 import de.htw_berlin.ai_for_games.Direction;
-import de.htw_berlin.ai_for_games.pathfinding.AStarSearch;
+import de.htw_berlin.ai_for_games.pathfinding.AStar;
 import de.htw_berlin.ai_for_games.pathfinding.board.Pair;
 import de.htw_berlin.ai_for_games.pathfinding.board.QuadTree;
 import lenz.htw.zpifub.Update;
@@ -37,8 +37,7 @@ public abstract class Bot {
 
     public void findNextTarget() {
         Pair targetNode = this.quadTree.getTargetOnPathLayer();
-        List<Pair> newPath = new AStarSearch().getPath(this.quadTree.getPathLayer(), currentPosition, targetNode,
-                this.botType);
+        List<Pair> newPath = new AStar().getPath(this.quadTree.getPathLayer(), currentPosition, targetNode);
         this.path.clear();
         this.path.addAll(newPath);
     }
