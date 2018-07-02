@@ -27,7 +27,7 @@ public class QuadTree {
         }
     }
 
-    public Layer getPathLayer() {
+    public PathLayer getPathLayer() {
         return this.pathLayer;
     }
 
@@ -47,6 +47,16 @@ public class QuadTree {
     public void updateQuad(int x, int y) {
         Pair nodeToUpdate = this.updateLayer.getNodeForPixelPosition(x, y);
         this.updateLayer.updateNode(nodeToUpdate.x, nodeToUpdate.y);
+    }
+
+    public void removeObstacleFromPathLayer(int x, int y) {
+        Pair obstacle = this.pathLayer.getNodeForPixelPosition(x, y);
+        pathLayer.removeObstacle(obstacle.x, obstacle.y);
+    }
+
+    public void addObstacleToPathLayer(int x, int y) {
+        Pair obstacle = this.pathLayer.getNodeForPixelPosition(x, y);
+        pathLayer.addObstacle(obstacle.x, obstacle.y);
     }
 
 }

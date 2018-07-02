@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.htw_berlin.ai_for_games.Pair;
-import lenz.htw.zpifub.Update;
 import lenz.htw.zpifub.net.NetworkClient;
 
 public class Layer {
@@ -191,14 +190,6 @@ public class Layer {
         subnodes.add(new Pair(rootX + 1, rootY + 1));
 
         return subnodes;
-    }
-
-    public void removeObstacleItem(Update update) {
-        // TODO Auto-generated method stub
-    }
-
-    public void setItemAsObstacle(Update update) {
-        // TODO Auto-generated method stub
     }
 
     public int updateNode(int x, int y) {

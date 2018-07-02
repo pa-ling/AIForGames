@@ -9,6 +9,7 @@ import de.htw_berlin.ai_for_games.Bot.SmallBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SprayCanBot;
 import de.htw_berlin.ai_for_games.pathfinding.Color;
 import de.htw_berlin.ai_for_games.pathfinding.QuadTree;
+import lenz.htw.zpifub.PowerupType;
 import lenz.htw.zpifub.Update;
 import lenz.htw.zpifub.net.NetworkClient;
 
@@ -54,8 +55,20 @@ public class ZpifubController {
                 System.out.print("Received Update:\n" + "position: (" + update.x + "," + update.y + ")\n" + "player: "
                         + update.player + "\n" + "bot: " + update.bot + "\n" + "powerup type: " + update.type + "\n");
 
-                if (update.player != -1) {
+                if (update.type == null) {
                     quadTree.updateQuad(update.x, update.y);
+                } else if (update.player == -1) {
+                    if (update.type == PowerupType.SLOW) {
+                        quadTree.addObstacleToPathLayer(update.x, update.y);
+                    } else {
+                        // TODO: send Bot with shortest Path to good item
+                    }
+                } else {
+                    if (update.type == PowerupType.SLOW) {
+                        quadTree.removeObstacleFromPathLayer(update.x, update.y);
+                    } else {
+                        // TODO: find new target
+                    }
                 }
 
                 // our bots

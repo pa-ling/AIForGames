@@ -39,6 +39,14 @@ public class PathLayer extends Layer {
         return super.getCost(x, y);
     }
 
+    public void removeObstacle(int x, int y) {
+        this.obstacles.remove(new Pair(x, y));
+    }
+
+    public void addObstacle(int x, int y) {
+        this.obstacles.add(new Pair(x, y));
+    }
+
     public void setInitalized(boolean initalized) {
         this.initalized = initalized;
     }
