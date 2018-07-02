@@ -11,8 +11,9 @@ public class Layer {
 
     static final int ROCK_BOTTOM_LAYER_NUMBER = 10;
 
+    public final int size;
+
     private final int number;
-    private final int size;
     private final int nodeSize;
     private final int[][] nodes;
     private final Layer bottomLayer;
@@ -44,10 +45,6 @@ public class Layer {
 
         // System.out.println(this.number + "{size: " + this.size + ", nodeSize:" +
         // this.nodeSize + "}");
-    }
-
-    public Layer getBottomLayer() {
-        return this.bottomLayer;
     }
 
     public int getCost(int x, int y) {
@@ -82,6 +79,16 @@ public class Layer {
         }
 
         return costs;
+    }
+
+    public int getCostWithoutColors(int x, int y) {
+        int targetNodeValue = this.nodes[x][y];
+        if (targetNodeValue == Color.BLACK.intValue) {
+            // leave room for heuristic
+            return Integer.MAX_VALUE - 5000;
+        }
+
+        return 1;
     }
 
     public List<Pair> getNeighbors(int x, int y) {
