@@ -9,8 +9,11 @@ import lenz.htw.zpifub.net.NetworkClient;
 
 public class Layer {
 
+    static final int ROCK_BOTTOM_LAYER_NUMBER = 10;
+
     private final int number;
     private final int size;
+    private final int nodeSize;
     private final int[][] nodes;
     private final Layer bottomLayer;
 
@@ -20,19 +23,29 @@ public class Layer {
     public Layer(int number, Color playerColor, Layer bottomLayer) {
         this.bottomLayer = bottomLayer;
         this.number = number;
-        this.size = (int) Math.pow(2, this.number + 1);
+        this.size = (int) Math.pow(2, this.number);
+        this.nodeSize = (int) Math.pow(2, Layer.ROCK_BOTTOM_LAYER_NUMBER - this.number);
         this.nodes = new int[this.size][this.size];
         this.playerColor = playerColor;
         this.networkClient = null;
+
+        System.out.println(this.number + "{size: " + this.size + ", nodeSize:" + this.nodeSize + "}");
     }
 
     public Layer(int number, Color playerColor, NetworkClient networkClient) {
         this.bottomLayer = null;
         this.number = number;
         this.size = 1024;
+        this.nodeSize = 1;
         this.nodes = null;
         this.playerColor = playerColor;
         this.networkClient = networkClient;
+
+        System.out.println(this.number + "{size: " + this.size + ", nodeSize:" + this.nodeSize + "}");
+    }
+
+    public Layer getBottomLayer() {
+        return this.bottomLayer;
     }
 
     public int getCost(int x, int y) {
@@ -150,8 +163,7 @@ public class Layer {
     public Pair getPixelPositionForNode(int x, int y) {
         int layerDifference = 10 - this.number;
         int power = (int) Math.pow(2, layerDifference);
-        // TODO: get center of node
-        return new Pair(x * power, y * power);
+        return new Pair(x * power + nodeSize / 2, y * power + nodeSize / 2);
     }
 
     private List<Pair> getSubnodesPositions(int x, int y) {
