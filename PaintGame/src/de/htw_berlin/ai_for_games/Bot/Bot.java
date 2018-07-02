@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import de.htw_berlin.ai_for_games.BotType;
 import de.htw_berlin.ai_for_games.Direction;
 import de.htw_berlin.ai_for_games.pathfinding.AStar;
 import de.htw_berlin.ai_for_games.pathfinding.board.Pair;

@@ -1,4 +1,4 @@
-package de.htw_berlin.ai_for_games;
+package de.htw_berlin.ai_for_games.Bot;
 
 public enum BotType {
 

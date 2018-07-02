@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import de.htw_berlin.ai_for_games.BotType;
+import de.htw_berlin.ai_for_games.Bot.BotType;
 import de.htw_berlin.ai_for_games.pathfinding.board.Layer;
 import de.htw_berlin.ai_for_games.pathfinding.board.Pair;
 
