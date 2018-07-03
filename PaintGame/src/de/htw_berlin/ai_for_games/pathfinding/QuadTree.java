@@ -32,7 +32,7 @@ public class QuadTree {
     }
 
     public Pair getTargetOnPathLayer() {
-        return this.updateLayer.getNodePositionWithHighestCosts(this.pathLayer.getNumber());
+        return this.updateLayer.getNodePositionWithLowestCosts(this.pathLayer.getNumber());
     }
 
     public void initNodes() {

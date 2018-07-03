@@ -49,15 +49,6 @@ public class Layer {
     public int getCost(int x, int y) {
         int targetNodeValue = this.nodes[x][y];
 
-        if (targetNodeValue == Color.WHITE.intValue) {
-            return 310;
-        }
-
-        if (targetNodeValue == Color.BLACK.intValue) {
-            // leave room for heuristic
-            return Integer.MAX_VALUE - 5000;
-        }
-
         int blueValue = targetNodeValue & 0xFF;
         int greenValue = targetNodeValue >> 8 & 0xFF;
         int redValue = targetNodeValue >> 16 & 0xFF;
@@ -122,45 +113,45 @@ public class Layer {
         return new Pair(x / power, y / power);
     }
 
-    public Pair getNodePositionWithHighestCosts(int layerNumber) {
-        Pair currentTargetWithHighestCost = new Pair(0, 0);
-        int currentHighestCost = 0;
+    public Pair getNodePositionWithLowestCosts(int layerNumber) {
+        Pair currentTargetWithLowestCost = new Pair(0, 0);
+        int currentLowestCost = Integer.MAX_VALUE;
         for (int i = 0; i < this.size; i++) {
             for (int j = 0; j < this.size; j++) {
                 int currentCost = getCost(i, j);
-                if (currentHighestCost < currentCost) {
-                    currentHighestCost = currentCost;
-                    currentTargetWithHighestCost = new Pair(i, j);
+                if (currentLowestCost > currentCost) {
+                    currentLowestCost = currentCost;
+                    currentTargetWithLowestCost = new Pair(i, j);
                 }
             }
         }
 
         if (this.number == layerNumber) {
-            return currentTargetWithHighestCost;
+            return currentTargetWithLowestCost;
         }
 
-        return this.bottomLayer.getNodePositionWithHighestCostsRecursive(
-                getSubnodesPositions(currentTargetWithHighestCost.x, currentTargetWithHighestCost.y), layerNumber);
+        return this.bottomLayer.getNodePositionWithLowestCostsRecursive(
+                getSubnodesPositions(currentTargetWithLowestCost.x, currentTargetWithLowestCost.y), layerNumber);
 
     }
 
-    private Pair getNodePositionWithHighestCostsRecursive(List<Pair> nodePositions, int layerNumber) {
-        Pair currentTargetWithHighestCost = new Pair(0, 0);
-        int currentHighestCost = 0;
+    private Pair getNodePositionWithLowestCostsRecursive(List<Pair> nodePositions, int layerNumber) {
+        Pair currentTargetWithLowestCost = new Pair(0, 0);
+        int currentLowestCost = Integer.MAX_VALUE;
         for (Pair nodePosition : nodePositions) {
             int currentCost = getCost(nodePosition.x, nodePosition.y);
-            if (currentHighestCost < currentCost) {
-                currentHighestCost = currentCost;
-                currentTargetWithHighestCost = nodePosition;
+            if (currentLowestCost > currentCost) {
+                currentLowestCost = currentCost;
+                currentTargetWithLowestCost = nodePosition;
             }
         }
 
         if (this.number == layerNumber) {
-            return currentTargetWithHighestCost;
+            return currentTargetWithLowestCost;
         }
 
-        return this.bottomLayer.getNodePositionWithHighestCostsRecursive(
-                getSubnodesPositions(currentTargetWithHighestCost.x, currentTargetWithHighestCost.y), layerNumber);
+        return this.bottomLayer.getNodePositionWithLowestCostsRecursive(
+                getSubnodesPositions(currentTargetWithLowestCost.x, currentTargetWithLowestCost.y), layerNumber);
 
     }
 
