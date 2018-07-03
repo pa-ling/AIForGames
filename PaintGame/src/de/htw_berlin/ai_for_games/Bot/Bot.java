@@ -49,17 +49,28 @@ public abstract class Bot {
     }
 
     public Pair getNextDirection() {
-        final Queue<Pair> pathToUse = this.priorityPath.isEmpty() ? this.path : this.priorityPath;
-        Pair nextNode = pathToUse.poll();
-        if (nextNode.equals(this.currentPosition)) {
-            nextNode = pathToUse.poll();
+        Pair nextNode = this.path.peek();
+
+        if (checkPointReached(this.currentPosition.x, this.currentPosition.y)) {
+            this.path.poll();
+            if (this.path.isEmpty()) {
+                findNextTarget();
+            }
+            nextNode = this.path.poll();
         }
 
         return new Pair(nextNode.x - currentPosition.x, nextNode.y - currentPosition.y);
     }
 
-    public boolean pathQueuesAreEmpty() {
-        return this.priorityPath.isEmpty() && this.path.isEmpty();
+    private boolean checkPointReached(int x, int y) {
+        boolean xReached = this.currentPosition.x == x;
+        boolean yReached = this.currentPosition.y == y;
+
+        if (xReached && yReached) {
+            return true;
+        }
+
+        return false;
     }
 
     public void setPriorityTarget(final Update update) {

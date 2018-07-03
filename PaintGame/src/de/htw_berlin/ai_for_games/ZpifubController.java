@@ -76,14 +76,7 @@ public class ZpifubController {
 
                     // find bot in update and get bot object
                     Bot bot = botList.stream().filter(b -> b.getBotNumber() == update.bot).findFirst().get();
-
                     bot.updatePosition(update.x, update.y);
-
-                    if (bot.pathQueuesAreEmpty()) {
-                        bot.findNextTarget(); // bot has most likely reached it's destination
-                    }
-
-                    // TODO: check bot position
                     Pair direction = bot.getNextDirection();
                     client.setMoveDirection(bot.getBotNumber(), direction.x, direction.y);
                     System.out.println("Direction sent for Bot" + bot.getBotNumber() + ": (" + direction.x + ","
