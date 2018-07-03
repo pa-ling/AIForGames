@@ -77,11 +77,10 @@ public class ZpifubController {
                     // find bot in update and get bot object
                     Bot bot = botList.stream().filter(b -> b.getBotNumber() == update.bot).findFirst().get();
 
-                    bot.updatePosition(update);
+                    bot.updatePosition(update.x, update.y);
 
                     if (bot.pathQueuesAreEmpty()) {
-                        // bot has most likely reached it's destination
-                        bot.findNextTarget();
+                        bot.findNextTarget(); // bot has most likely reached it's destination
                     }
 
                     // TODO: check bot position

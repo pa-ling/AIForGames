@@ -66,8 +66,8 @@ public abstract class Bot {
         // TODO: Implement
     }
 
-    public void updatePosition(final Update update) {
-        this.currentPosition = this.quadTree.getPathLayer().getNodeForPixelPosition(update.x, update.y);
+    public void updatePosition(int x, int y) {
+        this.currentPosition = this.quadTree.getPathLayer().getNodeForPixelPosition(x, y);
     }
 
 }
