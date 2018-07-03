@@ -39,6 +39,16 @@ public class PathLayer extends Layer {
         return super.getCost(x, y);
     }
 
+    @Override
+    public int getCostWithoutColors(int x, int y) {
+        if (this.obstacles.contains(new Pair(x, y))) {
+            // leave room for heuristic
+            return Integer.MAX_VALUE - 5000;
+        }
+
+        return 1;
+    }
+
     public void removeObstacle(int x, int y) {
         this.obstacles.remove(new Pair(x, y));
     }
