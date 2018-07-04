@@ -7,7 +7,6 @@ import java.util.Queue;
 import de.htw_berlin.ai_for_games.Pair;
 import de.htw_berlin.ai_for_games.pathfinding.AStar;
 import de.htw_berlin.ai_for_games.pathfinding.QuadTree;
-import lenz.htw.zpifub.Update;
 
 public abstract class Bot {
 
@@ -19,14 +18,23 @@ public abstract class Bot {
 
     private final Queue<Pair> path;
 
-    private final Queue<Pair> priorityPath;
+    private final Queue<Pair> pathToItem;
+
+    private boolean chasesItem;
 
     public Bot(final BotType botType, final QuadTree quadTree) {
         this.botType = botType;
         this.quadTree = quadTree;
 
         this.path = new LinkedList<>();
-        this.priorityPath = new LinkedList<>();
+        this.pathToItem = new LinkedList<>();
+    }
+
+    private void calculatePath(int x, int y) {
+        List<Pair> newPath = AStar.getPathConsideringColors(this.quadTree.getPathLayer(), this.currentPosition,
+                new Pair(x, y));
+        this.path.clear();
+        this.path.addAll(newPath);
     }
 
     private boolean checkPointReached(int x, int y) {
@@ -40,24 +48,28 @@ public abstract class Bot {
         return false;
     }
 
-    public void deletePriorityTarget() {
-        this.priorityPath.clear();
-    }
-
-    public void findNextTarget() {
+    private void findNextTargetAndCalculatePath() {
         Pair targetNode = this.quadTree.getTargetOnPathLayer();
-        List<Pair> newPath = AStar.getPathConsideringColors(this.quadTree.getPathLayer(), this.currentPosition,
-                targetNode);
-        this.path.clear();
-        this.path.addAll(newPath);
+        calculatePath(targetNode.x, targetNode.y);
     }
 
     public int getBotNumber() {
         return this.botType.number;
     }
 
-    public Pair getCurrentPosition() {
-        return this.currentPosition;
+    public BotType getBotType() {
+        return this.botType;
+    }
+
+    public int getDistanceToItem(int x, int y) {
+        List<Pair> newPath = AStar.getPathWithoutConsideringColors(this.quadTree.getPathLayer(), this.currentPosition,
+                new Pair(x, y));
+
+        // cache this path in case we need to use it later
+        this.pathToItem.clear();
+        this.pathToItem.addAll(newPath);
+
+        return this.pathToItem.size();
     }
 
     public Pair getNextDirection() {
@@ -66,7 +78,11 @@ public abstract class Bot {
         if (checkPointReached(this.currentPosition.x, this.currentPosition.y)) {
             this.path.poll();
             if (this.path.isEmpty()) {
-                findNextTarget();
+                if (this.chasesItem) {
+                    this.chasesItem = false;
+                    System.out.println("Bot reached item.");
+                }
+                findNextTargetAndCalculatePath();
             }
             nextNode = this.path.poll();
         }
@@ -74,8 +90,19 @@ public abstract class Bot {
         return new Pair(nextNode.x - this.currentPosition.x, nextNode.y - this.currentPosition.y);
     }
 
-    public void setPriorityTarget(final Update update) {
-        // TODO: Implement
+    public boolean isChasesItem() {
+        return this.chasesItem;
+    }
+
+    public void removeItemAsTargetAndFindNextTarget() {
+        this.chasesItem = false;
+        findNextTargetAndCalculatePath();
+    }
+
+    public void setItemAsTarget() {
+        this.chasesItem = true;
+        this.path.clear();
+        this.path.addAll(this.pathToItem);
     }
 
     public void updatePosition(int x, int y) {

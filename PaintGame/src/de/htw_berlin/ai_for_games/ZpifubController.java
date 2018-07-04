@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.htw_berlin.ai_for_games.Bot.Bot;
+import de.htw_berlin.ai_for_games.Bot.BotType;
 import de.htw_berlin.ai_for_games.Bot.LargeBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SmallBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SprayCanBot;
@@ -20,12 +21,22 @@ public class ZpifubController {
         new ZpifubController().startGame(host, name, message);
     }
 
-    private Bot findBotNextToItem(List<Bot> botList, Update update) {
-        // TODO find bot which is next to the item
-        // get item position
-        // check if bots are in certain range of item (e.g.) 10 nodes or so
-        // what about enemy bots?
-        return null;
+    private Bot findBotNextToItem(List<Bot> botList, int x, int y) {
+        // TODO: what about enemy bots? should we calculate a path for them too and see
+        // if we're faster?
+        int lowestDistanceToItem = Integer.MAX_VALUE;
+        Bot botToUse = botList.get(0);
+        for (final Bot bot : botList) {
+            final int distanceToItem = bot.getDistanceToItem(x, y);
+            if (distanceToItem < lowestDistanceToItem || distanceToItem == lowestDistanceToItem && //
+                    (botToUse.getBotType().equals(BotType.LARGE_BRUSH)
+                            || botToUse.getBotType().equals(BotType.SMALL_BRUSH)
+                                    && bot.getBotType().equals(BotType.SPRAY_CAN))) {
+                lowestDistanceToItem = distanceToItem;
+                botToUse = bot;
+            }
+        }
+        return botToUse;
     }
 
     public void startGame(String host, String name, String message) {
@@ -58,25 +69,37 @@ public class ZpifubController {
                 if (update.type == null) {
                     quadTree.updateQuad(update.x, update.y);
                 } else if (update.player == -1) {
+                    // item handling
                     if (update.type == PowerupType.SLOW) {
                         quadTree.addObstacleToPathLayer(update.x, update.y);
                     } else {
-                        // TODO: send Bot with shortest Path to good item
+                        Bot bot = findBotNextToItem(botList, update.x, update.y);
+                        bot.setItemAsTarget();
+                        System.out.println(
+                                "Bot: " + bot.getBotNumber() + " of player " + myPlayerNumber + " wants to go to item "
+                                        + update.type.toString() + " (" + update.x + "; " + update.y + ").");
                     }
                 } else {
                     if (update.type == PowerupType.SLOW) {
                         quadTree.removeObstacleFromPathLayer(update.x, update.y);
                     } else {
-                        // TODO: find new target
+                        for (Bot bot : botList) {
+                            if (bot.isChasesItem()) {
+                                bot.removeItemAsTargetAndFindNextTarget();
+                                System.out.println("Bot: " + bot.getBotNumber() + " of player " + myPlayerNumber
+                                        + " forgot about item " + update.type.toString() + " (" + update.x + "; "
+                                        + update.y + ") consumed by player " + update.player + " .");
+                            }
+                        }
                     }
                 }
 
                 // our bots
                 if (update.player == myPlayerNumber) {
-
                     // find bot in update and get bot object
                     Bot bot = botList.stream().filter(b -> b.getBotNumber() == update.bot).findFirst().get();
                     bot.updatePosition(update.x, update.y);
+
                     Pair direction = bot.getNextDirection();
                     client.setMoveDirection(bot.getBotNumber(), direction.x, direction.y);
                     System.out.println("Direction sent for Bot" + bot.getBotNumber() + ": (" + direction.x + ","
