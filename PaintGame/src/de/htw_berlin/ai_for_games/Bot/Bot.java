@@ -15,7 +15,7 @@ public abstract class Bot {
 
     private final BotType botType;
 
-    private QuadTree quadTree;
+    private final QuadTree quadTree;
 
     private final Queue<Pair> path;
 
@@ -29,13 +29,25 @@ public abstract class Bot {
         this.priorityPath = new LinkedList<>();
     }
 
+    private boolean checkPointReached(int x, int y) {
+        boolean xReached = this.currentPosition.x == x;
+        boolean yReached = this.currentPosition.y == y;
+
+        if (xReached && yReached) {
+            return true;
+        }
+
+        return false;
+    }
+
     public void deletePriorityTarget() {
         this.priorityPath.clear();
     }
 
     public void findNextTarget() {
         Pair targetNode = this.quadTree.getTargetOnPathLayer();
-        List<Pair> newPath = new AStar().getPath(this.quadTree.getPathLayer(), currentPosition, targetNode);
+        List<Pair> newPath = AStar.getPathConsideringColors(this.quadTree.getPathLayer(), this.currentPosition,
+                targetNode);
         this.path.clear();
         this.path.addAll(newPath);
     }
@@ -59,18 +71,7 @@ public abstract class Bot {
             nextNode = this.path.poll();
         }
 
-        return new Pair(nextNode.x - currentPosition.x, nextNode.y - currentPosition.y);
-    }
-
-    private boolean checkPointReached(int x, int y) {
-        boolean xReached = this.currentPosition.x == x;
-        boolean yReached = this.currentPosition.y == y;
-
-        if (xReached && yReached) {
-            return true;
-        }
-
-        return false;
+        return new Pair(nextNode.x - this.currentPosition.x, nextNode.y - this.currentPosition.y);
     }
 
     public void setPriorityTarget(final Update update) {

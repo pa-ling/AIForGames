@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import de.htw_berlin.ai_for_games.Pair;
 
@@ -29,7 +30,8 @@ public final class AStar {
         return currentNodeWithLowestFScore;
     }
 
-    public static List<Pair> getPath(final Layer pathLayer, final Pair start, final Pair target) {
+    private static List<Pair> getPath(final Layer pathLayer, final BiFunction<Integer, Integer, Integer> costFunction,
+            final Pair start, final Pair target) {
         final Set<Pair> closedSet = new HashSet<>();
         final Set<Pair> openSet = new HashSet<>();
         final Map<Pair, Pair> cameFrom = new HashMap<>();
@@ -59,7 +61,7 @@ public final class AStar {
                     openSet.add(neighbour);
                 }
 
-                final int tentativeGScore = gScore.get(current) + pathLayer.getCost(neighbour.x, neighbour.y);
+                final int tentativeGScore = gScore.get(current) + costFunction.apply(neighbour.x, neighbour.y);
                 final Integer currentGScore = gScore.get(neighbour);
                 if (currentGScore != null && tentativeGScore >= currentGScore) {
                     continue;
@@ -74,6 +76,15 @@ public final class AStar {
 
         System.out.println("Das war wohl nichts mit dem A* :(");
         return new ArrayList<>();
+    }
+
+    public static List<Pair> getPathConsideringColors(final Layer pathLayer, final Pair start, final Pair target) {
+        return getPath(pathLayer, pathLayer::getCost, start, target);
+    }
+
+    public static List<Pair> getPathWithoutConsideringColors(final Layer pathLayer, final Pair start,
+            final Pair target) {
+        return getPath(pathLayer, pathLayer::getCostWithoutColors, start, target);
     }
 
     private static List<Pair> reconstructPath(Pair current, final Map<Pair, Pair> cameFrom) {
