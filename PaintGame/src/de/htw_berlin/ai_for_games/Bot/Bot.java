@@ -30,6 +30,9 @@ public abstract class Bot {
     }
 
     private boolean checkPointReached(int x, int y) {
+        // FIXME this needs to bea bale to deal with lags
+        // it could be that we are past the current node
+        // we need to take our current direction into consideration
         boolean xReached = this.currentPosition.x == x;
         boolean yReached = this.currentPosition.y == y;
 
@@ -63,7 +66,7 @@ public abstract class Bot {
     public Pair getNextDirection() {
         Pair nextNode = this.path.peek();
 
-        if (checkPointReached(this.currentPosition.x, this.currentPosition.y)) {
+        if (nextNode == null || checkPointReached(nextNode.x, nextNode.y)) {
             this.path.poll();
             if (this.path.isEmpty()) {
                 findNextTarget();
