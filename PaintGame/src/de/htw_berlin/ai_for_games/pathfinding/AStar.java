@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import de.htw_berlin.ai_for_games.Pair;
 
@@ -30,8 +29,7 @@ public final class AStar {
         return currentNodeWithLowestFScore;
     }
 
-    public static List<Pair> getPath(final Layer pathLayer, final BiFunction<Integer, Integer, Integer> costFunction,
-            final Pair start, final Pair target) {
+    public static List<Pair> getPath(final Layer pathLayer, final Pair start, final Pair target) {
         final Set<Pair> closedSet = new HashSet<>();
         final Set<Pair> openSet = new HashSet<>();
         final Map<Pair, Pair> cameFrom = new HashMap<>();
@@ -61,7 +59,7 @@ public final class AStar {
                     openSet.add(neighbour);
                 }
 
-                final int tentativeGScore = gScore.get(current) + costFunction.apply(neighbour.x, neighbour.y);
+                final int tentativeGScore = gScore.get(current) + pathLayer.getCost(neighbour.x, neighbour.y);
                 final Integer currentGScore = gScore.get(neighbour);
                 if (currentGScore != null && tentativeGScore >= currentGScore) {
                     continue;
