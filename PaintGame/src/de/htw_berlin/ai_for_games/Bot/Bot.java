@@ -84,6 +84,7 @@ public abstract class Bot {
             this.path.poll();
             if (this.path.isEmpty()) {
                 if (this.chasesItem) {
+                    //TODO: chase item until its gone, i.e. collect update is received
                     this.chasesItem = false;
                     System.out.println("Bot reached item.");
                 }
@@ -111,6 +112,7 @@ public abstract class Bot {
     }
 
     public void updatePosition(int x, int y) {
+        //TODO: recalculate path if position is equal i.e. we are stuck
         this.currentPosition = this.quadTree.getPathLayer().getNodeForPixelPosition(x, y);
     }
 
