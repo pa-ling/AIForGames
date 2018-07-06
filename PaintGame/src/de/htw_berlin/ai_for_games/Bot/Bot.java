@@ -33,6 +33,7 @@ public abstract class Bot {
     private void calculatePath(int x, int y) {
         List<Pair> newPath = AStar.getPathConsideringColors(this.quadTree.getPathLayer(), this.currentPosition,
                 new Pair(x, y));
+        newPath.remove(0);
         this.path.clear();
         this.path.addAll(newPath);
     }

@@ -104,7 +104,7 @@ public class ZpifubController {
 
                     Pair direction = bot.getNextDirection();
                     client.setMoveDirection(bot.getBotNumber(), direction.x, direction.y);
-                    System.out.println("Direction sent for Bot" + bot.getBotNumber() + ": (" + direction.x + ","
+                    System.out.println("Direction sent for Bot " + bot.getBotNumber() + ": (" + direction.x + ","
                             + direction.y + ")");
                 }
             }
