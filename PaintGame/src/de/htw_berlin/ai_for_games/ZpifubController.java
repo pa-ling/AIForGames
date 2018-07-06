@@ -62,8 +62,8 @@ public class ZpifubController {
         while (client.isAlive()) {
             Update update;
             if ((update = client.pullNextUpdate()) != null) {
-                System.out.print("Received Update:\n" + "position: (" + update.x + "," + update.y + ")\n" + "player: "
-                        + update.player + "\n" + "bot: " + update.bot + "\n" + "powerup type: " + update.type + "\n");
+                System.out.println("Received Update: {" + "position: (" + update.x + "," + update.y + "), " + "player: "
+                        + update.player + ", " + "bot: " + update.bot + "," + "powerup type: " + update.type + "}");
 
                 if (update.type == null) {
                     quadTree.updateQuad(update.x, update.y);

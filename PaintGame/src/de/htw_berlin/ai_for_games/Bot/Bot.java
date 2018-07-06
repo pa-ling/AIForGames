@@ -38,11 +38,15 @@ public abstract class Bot {
     }
 
     private boolean checkPointReached(int x, int y) {
-        boolean xReached = this.currentPosition.x == x;
-        boolean yReached = this.currentPosition.y == y;
-
-        if (xReached && yReached) {
+        
+        if (this.currentPosition.x == x && this.currentPosition.y == y) {
             return true;
+        }
+        
+        for (Pair neighbour : quadTree.getPathLayer().getNeighbors(x, y)) {
+            if (this.currentPosition.x == neighbour.x && this.currentPosition.y == neighbour.y) {
+                return true;
+            }
         }
 
         return false;
