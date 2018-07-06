@@ -52,7 +52,7 @@ public abstract class Bot {
         return false;
     }
 
-    private void findNextTargetAndCalculatePath() {
+    public void findNextTargetAndCalculatePath() {
         Pair targetNode = this.quadTree.getTargetOnPathLayer();
         calculatePath(targetNode.x, targetNode.y);
     }

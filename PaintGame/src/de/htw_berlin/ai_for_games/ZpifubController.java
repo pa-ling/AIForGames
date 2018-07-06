@@ -63,7 +63,7 @@ public class ZpifubController {
             Update update;
             if ((update = client.pullNextUpdate()) != null) {
                 System.out.println("Received Update: {" + "position: (" + update.x + "," + update.y + "), " + "player: "
-                        + update.player + ", " + "bot: " + update.bot + "," + "powerup type: " + update.type + "}");
+                        + update.player + ", " + "bot: " + update.bot + ", " + "powerup type: " + update.type + "}");
 
                 if (update.type == null) {
                     quadTree.updateQuad(update.x, update.y);
@@ -71,6 +71,9 @@ public class ZpifubController {
                     // item handling
                     if (update.type == PowerupType.SLOW) {
                         quadTree.addObstacleToPathLayer(update.x, update.y);
+                        for (Bot bot : botList) {
+                            bot.findNextTargetAndCalculatePath();
+                        }
                     } else {
                         Bot bot = findBotNextToItem(botList, update.x, update.y);
                         bot.setItemAsTarget();
