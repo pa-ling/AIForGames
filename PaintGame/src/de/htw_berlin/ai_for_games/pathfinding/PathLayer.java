@@ -25,6 +25,7 @@ public class PathLayer extends Layer {
 
             if (nodeValue != Color.WHITE.intValue && blueValue == greenValue && greenValue == redValue) {
                 this.obstacles.add(new Pair(x, y));
+                this.obstacles.addAll(getNeighbors(x, y));
             }
         }
         return super.updateNode(x, y);

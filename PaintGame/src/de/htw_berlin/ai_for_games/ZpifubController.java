@@ -22,12 +22,11 @@ public class ZpifubController {
     }
 
     private Bot findBotNextToItem(List<Bot> botList, int x, int y) {
-        // TODO: what about enemy bots? should we calculate a path for them too and see
-        // if we're faster?
         int lowestDistanceToItem = Integer.MAX_VALUE;
         Bot botToUse = botList.get(0);
         for (final Bot bot : botList) {
             final int distanceToItem = bot.getDistanceToItem(x, y);
+            //TODO: Use BotType.speed for calculation min(length/speed of all bots)
             if (distanceToItem < lowestDistanceToItem || distanceToItem == lowestDistanceToItem && //
                     (botToUse.getBotType().equals(BotType.LARGE_BRUSH)
                             || botToUse.getBotType().equals(BotType.SMALL_BRUSH)

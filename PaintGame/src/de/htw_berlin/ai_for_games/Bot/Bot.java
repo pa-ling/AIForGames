@@ -75,7 +75,7 @@ public abstract class Bot {
     public Pair getNextDirection() {
         Pair nextNode = this.path.peek();
 
-        if (checkPointReached(this.currentPosition.x, this.currentPosition.y)) {
+        if (nextNode == null || checkPointReached(nextNode.x, nextNode.y)) {
             this.path.poll();
             if (this.path.isEmpty()) {
                 if (this.chasesItem) {

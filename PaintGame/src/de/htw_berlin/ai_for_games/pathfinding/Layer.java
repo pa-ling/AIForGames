@@ -189,12 +189,21 @@ public class Layer {
         }
 
         List<Pair> subnodesIndices = getSubnodesPositions(x, y);
-        int nodeValue = 0;
+        int nodeValueBlue = 0;
+        int nodeValueGreen = 0;
+        int nodeValueRed = 0;
         for (Pair subnode : subnodesIndices) {
-            nodeValue += this.bottomLayer.updateNode(subnode.x, subnode.y);
+            int subnodeValue = this.bottomLayer.updateNode(subnode.x, subnode.y);
+            nodeValueBlue += subnodeValue & 0xFF;
+            nodeValueGreen += subnodeValue >> 8 & 0xFF;
+            nodeValueRed += subnodeValue >> 16 & 0xFF;
+           
         }
-        nodeValue = nodeValue / subnodesIndices.size();
+        nodeValueBlue = nodeValueBlue / subnodesIndices.size();
+        nodeValueGreen = nodeValueGreen / subnodesIndices.size();
+        nodeValueRed = nodeValueRed / subnodesIndices.size();
 
+        int nodeValue = (nodeValueRed << 16) + (nodeValueGreen << 8) + (nodeValueBlue);
         this.nodes[x][y] = nodeValue;
 
         return nodeValue;
