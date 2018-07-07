@@ -11,7 +11,9 @@ import de.htw_berlin.ai_for_games.pathfinding.QuadTree;
 public abstract class Bot {
 
     private Pair currentPosition;
-
+    
+    private Pair lastPosition;
+    
     private final BotType botType;
 
     private final QuadTree quadTree;
@@ -78,8 +80,12 @@ public abstract class Bot {
     }
 
     public Pair getNextDirection() {
+        // emergency - calculate new direction if we're stuck
+        if (this.lastPosition.equals(this.currentPosition)) {
+            findNextTargetAndCalculatePath();
+        }
+        
         Pair nextNode = this.path.peek();
-
         if (nextNode == null || checkPointReached(nextNode.x, nextNode.y)) {
             this.path.poll();
             if (this.path.isEmpty()) {
@@ -112,7 +118,7 @@ public abstract class Bot {
     }
 
     public void updatePosition(int x, int y) {
-        //TODO: recalculate path if position is equal i.e. we are stuck
+        this.lastPosition = this.currentPosition;
         this.currentPosition = this.quadTree.getPathLayer().getNodeForPixelPosition(x, y);
     }
 
