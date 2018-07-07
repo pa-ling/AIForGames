@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.htw_berlin.ai_for_games.Bot.Bot;
-import de.htw_berlin.ai_for_games.Bot.BotType;
 import de.htw_berlin.ai_for_games.Bot.LargeBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SmallBrushBot;
 import de.htw_berlin.ai_for_games.Bot.SprayCanBot;
@@ -22,16 +21,12 @@ public class ZpifubController {
     }
 
     private Bot findBotNextToItem(List<Bot> botList, int x, int y) {
-        int lowestDistanceToItem = Integer.MAX_VALUE;
+        float lowestTimeToItem = Float.MAX_VALUE;
         Bot botToUse = botList.get(0);
         for (final Bot bot : botList) {
-            final int distanceToItem = bot.getDistanceToItem(x, y);
-            //TODO: Use BotType.speed for calculation min(length/speed of all bots)
-            if (distanceToItem < lowestDistanceToItem || distanceToItem == lowestDistanceToItem && //
-                    (botToUse.getBotType().equals(BotType.LARGE_BRUSH)
-                            || botToUse.getBotType().equals(BotType.SMALL_BRUSH)
-                                    && bot.getBotType().equals(BotType.SPRAY_CAN))) {
-                lowestDistanceToItem = distanceToItem;
+            float timeToItem = bot.getDistanceToItem(x, y) / bot.getBotType().speed;
+            if (timeToItem < lowestTimeToItem) {
+                lowestTimeToItem = timeToItem;
                 botToUse = bot;
             }
         }
@@ -95,10 +90,10 @@ public class ZpifubController {
                         }
                     }
                 }
-                
-                //if (update.player == enemy that is followed) {
-                //  TODO: spraycan update path
-                //}
+
+                // if (update.player == enemy that is followed) {
+                // TODO: spraycan update path
+                // }
 
                 // our bots
                 if (update.player == myPlayerNumber) {
