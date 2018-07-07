@@ -106,7 +106,6 @@ public abstract class Bot {
             this.path.poll();
             if (this.path.isEmpty()) {
                 if (this.chasesItem) {
-                    //TODO: chase item until its gone, i.e. collect update is received
                     this.chasesItem = false;
                     System.out.println("Bot reached item.");
                 }

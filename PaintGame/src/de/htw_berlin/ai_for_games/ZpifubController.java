@@ -91,10 +91,6 @@ public class ZpifubController {
                     }
                 }
 
-                // if (update.player == enemy that is followed) {
-                // TODO: spraycan update path
-                // }
-
                 // our bots
                 if (update.player == myPlayerNumber) {
                     // find bot in update and get bot object

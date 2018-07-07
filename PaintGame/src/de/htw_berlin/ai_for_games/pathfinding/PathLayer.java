@@ -8,11 +8,14 @@ import de.htw_berlin.ai_for_games.Pair;
 public class PathLayer extends Layer {
 
     private final Set<Pair> obstacles;
+    private final Set<Pair> temporaryObstacles;
+    
     private boolean initalized;
 
     public PathLayer(int number, Color playerColor, Layer bottomLayer) {
         super(number, playerColor, bottomLayer);
         this.obstacles = new HashSet<>();
+        this.temporaryObstacles = new HashSet<>();
     }
 
     @Override
@@ -33,7 +36,8 @@ public class PathLayer extends Layer {
 
     @Override
     public int getCost(int x, int y) {
-        if (this.obstacles.contains(new Pair(x, y))) {
+        Pair node = new Pair(x, y);
+        if (this.obstacles.contains(node) || this.temporaryObstacles.contains(node)) {
             // this node contains an obstacle - avoid!
             return Integer.MAX_VALUE - 5000;
         }
@@ -42,7 +46,8 @@ public class PathLayer extends Layer {
 
     @Override
     public int getCostWithoutColors(int x, int y) {
-        if (this.obstacles.contains(new Pair(x, y))) {
+        Pair node = new Pair(x, y);
+        if (this.obstacles.contains(node) || this.temporaryObstacles.contains(node)) {
             // leave room for heuristic
             return Integer.MAX_VALUE - 5000;
         }
@@ -51,11 +56,19 @@ public class PathLayer extends Layer {
     }
 
     public void removeObstacle(int x, int y) {
-        this.obstacles.remove(new Pair(x, y));
+        for (Pair neighbor : getNeighbors(x, y)) {
+            for (Pair neighboursNeighbor : getNeighbors(neighbor.x, neighbor.y)) {
+                this.temporaryObstacles.remove(neighboursNeighbor);
+            }
+        }
     }
 
     public void addObstacle(int x, int y) {
-        this.obstacles.add(new Pair(x, y));
+        for (Pair neighbor : getNeighbors(x, y)) {
+            for (Pair neighboursNeighbor : getNeighbors(neighbor.x, neighbor.y)) {
+                this.temporaryObstacles.add(neighboursNeighbor);
+            }
+        }
     }
 
     public void setInitalized(boolean initalized) {
