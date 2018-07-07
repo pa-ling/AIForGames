@@ -15,16 +15,11 @@ public class ZpifubClientTest {
     private final String HOST_IP = "127.0.0.1";
     private final int SLEEP_TIME = 4000;
 
-    @Test
-    public void testGame() throws InterruptedException, IOException {
-        playAGame(NAMES, MESSAGES, HOST_IP);
-    }
-
     public void playAGame(String[] names, String[] messages, String host) throws IOException, InterruptedException {
         // start server
-        new ProcessBuilder("java", "-jar", "zpifub.jar", "1120", "1024", "600").inheritIO().directory(new File("lib"))
+        new ProcessBuilder("java", "-jar", "zpifub.jar", "1120", "1024", "180").inheritIO().directory(new File("lib"))
                 .start();
-        Thread.sleep(SLEEP_TIME);
+        Thread.sleep(this.SLEEP_TIME);
 
         // start Clients
         ExecutorService executor = Executors.newFixedThreadPool(names.length);
@@ -36,6 +31,11 @@ public class ZpifubClientTest {
         }
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.HOURS);
+    }
+
+    @Test
+    public void testGame() throws InterruptedException, IOException {
+        playAGame(this.NAMES, this.MESSAGES, this.HOST_IP);
     }
 
 }
