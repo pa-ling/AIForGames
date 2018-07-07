@@ -9,6 +9,10 @@ import de.htw_berlin.ai_for_games.pathfinding.AStar;
 import de.htw_berlin.ai_for_games.pathfinding.QuadTree;
 
 public abstract class Bot {
+    
+    private static final int IS_STUCK = 5;
+    
+    private int stuckCounter = 0;
 
     private Pair currentPosition;
     
@@ -69,8 +73,12 @@ public abstract class Bot {
     }
 
     public int getDistanceToItem(int x, int y) {
-        List<Pair> newPath = AStar.getPathWithoutConsideringColors(this.quadTree.getPathLayer(), this.currentPosition,
-                new Pair(x, y));
+        
+        List<Pair> newPath = AStar.getPathWithoutConsideringColors(
+                this.quadTree.getPathLayer(), //
+                this.currentPosition, //
+                this.quadTree.getPathLayer().getNodeForPixelPosition(x,y) //
+        );
 
         // cache this path in case we need to use it later
         this.pathToItem.clear();
@@ -82,7 +90,11 @@ public abstract class Bot {
     public Pair getNextDirection() {
         // emergency - calculate new direction if we're stuck
         if (this.currentPosition.equals(this.lastPosition)) {
-            findNextTargetAndCalculatePath();
+            this.stuckCounter++;
+            if (this.stuckCounter == IS_STUCK) {
+                stuckCounter = 0;
+                findNextTargetAndCalculatePath();
+            }
         }
         
         Pair nextNode = this.path.peek();

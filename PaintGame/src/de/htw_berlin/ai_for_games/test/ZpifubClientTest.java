@@ -10,10 +10,10 @@ import org.junit.Test;
 
 public class ZpifubClientTest {
 
-    private final String[] NAMES = { "ALICE", "BOB" };
+    private final String[] NAMES = { "ALICE", "BOB"};
     private final String[] MESSAGES = { "nice!", "good!", "awesome!" };
     private final String HOST_IP = "127.0.0.1";
-    private final int SLEEP_TIME = 4000;
+    private final int SLEEP_TIME = 2000;
 
     public void playAGame(String[] names, String[] messages, String host) throws IOException, InterruptedException {
         // start server
