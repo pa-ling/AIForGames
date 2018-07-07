@@ -36,12 +36,14 @@ public final class AStar {
         final Set<Pair> openSet = new HashSet<>();
         final Map<Pair, Pair> cameFrom = new HashMap<>();
         final Map<Pair, Integer> gScore = new HashMap<>();
+        final Map<Pair, Integer> fScore = new HashMap<>();
         for (int i = 0; i < pathLayer.size; i++) {
             for (int j = 0; j < pathLayer.size; j++) {
-                gScore.put(new Pair(i,j), Integer.MAX_VALUE);
+                // TODO OPTI
+                gScore.put(new Pair(i, j), Integer.MAX_VALUE);
+                fScore.put(new Pair(i, j), Integer.MAX_VALUE);
             }
         }
-        final Map<Pair, Integer> fScore = new HashMap<>();
 
         openSet.add(start);
         gScore.put(start, 0);
