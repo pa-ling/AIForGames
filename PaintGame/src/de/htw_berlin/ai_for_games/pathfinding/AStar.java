@@ -37,13 +37,6 @@ public final class AStar {
         final Map<Pair, Pair> cameFrom = new HashMap<>();
         final Map<Pair, Integer> gScore = new HashMap<>();
         final Map<Pair, Integer> fScore = new HashMap<>();
-        for (int i = 0; i < pathLayer.size; i++) {
-            for (int j = 0; j < pathLayer.size; j++) {
-                // TODO OPTI
-                gScore.put(new Pair(i, j), Integer.MAX_VALUE);
-                fScore.put(new Pair(i, j), Integer.MAX_VALUE);
-            }
-        }
 
         openSet.add(start);
         gScore.put(start, 0);
@@ -66,6 +59,8 @@ public final class AStar {
 
                 if (!openSet.contains(neighbour)) {
                     openSet.add(neighbour);
+                    fScore.put(neighbour, Integer.MAX_VALUE);
+                    gScore.put(neighbour, Integer.MAX_VALUE);
                 }
 
                 final int tentativeGScore = gScore.get(current) + costFunction.apply(neighbour.x, neighbour.y);
