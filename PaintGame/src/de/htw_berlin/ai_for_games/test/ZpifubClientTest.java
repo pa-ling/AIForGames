@@ -10,8 +10,8 @@ import org.junit.Test;
 
 public class ZpifubClientTest {
 
-    private final String[] NAMES = { "ALICE", "BOB"};
-    private final String[] MESSAGES = { "nice!", "good!", "awesome!" };
+    private final String[] NAMES = { "ALICE", "BOB", "CAROL"};
+    private final String[] MESSAGES = { "nice! ✨", "good! ✨", "awesome! ✨" };
     private final String HOST_IP = "127.0.0.1";
     private final int SLEEP_TIME = 2000;
 
