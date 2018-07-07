@@ -81,7 +81,7 @@ public abstract class Bot {
 
     public Pair getNextDirection() {
         // emergency - calculate new direction if we're stuck
-        if (this.lastPosition.equals(this.currentPosition)) {
+        if (this.currentPosition.equals(this.lastPosition)) {
             findNextTargetAndCalculatePath();
         }
         
