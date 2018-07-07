@@ -9,6 +9,11 @@ public class Pair {
         this.x = x;
         this.y = y;
     }
+    
+    
+    public Pair add(Pair other) {
+        return new Pair(this.x + other.x, this.y + other.y);
+    }
 
     @Override
     public boolean equals(Object obj) {

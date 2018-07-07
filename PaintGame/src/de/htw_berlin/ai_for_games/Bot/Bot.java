@@ -77,8 +77,12 @@ public abstract class Bot {
         List<Pair> newPath = AStar.getPathWithoutConsideringColors(
                 this.quadTree.getPathLayer(), //
                 this.currentPosition, //
-                this.quadTree.getPathLayer().getNodeForPixelPosition(x,y) //
+                this.quadTree.getPathLayer().getNodeForPixelPosition(x, y) //
         );
+        Pair lastNode = newPath.get(newPath.size() - 1);
+        Pair secondToLastNode = newPath.get(newPath.size() - 2);
+        Pair directionBetweenNodes = new Pair(lastNode.x - secondToLastNode.x, lastNode.y - secondToLastNode.y);
+        newPath.add(lastNode.add(directionBetweenNodes)); //add another node to make sure we cross the item
 
         // cache this path in case we need to use it later
         this.pathToItem.clear();
