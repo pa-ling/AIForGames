@@ -14,15 +14,15 @@ public abstract class Bot {
     
     private int stuckCounter = 0;
 
-    private Pair currentPosition;
+    protected Pair currentPosition;
     
     private Pair lastPosition;
     
     private final BotType botType;
 
-    private final QuadTree quadTree;
+    protected final QuadTree quadTree;
 
-    private final Queue<Pair> path;
+    protected final Queue<Pair> path;
 
     private final Queue<Pair> pathToItem;
 
@@ -36,7 +36,7 @@ public abstract class Bot {
         this.pathToItem = new LinkedList<>();
     }
 
-    private void calculatePath(int x, int y) {
+    protected void calculatePath(int x, int y) {
         List<Pair> newPath = AStar.getPathConsideringColors(this.quadTree.getPathLayer(), this.currentPosition,
                 new Pair(x, y));
         newPath.remove(0);
